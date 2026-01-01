@@ -1,0 +1,428 @@
+{
+  "Lifestyle and Daily Routine": {
+    "Location": {
+      "Community": {}
+    },
+    "Daily Routine": {
+      "TimeManagement": {},
+      "TechnologyUsage": {},
+      "PersonalAttributes": {}
+    },
+    "Travel": {
+      "Experience": {}
+    },
+    "Dietary Preferences": {
+      "dietaryPreferences": {}
+    },
+    "Transportation": {
+      "VehicleDetails": {}
+    },
+    "Learning": {
+      "personal_dedication": {}
+    },
+    "Cooking": {
+      "TimeAvailability": {}
+    }
+  },
+  "Cultural and Social Context": {
+    "DietaryPreferences": {
+      "dietary_preferences": {}
+    },
+    "dietary": {
+      "preferences": {}
+    },
+    "Life Experiences": {
+      "Variety": {}
+    },
+    "artistic_interests": {
+      "participation": {}
+    },
+    "Personal": {
+      "Personal Values": {}
+    },
+    "Communication": {
+      "CommunicationStyle": {}
+    },
+    "parenting_style": {
+      "approach": {}
+    },
+    "Social Habits": {
+      "Coffee Culture Enthusiast": {}
+    },
+    "international_experience": {
+      "exposure": {}
+    },
+    "financial_knowledge": {
+      "level": {}
+    },
+    "Values": {
+      "EthicalValues": {}
+    },
+    "cultural": {
+      "personal_information": {}
+    },
+    "Interests": {
+      "Hobbies": {}
+    },
+    "travel": {
+      "experience": {}
+    },
+    "Personal Preferences": {
+      "Cultural Interests": {}
+    },
+    "social": {
+      "family_dynamics": {}
+    }
+  },
+  "Core Values and Beliefs": {
+    "Wellness": {
+      "Health Prioritization": {}
+    },
+    "Personal Philosophy": {
+      "Preferences": {},
+      "Opinions": {}
+    }
+  },
+  "Media Consumption and Engagement": {
+    "Engagement": {
+      "User Content Interests": {}
+    },
+    "Consumption Style": {
+      "Channel Engagement": {}
+    },
+    "ArtisticInspirations": {},
+    "Music": {
+      "AnalysisDepth": {}
+    },
+    "content_engagement": {
+      "personal_beliefs": {}
+    },
+    "Humor": {
+      "UserCharacteristics": {}
+    },
+    "PlatformUsage": {
+      "CommunicationPlatform": {}
+    },
+    "Reading": {
+      "User_Preferences": {}
+    },
+    "QuestionStyle": {},
+    "ReadingPreferences": {
+      "Character Backgrounds": {}
+    },
+    "Interests": {
+      "Biographies": {}
+    },
+    "Communication": {
+      "User Preferences": {}
+    },
+    "PreferredMedium": {
+      "ContentType": {}
+    },
+    "Artistic": {
+      "Interests": {}
+    }
+  },
+  "Hobbies, Interests, and Lifestyle": {
+    "Interests": {
+      "Photography": {},
+      "LanguageLearning": {
+        "knowledge": {},
+        "usage": {}
+      },
+      "Business": {},
+      "Characteristics": {},
+      "Themes": {},
+      "FoodPreferences": {},
+      "Storytelling": {},
+      "Nature": {},
+      "GameDevelopment": {},
+      "Sports": {},
+      "GameMechanics": {}
+    },
+    "Children": {
+      "Relevance": {},
+      "Personalization": {},
+      "Approaches": {}
+    },
+    "Outdoor Activities": {
+      "experience": {},
+      "preference": {}
+    },
+    "Art Interests": {
+      "CategoryType": {}
+    },
+    "Culinary Preferences": {
+      "dietaryPreferences": {}
+    },
+    "Gaming": {
+      "UserPlaystyle": {}
+    },
+    "Storytelling": {
+      "Preference": {}
+    },
+    "Popular Culture": {
+      "Pokemon": {}
+    },
+    "Writing": {
+      "style_preferences": {}
+    },
+    "Technology Interests": {
+      "Computing Preferences": {}
+    },
+    "Lifestyle Preferences": {
+      "HomePreferences": {}
+    }
+  },
+  "Relationships and Social Networks": {
+    "Family": {
+      "Mother": {},
+      "Relationship with Mother": {},
+      "Mother's Personality": {}
+    },
+    "Social Role": {
+      "Impact": {}
+    },
+    "Friendship": {
+      "Engagement": {}
+    },
+    "Professional Connections": {
+      "contextual_relevance": {}
+    },
+    "Peers": {
+      "IndustryConnections": {}
+    },
+    "Social Skills": {
+      "Communication Abilities": {}
+    },
+    "Friends": {
+      "User Experience": {}
+    },
+    "Personal Identity": {
+      "PersonalAttributes": {}
+    },
+    "Relationships": {
+      "relationshipType": {}
+    }
+  },
+  "Education and Learning": {
+    "programmingSkills": {
+      "ExperienceLevel": {}
+    },
+    "knowledgeArea": {
+      "Skill Proficiency": {},
+      "Personal Interests": {}
+    },
+    "personal": {
+      "FIRO-B": {}
+    },
+    "FieldOfStudy": {
+      "expertise_level": {}
+    },
+    "personalDevelopment": {
+      "Interests": {}
+    },
+    "subject": {
+      "Personal_Attributes": {}
+    },
+    "personalized_needs": {
+      "Personal Preferences": {}
+    },
+    "interests": {
+      "Preferences": {}
+    },
+    "specific_interests": {},
+    "institution": {
+      "Education": {}
+    }
+  },
+  "Physical and Health Characteristics": {
+    "Activity Level": {
+      "sedentary": {}
+    },
+    "Body Composition": {
+      "body_composition": {}
+    },
+    "Beliefs": {
+      "Philosophy": {},
+      "AttitudesTowardsDrugs": {}
+    },
+    "General Health": {
+      "HealthCondition": {}
+    },
+    "Health Goals": {
+      "health_improvement": {}
+    },
+    "Medical History": {
+      "Allergy_Management": {}
+    },
+    "Cognitive Style": {
+      "Reflective Development": {}
+    },
+    "Thinking Patterns": {
+      "Goal-Oriented": {}
+    }
+  },
+  "Demographic Information": {
+    "Nationality": {
+      "Ethnicity": {}
+    },
+    "Student Details": {
+      "Age and Grade Level": {}
+    },
+    "Personal": {
+      "Interests": {}
+    },
+    "Age": {
+      "AgeGroup": {},
+      "Group": {},
+      "RelevantRange": {}
+    },
+    "Birth Details": {
+      "Time of Birth": {}
+    },
+    "Pet Ownership": {
+      "Has Pet": {}
+    },
+    "Education": {
+      "Learner": {}
+    },
+    "Language": {
+      "LanguageSkill": {}
+    },
+    "Gender": {
+      "Identity": {}
+    }
+  },
+  "Core Values, Beliefs, Philosophy": {
+    "Worldview": {
+      "Nationalistic Views": {}
+    }
+  },
+  "Emotional and Relational Skills": {
+    "Resilience": {
+      "Journey": {}
+    },
+    "EmotionalIntelligence": {
+      "Self_Validation": {},
+      "Personal_Challenges": {}
+    },
+    "Romantic": {
+      "RelationshipBuilding": {}
+    },
+    "Supportiveness": {
+      "Parent Style": {}
+    }
+  },
+  "Lifestyle and Habits": {
+    "Daily Routine": {
+      "Home Usage Frequency": {}
+    }
+  },
+  "Core Values, Beliefs, and Philosophy": {
+    "leadership_style": {
+      "decision_making": {}
+    },
+    "DietaryRestrictions": {
+      "restrictions": {}
+    },
+    "FinancialGoals": {
+      "safety_preference": {}
+    },
+    "Values": {
+      "Priorities": {}
+    },
+    "Life_perspective": {
+      "personal_values": {},
+      "worldview": {}
+    },
+    "Parenting_style": {
+      "Methodology": {},
+      "Personality": {}
+    },
+    "learning_attitude": {
+      "openness": {}
+    },
+    "Social_justice": {
+      "engagement": {}
+    }
+  },
+  "Psychological and Cognitive Aspects": {
+    "Emotional Regulation": {},
+    "Problem Solving": {
+      "Approach": {}
+    },
+    "Imagination": {
+      "personal_expression": {}
+    },
+    "Buying Habits": {
+      "User Preferences": {}
+    },
+    "Personality": {
+      "AdventureSeeking": {}
+    },
+    "Expectations": {
+      "Self-Perception": {}
+    },
+    "Learning": {
+      "PersonalAttributes": {}
+    },
+    "Traits": {
+      "Personal Growth": {}
+    },
+    "Content Creation": {
+      "Preferences": {}
+    },
+    "Creativity": {
+      "PersonalStyle": {}
+    },
+    "Openness": {
+      "Educational Background": {},
+      "Interest in Technology": {}
+    },
+    "Work Style": {
+      "problem_solving_approach": {}
+    },
+    "Resilience": {
+      "PersonalExperience": {}
+    },
+    "Cognitive Style": {
+      "Decision Characteristics": {}
+    },
+    "Emotional Tone": {
+      "UserPreference": {}
+    },
+    "Tone": {
+      "preference": {}
+    },
+    "Abilities": {
+      "Cybersecurity Proficiency": {}
+    },
+    "Curiosity": {
+      "IntellectualEngagement": {}
+    },
+    "Perspective": {
+      "PersonalAttributes": {}
+    }
+  },
+  "Psychological and Cognitive": {
+    "User Characteristics": {
+      "Personal Characteristics": {}
+    }
+  },
+  "Lifestyle and Routine": {
+    "Personal Habits": {
+      "User Personalization Attributes": {}
+    }
+  },
+  "Cultural and Social Contexts": {
+    "Community": {
+      "Engagement Level": {}
+    }
+  },
+  "Core Values and Philosophy": {
+    "Beliefs": {
+      "Outcome-Oriented": {}
+    }
+  }
+}

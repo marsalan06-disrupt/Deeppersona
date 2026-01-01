@@ -21,7 +21,7 @@ GEONAMES_USERNAME = "demo"  # Replace with your GeoNames username
 GEONAMES_API_BASE = "http://api.geonames.org"
 
 # OpenAI API Configuration
-OPENAI_API_KEY = "OPENAI_API_KEY"
+OPENAI_API_KEY = ""
 
 # GPT model version to use
 GPT_MODEL = "gpt-4.1-mini"

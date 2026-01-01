@@ -1,0 +1,1334 @@
+{
+  "research_id": "6x4zztjWGiN7ajKF4Gf9",
+  "research_name": "Perfume Buyer Insights",
+  "problem_statement": "",
+  "emma_thompson": {
+    "mood_influence": "Believes that floral scents uplift her mood and reduce stress",
+    "shopping_frequency": "Monthly",
+    "updatedAt": "2025-12-10T12:10:39.458070+00:00",
+    "hobbies": "Yoga, Reading, Hiking",
+    "name": "Emma Thompson",
+    "createdAt": "2025-12-10T12:10:39.458067+00:00",
+    "scent_association": "Associates floral scents with relaxation and calmness",
+    "profileId": "profile_3",
+    "id": "persona_1765368639458_321452617",
+    "age": 27,
+    "brand_awareness": "Familiar with major brands like Chanel and Dior",
+    "online_purchase_habit": "Occasional online shopper, prefers in-store experiences",
+    "energy_level_perception": "Feels energized and refreshed after exposure to floral scents",
+    "favorite_scent_type": "Floral",
+    "location": "Bristol, UK"
+  },
+  "carlos_smith": {
+    "role": "First-Time Buyer",
+    "life_attitude": {
+      "coping_mechanism": "Analyzing problems meticulously to find effective solutions.",
+      "attitude_details": "They approach daily challenges with meticulous attention and a consistent pursuit of learning and improvement.",
+      "attitude": "Driven by precision and innovation in all tasks."
+    },
+    "profileId": "profile_3",
+    "cultural_context": {
+      "parenting_style": {
+        "approach": "Not applicable; career and professional growth prioritized over parenting roles"
+      },
+      "international_experience": {
+        "exposure": "Limited international exposure; primarily engaged with local Australian design standards"
+      },
+      "Cultural": {
+        "Technology": {
+          "Adaptation Skills": "Proactively adopts new CAD tools and software despite challenges, emphasizing continuous improvement"
+        }
+      },
+      "Personality": {
+        "Interpersonal Skills": "Collaborative communicator skilled at managing team dynamics and addressing resistance tactfully"
+      },
+      "Interests": {
+        "Technology": "Passionate about advanced CAD software, design tool integration, and sustainable tech innovations",
+        "PopCulture": "Moderate interest in design-related media and innovation trends rather than mainstream pop culture"
+      },
+      "Professional Interests": {
+        "Entrepreneurship": "Interested in innovation-driven projects but cautious about practical constraints and risks"
+      },
+      "cultural": {
+        "personal_information": "Mid-career Australian male focused on precision and innovation in residential design"
+      },
+      "Personal Life": {
+        "Interaction Style": "Prefers structured, agenda-driven interactions that promote clarity and efficiency"
+      },
+      "Knowledge": {
+        "User Characteristics": "Detail-oriented learner who integrates feedback and adapts design approaches thoughtfully"
+      },
+      "Personal Interests": {
+        "Creative Preferences": "Enjoys exploring sustainable design concepts and experimenting with 3D modeling techniques"
+      },
+      "workplace_culture": {
+        "humor": "Prefers professional, respectful humor that fosters positive team morale without distractions"
+      },
+      "Language": {
+        "Knowledge": "Fluent in English with technical vocabulary in CAD and architectural design"
+      },
+      "language": {
+        "dominant": "English"
+      },
+      "Values": {
+        "Ethical Attitude": "Approaches work with integrity, accountability, and a forward-thinking mindset",
+        "EthicalValues": "Committed to responsible design that ensures safety, sustainability, and community well-being"
+      },
+      "Preference": {
+        "Language Preferences": "Prefers clear, precise communication with technical accuracy in professional contexts"
+      },
+      "Life Stage": {
+        "Teenager": "Not applicable; currently in mid-career adult stage with mature professional outlook"
+      }
+    },
+    "location": "Epping, Australia",
+    "personal_story": "Story 1: While working on a new residential development project in Epping, I discovered a critical flaw in the CAD model that could have led to structural issues. The project's timeline was tight, and bringing up this issue meant risking delays and potential backlash from the architects and contractors. However, committed to precision, I flagged the problem immediately, which led to a redesign phase but ultimately prevented costly construction errors. This experience reinforced my belief in continuous learning and the importance of meticulous attention to detail in design work.\n\nStory 2: In 2019, I took a risk by proposing an innovative software tool integration that promised to streamline the CAD workflow for my firm. Despite initial enthusiasm, the implementation faced several setbacks due to compatibility issues with existing systems and resistance from some colleagues accustomed to traditional methods. The project ran over budget and delayed several deliverables, causing tension within the team. Although the experience was frustrating, it taught me valuable lessons about balancing innovation with practical constraints and the importance of managing change carefully in a professional environment.\n\nStory 3: A few years ago, I participated in a design competition focused on sustainable housing solutions for suburban areas around Melbourne, including Epping. I invested significant time refining every detail of my proposal, integrating renewable energy and efficient space usage. Despite my commitment and innovative design, my entry did not win, partly due to jurors favoring more conventional approaches. The outcome was disappointing, but it prompted me to deepen my understanding of market and regulatory factors affecting design acceptance in Australia, influencing my approach to future projects and continuous professional development.",
+    "lifestyle": {
+      "Travel": {
+        "Experience": "Prefers local travel to project sites in Epping and occasional trips to design conferences"
+      },
+      "Transportation": {
+        "VehicleDetails": "Drives a fuel-efficient car suited for commuting to project sites and client meetings"
+      },
+      "Learning": {
+        "personal_dedication": "Engages daily in CAD tutorials, design literature, and software experimentation"
+      },
+      "Time Management": {
+        "Punctuality": "Highly punctual, prioritizing meeting deadlines and timely project updates",
+        "QualityOfLife": "Allocates focused work periods with short breaks to maintain productivity and mental clarity"
+      },
+      "Living Situation": {
+        "status": "Homeowner residing in Epping, actively involved in local residential development community"
+      },
+      "Social": {
+        "TimeManagementPreferences": "Prefers scheduled meetings and clear agendas to optimize collaboration and minimize disruptions"
+      },
+      "Leisure Activities": {
+        "Leisure Activities": "Enjoys 3D modeling hobbies, reading innovation articles, and exploring sustainable design trends"
+      },
+      "Daily Routine": {
+        "PersonalStructure": "Starts with morning planning, focused design work, midday review sessions, and evening learning",
+        "PetCare": "No pets; dedicates free time to professional growth and personal interests"
+      }
+    },
+    "career_identity": {
+      "ProfessionalInterests": {
+        "Resource Management": "Interested in optimizing design workflows and resource allocation through technology"
+      },
+      "Professional": {
+        "Background": "Background rooted in CAD design, innovation adoption, and sustainable residential projects"
+      },
+      "Military": {
+        "personalBackground": ""
+      },
+      "WorkExperience": {
+        "Expertise": "Extensive experience identifying design flaws and implementing precision-driven solutions"
+      },
+      "PositionLevel": {
+        "mid_level": "Mid-level professional with substantial experience in CAD design and project coordination"
+      },
+      "Capabilities": {
+        "innovation": "Demonstrates strong innovation capability by integrating new tools despite challenges"
+      },
+      "Strengths": {
+        "Creativity": "Strong creativity demonstrated through innovative software integration and sustainable design proposals"
+      },
+      "Employment": {
+        "Industry": "Architecture, residential construction, and design technology sectors"
+      },
+      "EngineeringExperience": "Applied engineering principles in structural design validation and flaw detection",
+      "Role": {
+        "Managerial Role": "Not explicitly managerial but leads initiatives and influences team workflows",
+        "Experience Level": "Mid to senior level with leadership in design quality assurance and innovation initiatives",
+        "Organizational Unit": "Works within architectural design and engineering teams focused on residential projects",
+        "Responsibilities": "Ensures design precision, integrates innovative tools, and supports continuous learning"
+      },
+      "Creative": {
+        "industry_experience": "Experience in creative design competitions and sustainable housing innovation"
+      },
+      "PersonalAspirations": {
+        "Visual Design": "Strives for innovative, detail-oriented visual design solutions in residential architecture"
+      },
+      "Skills": {
+        "Creative Skills": "Creative problem-solving, innovative design integration, and meticulous attention to detail"
+      },
+      "WorkPreferences": {
+        "Adaptability": "Highly adaptable, balancing innovation with practical constraints and team dynamics"
+      },
+      "TechEntrepreneurship": {
+        "Interests": ""
+      },
+      "TechnologySkills": {
+        "Infrastructure Management": ""
+      },
+      "JobType": {
+        "job_characteristics": "Detail-oriented, innovation-driven, collaborative, and focused on continuous learning"
+      },
+      "TechnologyProficiency": {
+        "GCP": ""
+      },
+      "CurrentFocus": {
+        "Technology": "Focused on mastering advanced CAD technologies and sustainable design tools"
+      },
+      "Expertise": {
+        "BusinessManagement": "Understands project management and balancing innovation with budget and timelines"
+      },
+      "Project": {
+        "User Characteristics": "Collaborates with architects, contractors, and multidisciplinary teams in residential projects"
+      },
+      "ProfessionalAspirations": {
+        "Long Term Objectives": "To lead innovative design projects that balance creativity with practical constraints"
+      },
+      "Income": {
+        "Salary Range": "Moderate to upper range consistent with experienced CAD designers in Australia"
+      },
+      "PreviousExperience": {
+        "Technology Initiatives": "Led software tool integration projects to streamline CAD workflows"
+      },
+      "PositionGoal": {
+        "Salesforce Administrator": ""
+      },
+      "ProjectType": {
+        "Preference": "Prefers residential development and sustainable housing projects with innovative elements"
+      },
+      "Technology": {
+        "Experience": "Experienced with advanced CAD software and experimental design technologies",
+        "Skills": "Proficient in CAD software, design tool integration, and technical problem-solving",
+        "Preferences": "Prefers cutting-edge CAD tools and software that enhance precision and efficiency"
+      },
+      "ProfessionalSkills": {
+        "Audio Engineering": "",
+        "Programming": "Familiarity with CAD software scripting and integration tools",
+        "Domain Design Expertise": "Expertise in residential and sustainable housing design with CAD precision"
+      },
+      "CareerGoals": {
+        "Professional Role": "To advance as a lead CAD designer or design innovation specialist within architectural projects"
+      },
+      "Design": {
+        "expertiseLevel": "Advanced expertise in CAD modeling and sustainable design principles"
+      }
+    },
+    "pain_points": "Faces typical professional challenges in their role",
+    "hobbies_lifestyle": {
+      "Financial Interests": {
+        "investment_preferences": "Manages finances prudently to support innovation and learning in design"
+      },
+      "Art Interests": {
+        "Miscellaneous": "Interested in sustainable housing design competitions and architectural innovation"
+      },
+      "Culinary Interests": {
+        "DietaryPreferences": "No specific dietary preferences indicated"
+      },
+      "Interests": {
+        "MusicGenres": {
+          "audio_handling": "No specific interest in music or audio handling indicated"
+        },
+        "LanguageLearning": {
+          "usage": "Uses English with technical vocabulary for professional communication"
+        },
+        "Hobbies": "3D modeling, CAD software experimentation, and reading design innovation literature",
+        "DigitalCommunities": "Participates in online CAD forums and design innovation discussion groups",
+        "Gardening": "No gardening interest; focus remains on design and technology experimentation",
+        "Innovation": "Passionate about integrating new design tools and sustainable housing innovations",
+        "TechnologyManufacturing": "Follows advancements in CAD software and design technology manufacturing",
+        "Culture": "Engages with local Australian design culture and sustainable architecture trends",
+        "Groups": "Collaborates with architects, contractors, and multidisciplinary design teams",
+        "AppDevelopment": "Interested in CAD software scripting and tool integration for design workflow",
+        "Art": "Appreciates architectural and sustainable design aesthetics with innovative elements",
+        "Design": "Deeply invested in 3D modeling, CAD precision, and sustainable residential design"
+      },
+      "Entertainment Interests": {
+        "UserStyle": "Enjoys reading technical literature and exploring sustainable design trends"
+      },
+      "Creative Interests": {
+        "Competency": "Expert in CAD modeling, sustainable design, and innovative software integration",
+        "CognitiveTools": "Utilizes advanced CAD tools and software for creative design problem-solving"
+      },
+      "Reading": {
+        "UserPreferences": "Favors technical and design innovation literature to enhance professional expertise"
+      },
+      "Preferences": {
+        "tech_savvy": "Highly tech-savvy with focus on cutting-edge CAD tools and workflow optimization"
+      },
+      "Children": {
+        "Approaches": "No children; prioritizes career and continuous professional development"
+      },
+      "Writing": {
+        "style_preferences": "Prefers clear, precise, and technical writing style for professional documentation"
+      },
+      "Technology Interests": {
+        "Experience Level": "Advanced experience with CAD software and experimental design technologies"
+      },
+      "Social Media": {
+        "Social Media Platforms": "Active on professional networks like LinkedIn and CAD software communities"
+      },
+      "Projects": {
+        "3DTechnology": "Leads projects involving 3D CAD modeling and sustainable residential design solutions"
+      },
+      "Gaming": {
+        "DesignPreference": "No gaming interest specified; focus on professional design and innovation"
+      },
+      "DIY": {
+        "competencies": "Skilled in applying CAD design principles to practical residential development projects"
+      }
+    },
+    "personal_values": {
+      "values_orientation": "Innovative, detail-oriented, and committed to precision and continuous learning in design."
+    },
+    "values_and_beliefs": {
+      "Life_perspective": {
+        "worldview": "Sees challenges as opportunities for growth and values informed, thoughtful decision-making in professional life"
+      },
+      "Goals": {
+        "Individual Traits": "Driven by creativity, resilience, and a dedication to advancing expertise in design innovation"
+      },
+      "PersonalPhilosophy": {
+        "User Characteristics": "Approaches work with integrity, responsibility, and a forward-thinking mindset toward design excellence"
+      },
+      "EnvironmentalConcerns": {
+        "Sustainability Advocate": "Strong advocate for sustainable design integrating renewable energy and efficient space use"
+      },
+      "TechnologyPerception": {
+        "Adopter Innovativeness": "Proactively integrates new technologies despite challenges, viewing innovation as essential progress"
+      },
+      "Beliefs": {
+        "Social Values": "Believes in responsible design that prevents harm and supports long-term community well-being"
+      },
+      "Values": {
+        "Diversity_Inclusion": "Values diverse design approaches and recognizes the importance of understanding varied market needs"
+      },
+      "learning_attitude": {
+        "openness": "Embraces continuous learning and reflective adaptation from both successes and setbacks"
+      },
+      "PoliticalBeliefs": {
+        "political_identity": "Not explicitly defined; focus remains on pragmatic solutions within professional and regulatory frameworks"
+      },
+      "PersonalBeliefs": {
+        "Personal Philosophy": "Committed to precision, innovation, and meticulous attention as foundations for quality outcomes"
+      }
+    },
+    "industry": "Professional Services",
+    "id": "persona_deep_1765375579819_215471024",
+    "name": "Carlos Smith",
+    "interests": [
+      "3D modeling and CAD software experimentation",
+      "reading technical and design innovation literature"
+    ],
+    "age": 45,
+    "createdAt": "2025-12-10 19:26:42.721972+00:00",
+    "company": "Mid-size company",
+    "experience": "Professional with relevant industry experience",
+    "company_size_range": "51-200",
+    "updatedAt": "2025-12-10 19:41:52.229846+00:00",
+    "source": "deeppersona",
+    "demographic_info": {
+      "Education": {
+        "Learner": "Committed to continuous professional development and mastering advanced CAD technologies"
+      },
+      "Life Stage": {
+        "Maturity Level": "Highly mature, demonstrating resilience and reflective learning from professional challenges"
+      },
+      "Children": {
+        "Demographic": "No specific information on children; focus remains on career and professional growth"
+      },
+      "Personal": {
+        "Gender": "Male, with a professional identity shaped by precision and innovation",
+        "Interests": "Passionate about 3D modeling, CAD software experimentation, and reading design innovation literature"
+      },
+      "Marital Status": {
+        "marital_status": "Not explicitly stated; likely stable personal life supporting career focus"
+      },
+      "Gender": {
+        "SexualOrientation": "Not specified; demographic focus remains on professional and personal values"
+      },
+      "Lifestyle": {
+        "FinancialResponsibility": "Manages finances prudently to support innovation and ongoing learning in design"
+      },
+      "Housing": {
+        "Status": "Likely homeowner or long-term resident in Epping, engaged in local residential development projects"
+      },
+      "Age": {
+        "LifeStage": "Adult in mid-career phase, balancing experience with continuous learning and adaptation"
+      },
+      "religious_affiliation": {
+        "church_member": "No indication of religious affiliation or church membership"
+      }
+    },
+    "backstory": "Living in Epping, Australia, my days revolve around the precise world of CAD design and sustainable residential projects. Each morning, I start by mapping out my tasks, diving into detailed 3D modeling work that demands both creativity and exactness. Midday often brings review sessions with architects and contractors, where I help spot design flaws and suggest improvements, always aiming to marry innovation with practical constraints. Evenings are reserved for exploring the latest CAD software updates or reading articles on design innovation\u2014small rituals that keep me sharp and ready for the next challenge.\n\nI drive a fuel-efficient car to site visits, appreciating the quiet moments between meetings to reflect on how new tools might streamline workflows or enhance sustainability in housing. My home in Epping isn\u2019t just a place to live; it\u2019s a base for experimenting with design ideas and connecting with the local development community. Though I don\u2019t have children or pets, I dedicate my free time to professional growth and hobbies like 3D modeling and reading about sustainable architecture trends. These interests aren\u2019t just pastimes\u2014they feed directly into my work, inspiring fresh approaches and solutions.\n\nWorking with multidisciplinary teams requires patience and clear communication. I prefer meetings with structured agendas, which help keep discussions focused and productive. Sometimes, integrating new software tools meets resistance, but I find that persistence and a willingness to adapt help move projects forward without sacrificing quality. I\u2019m drawn to sustainable design because it aligns with a sense of responsibility\u2014knowing that the choices I make today affect communities tomorrow.\n\nWhile I\u2019m not involved in religious or political groups, I approach my work with a strong sense of integrity and accountability. Precision isn\u2019t just a skill; it\u2019s a mindset that shapes how I tackle every project, from initial sketches to final renderings. This focus on detail and innovation keeps me engaged, even when challenges arise, and it\u2019s what drives me to keep learning and refining my craft day by day.",
+    "seniority_level": "Director"
+  },
+  "profile_3_interviews": {
+    "regular": {
+      "name": "Carlos Mendoza",
+      "history": [
+        {
+          "questionId": "question_1",
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:22.582997+00:00",
+          "answer": "It was about six weeks ago. I\u2019d just wrapped a stretch of product roadmap reviews, and I felt drained\u2014mentally cluttered. That\u2019s when I start thinking about a new scent; it acts like a reset button for me. I\u2019d been eyeing Le Labo\u2019s Th\u00e9 Noir 29 for months, mostly because I wanted something woody but a bit fresher than the Santal crowd.\n\nI remember sitting at my kitchen table, laptop open, espresso going cold. I had the Le Labo checkout page on one tab and an Argentine reseller on another. The official store meant international shipping, import taxes, the whole headache. The reseller was cheaper, but part of me just didn\u2019t trust the juice would be authentic. That tension\u2014confidence boost versus fear of getting burned\u2014kind of summed up the moment.\n\nWhat really tipped me over was a comment thread on a small fragrance Discord I lurk in. Someone from C\u00f3rdoba said their Th\u00e9 Noir bottle from the same reseller smelled \u201cmuted\u201d after two hours. That single word\u2014muted\u2014stuck. I could picture myself in a client workshop, needing that grounded, woody lift, and the scent just\u2026 disappearing. I closed the reseller tab right there. \n\nI still haven\u2019t bought the perfume. Instead, I ordered a \u20ac6 sample vial through a friend traveling from Madrid. It\u2019s slow, tiny, not at all the dopamine hit of a full bottle, but at least I\u2019ll know if the scent lasts on my skin. The waiting is annoying, sure, but it feels better than spending $300 and wondering every time I spray if I\u2019m wearing the real thing.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_2",
+          "question": "What usually prompts you to look for a new fragrance?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:33.846040+00:00",
+          "answer": "Two situations push me into shopping mode. First, whenever I feel a shift in my life or work\u2014like starting a new project, taking on a bigger roadmap, or even lining up for a high-stakes demo\u2014I reach for a scent that matches the moment. A fresh bottle feels like drawing a line in the sand: old habits behind me, new focus ahead. I still remember last January, the night before presenting our revised product vision to the exec team. My usual cedar-heavy fragrance had lost its edge on me, and I caught myself thinking, \u201cIf I\u2019m selling change, I should smell like it.\u201d That little itch turned into a late-night rabbit hole of sample reviews and, eventually, a purchase. The fragrance didn\u2019t win the pitch on its own, obviously, but it grounded me; every time I caught a whiff, it reminded me to slow down and speak with intent.\n\nThe second trigger is travel. Whenever I book a significant trip\u2014Lisbon last spring, Tokyo this fall\u2014I hunt for a scent that captures the mood of the destination. Part of it is pure curiosity, part memory-making. I learned years ago that linking a smell to a place means I can unpack the trip later just by uncapping the bottle. But there\u2019s also a practical pain point: long flights and climate changes wreck how a fragrance performs. I\u2019ve had woody scents turn muddy in humid airports, which, um, drives me nuts. So I look for something that can survive that abuse while still feeling sophisticated. Each search starts with that emotional spark, then quickly becomes a mini-project of ingredient research, longevity tests, and\u2014inevitably\u2014second-guessing myself until the checkout screen forces a decision.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_3",
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:49.026322+00:00",
+          "answer": "I usually notice the itch a few weeks before a big milestone\u2014like the quarterly roadmap review with leadership. I\u2019ll catch myself thinking, \u201cI want something that\u2019ll ground me that day.\u201d  \n\nFirst hour: I open a saved folder in my browser\u2014links to Fragrantica pages, a couple of Reddit threads, and two YouTube reviewers I trust. I skim the notes, but I\u2019m really listening for how people describe the feeling: \u201cdry pencil-shavings calm\u201d or \u201cwarm library vibe.\u201d When those phrases pop, I drop the fragrance into a Notion table I keep for potential buys. That\u2019s my short-list.  \n\nNext few days: Morning routine becomes mini-testing. I have a discovery set I ordered months ago\u2014tiny vials from Le Labo, Jo Malone, and a local indie brand called Fueguia. I\u2019ll spray one, head to stand-up, and jot a line in my phone three hours later: still noticeable? any compliments? If something fades by lunch, it\u2019s out. I learned that lesson the hard way with an earlier blind buy that vanished after an hour\u2014felt like lighting money on fire.  \n\nDecision point: Once the list is down to two, I hit the math and logistics. Import duties here can add 50 %. If the local niche shop carries it, I\u2019ll walk in after work to confirm the scent. Last time the sales rep pushed a floral flank, and it annoyed me\u2014I left more confused than when I entered. That moment reminded me why I prefer my own pace online.  \n\nPurchase: Back at home, I refresh the brand\u2019s site until a free-shipping banner appears\u2014usually around payday campaigns. I add the 50 ml bottle, choose engraving (initials CM feel like a tiny ritual), and cross my fingers the customs queue isn\u2019t brutal.  \n\nWaiting period: This is the anxious stretch\u2014tracking numbers that don\u2019t update for days. When the box finally lands, I rip it open before even reaching the apartment elevator. First spray on the wrist, deep breath\u2014if it matches the mental picture I built, there\u2019s this rush of relief and confidence, like the upcoming roadmap session just got easier.  \n\nThat\u2019s the cycle. Research that\u2019s half emotional, half logistical; brief flirtation with brick-and-mortar; then an online checkout timed to dodge extra fees\u2014and a week of nail-biting until the courier buzzes.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_4",
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:59.879423+00:00",
+          "answer": "I pay attention in two phases\u2014right after I spray and then a few hours later.\n\nFirst ten minutes: I\u2019ll do a quick body-check. If the scent is a dry cedar or vetiver, my shoulders drop, my breathing slows, and I feel a little taller. It\u2019s almost like the smell reminds me of walking through the Parque Tres de Febrero on cool evenings, so there\u2019s this instant, grounding calm. Brighter, citrus-heavy testers give me a short spike of alertness, but that buzz fades fast\u2014by the time I\u2019m opening Slack, I\u2019m already reaching for coffee.\n\nMid-day checkpoint: around the post-lunch slump I\u2019ll raise my wrist again. With the woody scents, I still get that steady, low-key focus\u2014less fidgeting during meetings, more patience when a junior designer is wrestling with a Figma file. Lighter fragrances by this point feel thin; I catch a whiff, realize it\u2019s almost gone, and I notice my energy dipping. That disconnect\u2014smell gone, mood flat\u2014made me realize how much I lean on fragrance as a subtle cue to stay present.\n\nI can\u2019t prove any of this isn\u2019t placebo, but, um, the ritual works for me. When the scent lingers, my mind treats it like background music: it keeps me in the zone. When it disappears, I lose that anchor and the afternoon drags. That contrast is how I gauge whether a perfume actually supports my energy or just smells nice for a few minutes.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_5",
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:12.296945+00:00",
+          "answer": "It was the morning of a big quarterly roadmap review\u2014one of those meetings where VPs poke holes in every assumption. I\u2019d slept badly and felt scattered. While getting ready I reached for a sample of Le Labo\u2019s Santal 33. Two sprays, wrists and neck. The first thing I noticed was a small physical shift\u2014shoulders down, breathing steadier. The cedar-leather mix reminded me of hiking in Bariloche as a kid, and that memory grounded me.\n\nWalking into the office, the usual pre-presentation noise was still there\u2014Slack pings, last-minute slide tweaks\u2014but the scent acted like a low, steady bassline. When a junior designer came over, she paused and said, \u201cYou smell calm.\u201d That word stuck; it reframed my own nerves as something controllable. During the review, I caught the scent every time I moved my head and it became a cue to slow down before answering tough questions. The meeting ran long, teams debated, but I never felt the spike of cortisol I usually get.\n\nThe surprising part came later: around 3 p.m., when my energy normally crashes, the dry-down turned slightly sweeter, and it nudged me to keep my camera on for a remote feedback call instead of hiding behind slides. By the time I left the office, I realized the fragrance hadn\u2019t just masked stress\u2014it created micro-moments of focus throughout the day. That was the first time I treated scent as a functional tool, not just an accessory.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_6",
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:22.092557+00:00",
+          "answer": "The first thing I\u2019m after is a steady, centered confidence. Woody notes\u2014cedar, vetiver, a hint of oud\u2014give me that grounded feeling that, um, makes a high-stakes roadmap review feel less like a performance and more like a conversation I already know how to lead. It\u2019s almost a physical cue: one inhale, shoulders drop, voice evens out.\n\nThe second layer is focus. I work in an open office; noise bounces everywhere. A balanced, dry woods accord acts like a quiet boundary. It doesn\u2019t spike my adrenaline the way citrus does, but it clears mental clutter just enough that prioritization feels simpler. I noticed this during a brutal sprint where every ticket felt urgent\u2014each time I caught the scent on my collar, the to-do list stopped screaming.\n\nFinally, I look for a subtle warmth that nudges creativity. If a fragrance carries a faint resinous sweetness\u2014say, labdanum\u2014it sparks the same curiosity I get when framing a photo at dusk. That gentle lift reminds me why I enjoy solving problems in the first place, not just closing them.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_7",
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:33.151614+00:00",
+          "answer": "Yeah, twice, actually.\n\nThe first was a mainstream citrus-aquatic I wore in my early twenties. At the time it felt fresh and safe, but a few years ago I sprayed it before a product kickoff and immediately felt\u2026 small. I caught this faint chemical sharpness that dragged me back to university group projects\u2014lots of posturing, little direction. Halfway through the day I realised I was acting the same way: nodding along, not pushing back. It wasn\u2019t the team; it was me reacting to that old mental tape. I rinsed it off at lunch and never reached for the bottle again. It reminded me how scent can anchor unhelpful behaviours, almost like muscle memory.\n\nThe second was a sweet amber-vanilla sample I tried last summer. I loved the opening at home, but our office has no air-con and Buenos Aires humidity turns anything sugary into a blanket. By 11 a.m. I felt sluggish, almost sticky, and\u2014this surprised me\u2014less willing to speak up. One of my junior designers asked for feedback and I literally told her, \u201cLet\u2019s talk tomorrow,\u201d which I never do. Walking back to my desk, I realised the scent was making me retreat, the opposite of how I want to show up as a mentor. That afternoon I tossed the sample and wrote down a note in my fragrance journal: \u201cAvoid heavy gourmands in heat\u2014confidence dips.\u201d\n\nBoth moments reinforced why I stick to dry, woody notes now. They ground me, keep my posture open, and help me step into rooms\u2014virtual or physical\u2014ready to lead instead of hide.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_8",
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:46.130690+00:00",
+          "answer": "Santal 33 from Le Labo is the big one. I first wore it before a quarterly roadmap review with our board\u2014high-stakes, limited time, lots of eyes on a mid-level PM who still felt a bit like a designer in disguise. The dry, woody note hits immediately, but what surprised me was how the scent lingered just enough to create a kind of private anchor. Every time I caught a trace of it while presenting, it reminded me, \u201cYou\u2019ve prepared for this.\u201d That tiny sensory loop kept my voice steady. After the meeting a colleague asked what I was wearing, and that external validation locked the association in my head: Santal 33 equals composure. I now save it for days when I need to project calm authority\u2014new-hire kickoffs, stakeholder negotiations, even mentoring sessions when juniors look to me for certainty I don\u2019t always feel.\n\nThe other one is Tam Dao by Diptyque. I picked up a travel spray on a layover in S\u00e3o Paulo because I\u2019d read it was a \u201cquiet\u201d sandalwood. At first, I worried it might be too subtle for the open-office chaos, but that softness turned into a focus trigger. Mid-afternoon, when Slack is buzzing and I\u2019m tempted to context-switch, I re-spray. The milky woodiness feels almost meditative; it slows my breathing and nudges me back into problem-solving mode. The impact isn\u2019t outward confidence so much as internal motivation\u2014like hitting a mental reset button.\n\nI\u2019ve tried brighter, citrus-heavy scents hoping for similar effects, but they fizzle out fast and leave me oddly restless. So I keep circling back to these two: one for external presence, one for internal drive.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_9",
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:58.435133+00:00",
+          "answer": "First thing in the morning I scan my calendar. If there\u2019s a stakeholder review or a mentoring one-on-one, I go straight for my cedar-heavy Le Labo bottle. The dry, woody notes flip a little mental switch for me\u2014I stand up straighter, talk slower. It\u2019s almost Pavlovian at this point.\n\nOn slower days\u2014say I\u2019m sketching wireframes from home and don\u2019t need that board-room edge\u2014I\u2019ll pick something lighter, maybe a fig-forward cologne a friend brought from Spain. That one doesn\u2019t push my energy; it just keeps me relaxed and curious, which is what I need when I\u2019m noodling on ideas.\n\nI learned to choose this way after a rough product demo about two years ago. I\u2019d grabbed a sweet, gourmand scent without thinking. Halfway through the presentation I felt off\u2014too warm, almost sticky\u2014like the fragrance was crowding my head. I stumbled over a slide, and afterward a teammate even asked if I was feeling alright. Since then I treat fragrance almost like a tool: What emotional posture does the day demand, and which scent reinforces it rather than fights it? That single question guides the decision every morning.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_10",
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:10.242529+00:00",
+          "answer": "Memories sit right next to the bottle on my dresser. A scent rarely feels neutral; it usually drags a scene with it.\n\nOn most workdays I reach for Santal 33 because the dry cedar immediately drops me back into the old coworking loft where I pulled my first all-night release. I\u2019d stepped outside at 3 a.m., Buenos Aires air still warm, and the building\u2019s wooden stairwell smelled almost identical. The project went live at sunrise, and that mix of exhaustion and adrenaline wired the aroma to a feeling of \u201cI can push through.\u201d Spritzing it before a roadmap review now gives me that same quiet conviction\u2014almost like muscle memory, but emotional.\n\nTravel memories shape my weekend picks. Terre d\u2019Herm\u00e8s has this flinty orange note that reminds me of hiking in Salta two years ago\u2014dusty trails, citrus groves on the outskirts. When I\u2019m planning a photo walk or cooking asado with friends, I\u2019ll reach for it to tap into that unhurried, open-air vibe. Without that association it\u2019s just another nice fragrance; with it, the day feels bigger.\n\nIf a perfume lacks a personal anchor, I notice I wear it twice and then forget it. So, yeah, the bottle has to carry a story; otherwise it never really leaves the shelf.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_11",
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:20.085297+00:00",
+          "answer": "A couple of moments stand out. My sister once told me that the cedar-heavy blend I\u2019d worn to a family dinner felt \u201ca bit boardroom for homemade empanadas.\u201d That stung more than I expected because I\u2019d always framed woody notes as warm and inviting. The next day I went back to my sample vials, trying to understand why it came across as stiff rather than cozy. I realized I\u2019d over-sprayed and the projection was overpowering in a small apartment. Since then I limit myself to two sprays for close gatherings and save the heavier application for work.\n\nAnother time a junior designer on my team said he could tell I was \u201cin focus mode\u201d the moment he caught the vetiver in the hallway. That was validating; it confirmed the scent cue I\u2019d been using privately was actually noticeable. I\u2019ve leaned into that\u2014wearing that specific perfume on sprint-planning days so the team subconsciously senses I\u2019m locked in. So, feedback has nudged me toward moderation with family and intentional signaling at work.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_12",
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:35.444181+00:00",
+          "answer": "Two moments come to mind.\n\nFirst, the day I realized how wildly a scent can shift once it\u2019s on my skin. I\u2019d tested Le Labo\u2019s Th\u00e9 Noir on a paper blotter, loved the opening, and bought a full bottle almost on impulse. At the office launch meeting that same week, the dry-down turned syrupy on me\u2014almost gourmand. One teammate asked if I\u2019d switched to a vanilla candle. I felt a little exposed, the exact opposite of the grounded, cedar-lined confidence I\u2019d wanted. That was humbling; it reminded me of product experiments that look perfect in a prototype but behave differently in production. Now I insist on wearing a sample through an entire workday before committing.\n\nThe second surprise was how scent can bookmark a moment in time. During a crunch period last year I kept a tiny decant of Tam Dao in my backpack. I\u2019d spray it before late-night roadmap reviews, partly to stay sharp, partly for comfort. Months later, I was traveling in Mendoza, walked into a small hotel lobby, and someone had diffused the same sandalwood note. My shoulders tightened instantly\u2014like my body remembered the stress even before my mind did. That reaction hit me harder than any analytics dashboard ever could; it made me respect how intertwined fragrance is with emotion and memory.\n\nThose two experiences reshaped how I approach perfume: slow down, test in real contexts, and stay aware that a bottle can carry history as much as aroma.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    },
+    "deeppersona": {
+      "name": "Carlos Smith",
+      "history": [
+        {
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "questionId": "question_1",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:27.697196+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "About eight months ago I was packing for a close friend\u2019s wedding in Sydney and realised the cologne I\u2019d had for years was basically air. On a lunch break I ducked into the Bourke Street Myer to replace it. \n\nThe moment I hit the fragrance floor I felt a bit stranded\u2014strong lights, competing music tracks, every brand spritzing the air. Descriptions like \u201cwoody-oriental\u201d or \u201caromatic marine\u201d meant nothing once my nose was overloaded. Three paper strips in, I couldn\u2019t tell one from the next.  \n\nWhat really stuck with me was the packaging waste: thick glass, plastic caps, foil-lined boxes. I asked a sales assistant if any brand offered refills or recycled glass. She pointed to a niche label that did, but the price was north of $200. My gut reaction was, \u201cI won\u2019t spray away that much money, especially when I\u2019ll only use it a couple of times a week.\u201d So I walked out empty-handed.  \n\nThat night, back home, I spent half an hour online digging for an Australian company that listed full ingredients and used refillable bottles. Ended up ordering a 30 mL bergamot-and-cedar scent from a Byron Bay outfit. Cardboard sleeve, no plastic, and they give a discount when you send the bottle back. Price was still higher than a mainstream brand, but I felt better about the environmental side and the transparency.  \n\nThe whole episode reminded me how jargon and sensory overload can drive a buyer away, even when they enter the store ready to spend. If the sustainable option had been easier to spot on the shelf, I\u2019d probably have bought on the spot instead of going online later.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What usually prompts you to look for a new fragrance?",
+          "questionId": "question_2",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:39.320898+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Two things push me. First, when the bottle that lives on my dresser is down to its last few sprays, I treat that as a checkpoint rather than an automatic repurchase. I\u2019ll ask myself, \u201cHas this scent still felt like me in client meetings and site visits?\u201d If the answer\u2019s no\u2014maybe it now feels a bit too heavy in Melbourne\u2019s summer\u2014then I start hunting.\n\nThe second is feedback, explicit or subtle. Last year a junior architect said, almost in passing, that the cedar note I was wearing reminded her of her grandfather\u2019s after-shave. I laughed it off, but on the drive home it bothered me more than I expected. That single comment made me realise I\u2019d drifted into a scent that read older than I wanted. I spent the next weekend sampling lighter, greener options with recyclable packaging; the sustainability angle mattered as much as the smell.\n\nSo it\u2019s usually either the bottle running dry or a moment when someone\u2019s reaction tells me the fragrance no longer matches how I want to show up professionally.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "questionId": "question_3",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:55.577300+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "The trigger is almost always practical\u2014my everyday scent runs low and I catch myself tilting the bottle, hoping for one more spray. From that point the process splits into two phases: desk research and sensory testing.\n\nPhase 1 \u2013 desk research  \nI open a note in Notion and list three things: longevity, ingredients transparency, and whether the brand does refillable bottles. I\u2019ll spend an evening on Reddit fragrance threads and a couple of Australian review sites, skimming comments for phrases like \u201cprojects for eight hours\u201d or \u201cgoes musky after lunch.\u201d What still trips me up is the language\u2014terms like \u201cgourmand\u201d or \u201canimalic\u201d feel abstract, so I keep a running glossary for myself. By the end of the night I usually have four candidates and a bit of price shock; niche brands creep past $250, which stings.\n\nPhase 2 \u2013 sensory testing  \nThe next Saturday I drive to the Myer in Melbourne CBD. The counter experience is the stressful bit. After the fourth strip my nose just\u2026flattens; every scent blurs. I\u2019ll ask for samples to take home, but staff turnover means policies change\u2014some days they hand them out, other days it\u2019s a hard no and a polite smile. When they do agree, I label the vials, wear one per day, and jot notes\u2014\u201ccedar kicks in at 2 p.m., still present after gym.\u201d That small ritual feels almost scientific and, honestly, satisfying.\n\nDecision point  \nBy mid-week I\u2019ve lived with each option long enough to know which sits well on my skin. The winner usually isn\u2019t the flashiest top note but the one that still feels like me after dinner. I\u2019ll price-check again online; if the gap is more than 15 percent I order from an authorized web store, otherwise I circle back to the counter\u2014partly loyalty, partly wanting to see the bottle before handing over the card.\n\nThe emotional arc is a mix of curiosity and mild fatigue. The research energises me, but the in-store overload and the fear of a costly blind buy still make me pause. When I finally tap my card I\u2019m relieved more than excited\u2014relieved that the scent matches the spreadsheets in my head and won\u2019t end up gathering dust on the shelf.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "questionId": "question_4",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:07.038983+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "I usually catch the difference within the first ten minutes. If I spray a bright, citrus-heavy sample\u2014think bergamot or grapefruit\u2014my shoulders come up, my cadence picks up a notch, and I\u2019m suddenly planning the rest of the afternoon instead of crawling toward it. One afternoon after a five-hour stretch in CAD, I tried a small vial of Atelier\u2019s Orange Sanguine; I\u2019d meant to save it for later, but I was fading. Two breaths in, I was sitting straighter, tapping the keyboard quicker. It wasn\u2019t caffeine, but the effect felt similar\u2014like an ambient nudge rather than a jolt.\n\nWoody or resinous scents hit me differently. A vetiver-amber blend I\u2019ve been testing lately lands low in the chest; my breathing slows and the studio chatter almost fades into the background. That\u2019s useful when I need to comb through drawings for errors\u2014steady focus, no rush. The downside is it can bleed into lethargy if I overapply; I caught myself rereading the same spec sheet three times because I\u2019d gone a bit heavy on the wrist spray.\n\nThe tricky bit is olfactory fatigue. After three or four trials my nose taps out, and then mood signals get fuzzy\u2014I think I feel something, but I\u2019m mostly riding on expectation. I\u2019ve started limiting tests to one in the morning, one late afternoon, so I can link scent to energy shift with some honesty. Still learning, but those distinct moments\u2014citrus lift, woody grounding\u2014are clear enough that they influence which bottle I reach for before a design review versus a late-night render session.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "questionId": "question_5",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:21.536485+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Last winter I grabbed a small decant of a bright neroli-based scent\u2014kind of a crisp, sun-lit citrus with a bit of white floral. I\u2019d been up late debugging a finicky CAD script, so I started the next morning groggy, already dreading a design review with a client who\u2019s, you know, famously detail-obsessed. I sprayed that fragrance while I was packing my laptop. Within a few minutes the sharp citrus hit woke me up more than the coffee. Walking to the car I noticed I was literally breathing deeper; the air felt clearer. \n\nThe real shift happened in the meeting room. Usually I\u2019m hyper-focused on slide order and structural tolerances, but that scent kept nudging me into a lighter headspace\u2014almost playful. I found myself explaining a sustainability trade-off with a bit more warmth than usual, and the client actually smiled instead of diving straight into numbers. It wasn\u2019t data, obviously, but I could feel the room soften. By lunch I realised I\u2019d moved through a three-hour review without that usual tension in my shoulders.\n\nFlip side: a month later I tested a heavier oud on a site visit\u2014thought it would project confidence. Instead, in the cramped elevator with contractors, it felt oppressive. I caught a wrinkle on a foreman\u2019s face and suddenly worried I smelled like I was covering something up. Spent the rest of the day distracted, second-guessing every comment I made about load paths. That taught me the hard way that projection and context matter as much as the notes themselves.\n\nSo yeah, same basic routine\u2014spray, drive, meetings\u2014but the fragrance either lifted me into a calmer, more collaborative mode or dragged me into self-conscious overthinking. It\u2019s a bigger lever on mood than I expected.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "questionId": "question_6",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:32.690591+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Mostly I\u2019m chasing two things. First is a kind of grounded focus. When I\u2019m deep in a model for six hours straight, I don\u2019t want something loud; I want a subtle cedar-vetiver note that makes me feel steady, almost like I\u2019m back in my grandfather\u2019s shed where everything smelled of sawdust and fresh timber. That hint of wood settles my nerves and keeps my mind clear enough to catch the small flaws before they snowball.\n\nThe second is quiet confidence for client meetings. A touch of bergamot or light amber gives me that extra lift\u2014nothing flashy, just enough so I catch the scent when I adjust my collar and think, \u201cRight, I\u2019ve got this.\u201d There was a morning last year when I wore a heavier, sweeter fragrance by mistake; halfway through the presentation I felt distracted, even self-conscious. That moment reminded me how scent can either anchor me or pull me off balance, so now I\u2019m careful: I test a strip while sketching, wait an hour, and only then decide. I\u2019m still experimenting, honestly, but when the blend hits that calm-plus-confidence sweet spot, the whole day flows.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "questionId": "question_7",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:48.964896+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Yes. A couple of years ago I bought a cedar-and-leather fragrance thinking it would project confidence during client meetings. On paper it smelled refined; on my skin it turned almost smoky, almost claustrophobic. The first morning I wore it I had back-to-back design reviews that were already tense because of budget overruns. About an hour in, the scent felt like an extra layer of pressure\u2014thick, insistent, hard to escape. I caught myself breathing shallowly, almost bracing against it, and that amplified the stress in the room.\n\nI tried it twice more, hoping it was just context, but each time the same heaviness crept in. The perfume started to anchor itself to that sense of being cornered by timelines and resistant stakeholders. After the third attempt I shelved the bottle. I still like cedar in theory, but the emotional association is too strong; even catching a hint of it on a scarf nudges me back to that cramped meeting room.\n\nWhat I learned is that fragrance can cement a moment, good or bad, far more vividly than I\u2019d expected. Now I test new scents on quieter days first, giving myself space to notice how they sit with my mood before bringing them into high-stakes settings.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "questionId": "question_8",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:00.894914+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Two come to mind.\n\nFirst is Terre d\u2019Herm\u00e8s. I bought it when we were knee-deep in that software-integration fiasco. Most days I felt like I was dragging a boulder uphill\u2014budget spreadsheets open, colleagues grumbling about broken plug-ins. The scent\u2019s dry citrus and earthy vetiver hit just after the morning coffee; it snapped me into a clearer headspace. I\u2019d catch a whiff while troubleshooting compatibility errors and, weirdly, it reminded me why I\u2019d pushed for the tool in the first place\u2014progress, bigger picture, all that. It didn\u2019t solve the blockers, but it nudged my mindset from defensive to problem-solving. I noticed I volunteered ideas more readily in stand-ups. Once the bottle ran out, my motivation dipped a touch, enough that I realised the fragrance had become a tiny ritual of \u201creset\u201d before the chaos.\n\nThe other is Tom Ford Oud Wood. I wore it the day I confronted the architect about that structural flaw in the Epping project. Walking into the meeting, palms clammy, timeline on the line\u2014one spray felt like armour. The smoky, resinous note stayed with me through the tense back-and-forth. I could feel my posture straighten each time the scent rose off my collar. The confidence boost wasn\u2019t placebo; I spoke slower, held eye contact, and the team eventually agreed to the redesign. Since then I save that scent for high-stakes presentations. The downside: it\u2019s heavy, almost imposes on the space, so I\u2019m hyper-aware of wearing it in tight site offices; too much and I worry about overpowering people, which pulls me out of the confident state I\u2019m after.\n\nEverything else on my shelf\u2014fresh aquatics, a couple of niche gourmands\u2014never moved the needle much. They smell pleasant but they don\u2019t anchor an emotion. I\u2019m still hunting for something lighter than Oud Wood yet just as grounding, without the environmental concerns around exotic woods. That search is ongoing.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "questionId": "question_9",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:12.215623+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "First thing in the morning I check my calendar while the kettle\u2019s boiling. If the day involves client reviews or site walks, I reach for something light\u2014usually a citrus-leaning cologne. On a muddy construction site a heavy amber feels out of place, and a bright scent helps me stay alert when I\u2019m squinting at rebar details.\n\nWhen I\u2019m desk-bound modeling all afternoon, mood matters more than context. If I\u2019m anxious about a tricky geometry problem, I\u2019ll pick a dry vetiver that feels almost meditative. There\u2019s a specific bottle\u2014Terre d\u2019Herm\u00e8s\u2014that I keep near the monitor; one spray and the earthy note reminds me of that moment years ago when I caught the structural flaw. It\u2019s like a quiet cue to slow down and look closer.\n\nThe hardest choice is big presentation days. Part of me wants the boost of something bolder, but I\u2019ve misjudged intensity before and spent the meeting worrying I smelled like I was trying too hard. Now I do a quick wrist test, open the window, come back in five minutes, and see if the scent still feels like background instead of broadcast. If it passes that \u201cbackground\u201d test, I\u2019m good.\n\nSo, mood first, agenda second, and a short pause to make sure the fragrance supports the work rather than compete with it.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "questionId": "question_10",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:25.395506+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Memories drive most of my choices. If I\u2019m reaching for Terre d\u2019Herm\u00e8s before a client review, it\u2019s less about the notes on the box and more about a very specific afternoon ten years ago. I\u2019d just flagged that structural flaw in the Epping development\u2014the one that could have derailed the whole build\u2014and the lead architect shook my hand outside the site office. The wind carried this dry, mineral-woody smell from the surrounding gum trees, and later, when I tested Terre, the flinty orange-cedar accord took me straight back to that moment. Now, whenever I need to channel that same steadiness under pressure, I spray it once and let the association do half the psychological work.\n\nThere\u2019s a softer side, too. On quieter weekends I\u2019ll wear L\u2019Artisan\u2019s M\u00e9moire de Roses because it reminds me of sitting in Mum\u2019s garden sketching facade ideas during uni breaks. The first whiff of bright raspberry-rose knocks the edge off my usual analytical mode and nudges me toward looser, more exploratory thinking\u2014useful when I\u2019m ideating sustainability concepts without the weight of deadlines.\n\nSo the bottle isn\u2019t just fragrance; it\u2019s a shortcut to emotional states tied to pivotal memories. If a scent doesn\u2019t anchor to something meaningful, it rarely survives the next wardrobe purge, no matter how technically \u201cgood\u201d it is.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "questionId": "question_11",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:38.967200+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Yeah, a couple of moments stand out.  \n\nAbout five years ago a teammate pulled me aside after a tight review meeting and said, \u201cMate, your cologne\u2019s a bit loud in that small room.\u201d I\u2019d honestly never thought about projection before; I\u2019d just grabbed what I liked that morning. I remember feeling a mix of embarrassment and gratitude\u2014embarrassed because I might\u2019ve distracted people, grateful because he was candid. The next day I switched to something lighter and started doing a quick \u201cone-spray, walk-through\u201d instead of the full wrist-neck routine. Since then I always test a new scent in the car on the way to work with the windows up\u2014if it feels heavy, I save it for weekends.\n\nOn the flip side, my sister once hugged me at a family lunch and said the fragrance reminded her of Dad\u2019s old aftershave. That hit me differently\u2014warm, a bit nostalgic\u2014so I kept that particular scent in rotation for family gatherings. It\u2019s less about the scent itself now and more about the little bit of shared memory it sparks each time.\n\nThose two comments\u2014one constructive, one sentimental\u2014pretty much recalibrated how I think about wearing fragrance. Now I weigh context and the people around me just as much as personal preference.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "questionId": "question_12",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:53.056294+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "One moment stays with me. A year ago I was testing a vetiver-heavy fragrance\u2014picked it because the dry-down reminded me of freshly planed hardwood, something I associate with early site visits. I wore it to a kickoff meeting, expecting nobody to notice. Mid-discussion the site foreman paused, sniffed the air, and said the scent reminded him of his late father\u2019s workshop. He got visibly emotional for a second, and the whole room shifted; the mood softened, conversation turned more personal, and decisions that usually drag on wrapped up in half an hour.  \n\nWhat surprised me wasn\u2019t the compliment\u2014it was how a scent I chose for private, almost technical reasons triggered someone else\u2019s memory so intensely. I\u2019d always framed fragrance as a personal finishing touch, almost like a polished pair of shoes. That meeting forced me to acknowledge the social dimension: aroma leaks into shared space and can nudge dynamics in ways I can\u2019t predict or fully control.  \n\nThe flip side happened later. I tried a citrus-amber blend a colleague recommended. On my skin it ballooned\u2014by lunchtime even I found it cloying. A junior designer finally joked that the office \u201csmelled like a hotel lobby.\u201d I realised I\u2019d over-indexed on external feedback without testing longevity in real conditions. Since then I decant samples into tiny atomisers and wear them on a long workday before committing.  \n\nSo, yeah, the unexpected part is how something as intangible as perfume can both open doors emotionally and, when I misjudge it, distract from the work. I pay more attention now, but I\u2019m still learning where that invisible line sits.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    }
+  },
+  "all_interviews": {
+    "Carlos Mendoza": {
+      "source": "regular",
+      "profile_id": "profile_3",
+      "history": [
+        {
+          "questionId": "question_1",
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:22.582997+00:00",
+          "answer": "It was about six weeks ago. I\u2019d just wrapped a stretch of product roadmap reviews, and I felt drained\u2014mentally cluttered. That\u2019s when I start thinking about a new scent; it acts like a reset button for me. I\u2019d been eyeing Le Labo\u2019s Th\u00e9 Noir 29 for months, mostly because I wanted something woody but a bit fresher than the Santal crowd.\n\nI remember sitting at my kitchen table, laptop open, espresso going cold. I had the Le Labo checkout page on one tab and an Argentine reseller on another. The official store meant international shipping, import taxes, the whole headache. The reseller was cheaper, but part of me just didn\u2019t trust the juice would be authentic. That tension\u2014confidence boost versus fear of getting burned\u2014kind of summed up the moment.\n\nWhat really tipped me over was a comment thread on a small fragrance Discord I lurk in. Someone from C\u00f3rdoba said their Th\u00e9 Noir bottle from the same reseller smelled \u201cmuted\u201d after two hours. That single word\u2014muted\u2014stuck. I could picture myself in a client workshop, needing that grounded, woody lift, and the scent just\u2026 disappearing. I closed the reseller tab right there. \n\nI still haven\u2019t bought the perfume. Instead, I ordered a \u20ac6 sample vial through a friend traveling from Madrid. It\u2019s slow, tiny, not at all the dopamine hit of a full bottle, but at least I\u2019ll know if the scent lasts on my skin. The waiting is annoying, sure, but it feels better than spending $300 and wondering every time I spray if I\u2019m wearing the real thing.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_2",
+          "question": "What usually prompts you to look for a new fragrance?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:33.846040+00:00",
+          "answer": "Two situations push me into shopping mode. First, whenever I feel a shift in my life or work\u2014like starting a new project, taking on a bigger roadmap, or even lining up for a high-stakes demo\u2014I reach for a scent that matches the moment. A fresh bottle feels like drawing a line in the sand: old habits behind me, new focus ahead. I still remember last January, the night before presenting our revised product vision to the exec team. My usual cedar-heavy fragrance had lost its edge on me, and I caught myself thinking, \u201cIf I\u2019m selling change, I should smell like it.\u201d That little itch turned into a late-night rabbit hole of sample reviews and, eventually, a purchase. The fragrance didn\u2019t win the pitch on its own, obviously, but it grounded me; every time I caught a whiff, it reminded me to slow down and speak with intent.\n\nThe second trigger is travel. Whenever I book a significant trip\u2014Lisbon last spring, Tokyo this fall\u2014I hunt for a scent that captures the mood of the destination. Part of it is pure curiosity, part memory-making. I learned years ago that linking a smell to a place means I can unpack the trip later just by uncapping the bottle. But there\u2019s also a practical pain point: long flights and climate changes wreck how a fragrance performs. I\u2019ve had woody scents turn muddy in humid airports, which, um, drives me nuts. So I look for something that can survive that abuse while still feeling sophisticated. Each search starts with that emotional spark, then quickly becomes a mini-project of ingredient research, longevity tests, and\u2014inevitably\u2014second-guessing myself until the checkout screen forces a decision.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_3",
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:49.026322+00:00",
+          "answer": "I usually notice the itch a few weeks before a big milestone\u2014like the quarterly roadmap review with leadership. I\u2019ll catch myself thinking, \u201cI want something that\u2019ll ground me that day.\u201d  \n\nFirst hour: I open a saved folder in my browser\u2014links to Fragrantica pages, a couple of Reddit threads, and two YouTube reviewers I trust. I skim the notes, but I\u2019m really listening for how people describe the feeling: \u201cdry pencil-shavings calm\u201d or \u201cwarm library vibe.\u201d When those phrases pop, I drop the fragrance into a Notion table I keep for potential buys. That\u2019s my short-list.  \n\nNext few days: Morning routine becomes mini-testing. I have a discovery set I ordered months ago\u2014tiny vials from Le Labo, Jo Malone, and a local indie brand called Fueguia. I\u2019ll spray one, head to stand-up, and jot a line in my phone three hours later: still noticeable? any compliments? If something fades by lunch, it\u2019s out. I learned that lesson the hard way with an earlier blind buy that vanished after an hour\u2014felt like lighting money on fire.  \n\nDecision point: Once the list is down to two, I hit the math and logistics. Import duties here can add 50 %. If the local niche shop carries it, I\u2019ll walk in after work to confirm the scent. Last time the sales rep pushed a floral flank, and it annoyed me\u2014I left more confused than when I entered. That moment reminded me why I prefer my own pace online.  \n\nPurchase: Back at home, I refresh the brand\u2019s site until a free-shipping banner appears\u2014usually around payday campaigns. I add the 50 ml bottle, choose engraving (initials CM feel like a tiny ritual), and cross my fingers the customs queue isn\u2019t brutal.  \n\nWaiting period: This is the anxious stretch\u2014tracking numbers that don\u2019t update for days. When the box finally lands, I rip it open before even reaching the apartment elevator. First spray on the wrist, deep breath\u2014if it matches the mental picture I built, there\u2019s this rush of relief and confidence, like the upcoming roadmap session just got easier.  \n\nThat\u2019s the cycle. Research that\u2019s half emotional, half logistical; brief flirtation with brick-and-mortar; then an online checkout timed to dodge extra fees\u2014and a week of nail-biting until the courier buzzes.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_4",
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:59.879423+00:00",
+          "answer": "I pay attention in two phases\u2014right after I spray and then a few hours later.\n\nFirst ten minutes: I\u2019ll do a quick body-check. If the scent is a dry cedar or vetiver, my shoulders drop, my breathing slows, and I feel a little taller. It\u2019s almost like the smell reminds me of walking through the Parque Tres de Febrero on cool evenings, so there\u2019s this instant, grounding calm. Brighter, citrus-heavy testers give me a short spike of alertness, but that buzz fades fast\u2014by the time I\u2019m opening Slack, I\u2019m already reaching for coffee.\n\nMid-day checkpoint: around the post-lunch slump I\u2019ll raise my wrist again. With the woody scents, I still get that steady, low-key focus\u2014less fidgeting during meetings, more patience when a junior designer is wrestling with a Figma file. Lighter fragrances by this point feel thin; I catch a whiff, realize it\u2019s almost gone, and I notice my energy dipping. That disconnect\u2014smell gone, mood flat\u2014made me realize how much I lean on fragrance as a subtle cue to stay present.\n\nI can\u2019t prove any of this isn\u2019t placebo, but, um, the ritual works for me. When the scent lingers, my mind treats it like background music: it keeps me in the zone. When it disappears, I lose that anchor and the afternoon drags. That contrast is how I gauge whether a perfume actually supports my energy or just smells nice for a few minutes.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_5",
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:12.296945+00:00",
+          "answer": "It was the morning of a big quarterly roadmap review\u2014one of those meetings where VPs poke holes in every assumption. I\u2019d slept badly and felt scattered. While getting ready I reached for a sample of Le Labo\u2019s Santal 33. Two sprays, wrists and neck. The first thing I noticed was a small physical shift\u2014shoulders down, breathing steadier. The cedar-leather mix reminded me of hiking in Bariloche as a kid, and that memory grounded me.\n\nWalking into the office, the usual pre-presentation noise was still there\u2014Slack pings, last-minute slide tweaks\u2014but the scent acted like a low, steady bassline. When a junior designer came over, she paused and said, \u201cYou smell calm.\u201d That word stuck; it reframed my own nerves as something controllable. During the review, I caught the scent every time I moved my head and it became a cue to slow down before answering tough questions. The meeting ran long, teams debated, but I never felt the spike of cortisol I usually get.\n\nThe surprising part came later: around 3 p.m., when my energy normally crashes, the dry-down turned slightly sweeter, and it nudged me to keep my camera on for a remote feedback call instead of hiding behind slides. By the time I left the office, I realized the fragrance hadn\u2019t just masked stress\u2014it created micro-moments of focus throughout the day. That was the first time I treated scent as a functional tool, not just an accessory.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_6",
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:22.092557+00:00",
+          "answer": "The first thing I\u2019m after is a steady, centered confidence. Woody notes\u2014cedar, vetiver, a hint of oud\u2014give me that grounded feeling that, um, makes a high-stakes roadmap review feel less like a performance and more like a conversation I already know how to lead. It\u2019s almost a physical cue: one inhale, shoulders drop, voice evens out.\n\nThe second layer is focus. I work in an open office; noise bounces everywhere. A balanced, dry woods accord acts like a quiet boundary. It doesn\u2019t spike my adrenaline the way citrus does, but it clears mental clutter just enough that prioritization feels simpler. I noticed this during a brutal sprint where every ticket felt urgent\u2014each time I caught the scent on my collar, the to-do list stopped screaming.\n\nFinally, I look for a subtle warmth that nudges creativity. If a fragrance carries a faint resinous sweetness\u2014say, labdanum\u2014it sparks the same curiosity I get when framing a photo at dusk. That gentle lift reminds me why I enjoy solving problems in the first place, not just closing them.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_7",
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:33.151614+00:00",
+          "answer": "Yeah, twice, actually.\n\nThe first was a mainstream citrus-aquatic I wore in my early twenties. At the time it felt fresh and safe, but a few years ago I sprayed it before a product kickoff and immediately felt\u2026 small. I caught this faint chemical sharpness that dragged me back to university group projects\u2014lots of posturing, little direction. Halfway through the day I realised I was acting the same way: nodding along, not pushing back. It wasn\u2019t the team; it was me reacting to that old mental tape. I rinsed it off at lunch and never reached for the bottle again. It reminded me how scent can anchor unhelpful behaviours, almost like muscle memory.\n\nThe second was a sweet amber-vanilla sample I tried last summer. I loved the opening at home, but our office has no air-con and Buenos Aires humidity turns anything sugary into a blanket. By 11 a.m. I felt sluggish, almost sticky, and\u2014this surprised me\u2014less willing to speak up. One of my junior designers asked for feedback and I literally told her, \u201cLet\u2019s talk tomorrow,\u201d which I never do. Walking back to my desk, I realised the scent was making me retreat, the opposite of how I want to show up as a mentor. That afternoon I tossed the sample and wrote down a note in my fragrance journal: \u201cAvoid heavy gourmands in heat\u2014confidence dips.\u201d\n\nBoth moments reinforced why I stick to dry, woody notes now. They ground me, keep my posture open, and help me step into rooms\u2014virtual or physical\u2014ready to lead instead of hide.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_8",
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:46.130690+00:00",
+          "answer": "Santal 33 from Le Labo is the big one. I first wore it before a quarterly roadmap review with our board\u2014high-stakes, limited time, lots of eyes on a mid-level PM who still felt a bit like a designer in disguise. The dry, woody note hits immediately, but what surprised me was how the scent lingered just enough to create a kind of private anchor. Every time I caught a trace of it while presenting, it reminded me, \u201cYou\u2019ve prepared for this.\u201d That tiny sensory loop kept my voice steady. After the meeting a colleague asked what I was wearing, and that external validation locked the association in my head: Santal 33 equals composure. I now save it for days when I need to project calm authority\u2014new-hire kickoffs, stakeholder negotiations, even mentoring sessions when juniors look to me for certainty I don\u2019t always feel.\n\nThe other one is Tam Dao by Diptyque. I picked up a travel spray on a layover in S\u00e3o Paulo because I\u2019d read it was a \u201cquiet\u201d sandalwood. At first, I worried it might be too subtle for the open-office chaos, but that softness turned into a focus trigger. Mid-afternoon, when Slack is buzzing and I\u2019m tempted to context-switch, I re-spray. The milky woodiness feels almost meditative; it slows my breathing and nudges me back into problem-solving mode. The impact isn\u2019t outward confidence so much as internal motivation\u2014like hitting a mental reset button.\n\nI\u2019ve tried brighter, citrus-heavy scents hoping for similar effects, but they fizzle out fast and leave me oddly restless. So I keep circling back to these two: one for external presence, one for internal drive.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_9",
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:58.435133+00:00",
+          "answer": "First thing in the morning I scan my calendar. If there\u2019s a stakeholder review or a mentoring one-on-one, I go straight for my cedar-heavy Le Labo bottle. The dry, woody notes flip a little mental switch for me\u2014I stand up straighter, talk slower. It\u2019s almost Pavlovian at this point.\n\nOn slower days\u2014say I\u2019m sketching wireframes from home and don\u2019t need that board-room edge\u2014I\u2019ll pick something lighter, maybe a fig-forward cologne a friend brought from Spain. That one doesn\u2019t push my energy; it just keeps me relaxed and curious, which is what I need when I\u2019m noodling on ideas.\n\nI learned to choose this way after a rough product demo about two years ago. I\u2019d grabbed a sweet, gourmand scent without thinking. Halfway through the presentation I felt off\u2014too warm, almost sticky\u2014like the fragrance was crowding my head. I stumbled over a slide, and afterward a teammate even asked if I was feeling alright. Since then I treat fragrance almost like a tool: What emotional posture does the day demand, and which scent reinforces it rather than fights it? That single question guides the decision every morning.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_10",
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:10.242529+00:00",
+          "answer": "Memories sit right next to the bottle on my dresser. A scent rarely feels neutral; it usually drags a scene with it.\n\nOn most workdays I reach for Santal 33 because the dry cedar immediately drops me back into the old coworking loft where I pulled my first all-night release. I\u2019d stepped outside at 3 a.m., Buenos Aires air still warm, and the building\u2019s wooden stairwell smelled almost identical. The project went live at sunrise, and that mix of exhaustion and adrenaline wired the aroma to a feeling of \u201cI can push through.\u201d Spritzing it before a roadmap review now gives me that same quiet conviction\u2014almost like muscle memory, but emotional.\n\nTravel memories shape my weekend picks. Terre d\u2019Herm\u00e8s has this flinty orange note that reminds me of hiking in Salta two years ago\u2014dusty trails, citrus groves on the outskirts. When I\u2019m planning a photo walk or cooking asado with friends, I\u2019ll reach for it to tap into that unhurried, open-air vibe. Without that association it\u2019s just another nice fragrance; with it, the day feels bigger.\n\nIf a perfume lacks a personal anchor, I notice I wear it twice and then forget it. So, yeah, the bottle has to carry a story; otherwise it never really leaves the shelf.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_11",
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:20.085297+00:00",
+          "answer": "A couple of moments stand out. My sister once told me that the cedar-heavy blend I\u2019d worn to a family dinner felt \u201ca bit boardroom for homemade empanadas.\u201d That stung more than I expected because I\u2019d always framed woody notes as warm and inviting. The next day I went back to my sample vials, trying to understand why it came across as stiff rather than cozy. I realized I\u2019d over-sprayed and the projection was overpowering in a small apartment. Since then I limit myself to two sprays for close gatherings and save the heavier application for work.\n\nAnother time a junior designer on my team said he could tell I was \u201cin focus mode\u201d the moment he caught the vetiver in the hallway. That was validating; it confirmed the scent cue I\u2019d been using privately was actually noticeable. I\u2019ve leaned into that\u2014wearing that specific perfume on sprint-planning days so the team subconsciously senses I\u2019m locked in. So, feedback has nudged me toward moderation with family and intentional signaling at work.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_12",
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "emotional": 2,
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:35.444181+00:00",
+          "answer": "Two moments come to mind.\n\nFirst, the day I realized how wildly a scent can shift once it\u2019s on my skin. I\u2019d tested Le Labo\u2019s Th\u00e9 Noir on a paper blotter, loved the opening, and bought a full bottle almost on impulse. At the office launch meeting that same week, the dry-down turned syrupy on me\u2014almost gourmand. One teammate asked if I\u2019d switched to a vanilla candle. I felt a little exposed, the exact opposite of the grounded, cedar-lined confidence I\u2019d wanted. That was humbling; it reminded me of product experiments that look perfect in a prototype but behave differently in production. Now I insist on wearing a sample through an entire workday before committing.\n\nThe second surprise was how scent can bookmark a moment in time. During a crunch period last year I kept a tiny decant of Tam Dao in my backpack. I\u2019d spray it before late-night roadmap reviews, partly to stay sharp, partly for comfort. Months later, I was traveling in Mendoza, walked into a small hotel lobby, and someone had diffused the same sandalwood note. My shoulders tightened instantly\u2014like my body remembered the stress even before my mind did. That reaction hit me harder than any analytics dashboard ever could; it made me respect how intertwined fragrance is with emotion and memory.\n\nThose two experiences reshaped how I approach perfume: slow down, test in real contexts, and stay aware that a bottle can carry history as much as aroma.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    },
+    "Isabella Garcia": {
+      "source": "regular",
+      "profile_id": "profile_5",
+      "history": [
+        {
+          "questionId": "question_1",
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:21.487274+00:00",
+          "emotional": 2,
+          "answer": "It was about three weeks ago. I\u2019d just finished a messy sprint at work, and my usual go-to\u2014Chanel Gabrielle\u2014was down to its last few sprays. I stopped by a tiny perfumer\u00eda in El Born after yoga. They\u2019d just stocked Chanel\u2019s Paris\u2013Paris, part of the Les Eaux line, and the SA handed me a blotter.\n\nThe first hit was that sparkling rose and pink pepper\u2014really uplifting\u2014but what caught me off guard was how quickly it settled into this soft, almost tea-like warmth. I remember closing my eyes for a second; it felt like that first quiet moment on Barceloneta at sunrise. I could actually feel my shoulders drop, which told me, \u201cOkay, this could be my new morning scent.\u201d\n\nThen the practical voice kicked in. My collection\u2019s already fifteen bottles deep, and I\u2019ve promised myself I won\u2019t add another unless something else is nearly finished. Standing there, I had this tiny tug-of-war: do I stick to the rule or let the emotion win? I spritzed it on skin, left the shop, and just walked\u2014no earbuds, no podcasts\u2014letting the scent mingle with the city air. After an hour it still felt calming, not cloying, and that\u2019s the test for me. I went back, bought the 50 ml, and retired the empty Gabrielle bottle the next morning.\n\nWhat stuck with me was realizing how much I lean on fragrance to reset my energy. The decision wasn\u2019t about adding another floral to the shelf; it was about giving future-me a small ritual to ground hectic days. That clarity made the purchase feel intentional rather than impulsive.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_2",
+          "question": "What usually prompts you to look for a new fragrance?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:31.225821+00:00",
+          "emotional": 2,
+          "answer": "Two situations push me into \u201chunt mode.\u201d\n\nFirst, when my daily rituals start feeling flat. If I\u2019m painting at night and realize the jasmine I\u2019ve been wearing for weeks no longer sparks anything, that emptiness bugs me. I\u2019ll catch myself swirling the brush, waiting for an idea that never comes, and think, \u201cOkay, time to invite a new scent into the studio.\u201d I head to this tiny perfumery in El Born, test a few blotters, and look for the note that instantly shifts my posture\u2014almost like a reset button for my brain.\n\nSecond, seasonal transitions. Barcelona\u2019s first humid spring morning has a smell of its own\u2014blossoms, sea salt, sun-warmed stone. If my perfume doesn\u2019t blend with that backdrop, it feels jarring, almost like wearing a wool coat to the beach. That mismatch nags at me until I start sampling lighter florals or a green tea accord to sync with the air outside.\n\nThose two triggers\u2014creative stagnation and environmental mismatch\u2014are usually enough to get me browsing new bottles long before the current one is empty.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_3",
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:44.703003+00:00",
+          "emotional": 2,
+          "answer": "First, something sets the idea off\u2014usually a shift in season or a project that needs fresh energy. Two weekends ago it was the weather warming up; I wanted something brighter than the rose-heavy scent I\u2019d been wearing all winter.\n\nI start by jotting a few words in my notes app\u2014 \u201ccitrus, sheer, not sugary.\u201d That little list keeps me focused because the perfume aisles can feel overwhelming fast. Then I spend maybe half an hour on Fragrantica and Reddit, reading what real people say about dry-downs. I trust those comments more than glossy ads\u2014people will bluntly tell you if a scent turns into floor cleaner after ten minutes.\n\nThe next step is samples. I email the Chanel boutique here in Barcelona and ask if they have 2 ml vials of Paris-Riviera and Paris-Biarritz. Sometimes they\u2019re generous, sometimes I get a polite no; when they say no, I order a \u20ac5 decant from a local split group. The waiting is the worst part\u2014I\u2019ll obsessively refresh the tracking page like it\u2019s a big presentation deadline.\n\nOnce the sample arrives, I test it over three days: morning yoga, a normal workday, then an evening out. I keep a tiny spreadsheet because I\u2019ve been burned before by top-note infatuation. If by day three the scent still feels right\u2014and, crucially, doesn\u2019t give me a headache\u2014I move to purchase.\n\nThe actual buying moment happens in store. I need that tactile ritual of the glass bottle, the quick spray on skin, the salesperson\u2019s knowing nod. Last time I walked into El Corte Ingl\u00e9s resolved to get Paris-Riviera, but on skin the neroli vanished in an hour. That stung; I felt tricked by my own excitement. I stood there, a bit embarrassed, and sprayed Paris-Biarritz instead. The zesty opening held through lunch. I bought it on the spot.\n\nThat swap was a good reminder: my nose can\u2019t shortcut the full-day wear test, no matter how much I think I \u201cknow\u201d a fragrance from reviews. The process is slower than I\u2019d like, but the moment the bottle clicks into the bag, and I catch the first whiff walking home\u2014that makes the patience worth it.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_4",
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:47:56.398324+00:00",
+          "emotional": 2,
+          "answer": "I watch for two signals. First is the physical cue\u2014my body either loosens or perks up. If a scent like Chanel Gabrielle hits my wrist and, within a few breaths, my shoulders drop and I start inhaling more slowly, I know it\u2019s triggering that calm, beach-at-sunset headspace I count on before sketching. Other times, a greener floral\u2014say, something with sharp galbanum\u2014makes my pulse quicken a bit and I find myself standing rather than sitting, ready to move pixels around. That change happens in maybe thirty seconds, and I jot it in my phone so I don\u2019t romanticize it later.\n\nThe second signal shows up an hour or two in. I\u2019ll be deep in Figma and suddenly notice I\u2019m either gliding or grinding. If I\u2019m gliding\u2014steady focus, no jittery fidgeting\u2014then the perfume is giving me sustainable energy. If I\u2019m grinding, almost restless, it means the top notes fooled me and the dry-down is too sweet or dense; that heaviness drags my concentration. I learned this the hard way with a tuberose scent I bought on impulse\u2014felt great in the store, but by 3 p.m. I was foggy and craving coffee. Now I test new fragrances during real work sessions instead of quick mall spritzes. It\u2019s a small ritual, but capturing those micro-shifts lets me choose scents that genuinely support my flow rather than fight it.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_5",
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:08.122534+00:00",
+          "emotional": 2,
+          "answer": "It was a rainy Tuesday last winter, the kind where the sky feels heavy and the studio lights make everything look a bit grey. I\u2019d slept poorly, and my calendar was stacked with back-to-back user sessions. Before leaving the flat I reached for Chanel Gabrielle\u2014normally I save it for evenings, but I needed something brighter than my usual morning choice.\n\nThe first mist hit my scarf and there was this sharp, almost fizzy burst of orange blossom that cut straight through the fog in my head. On the metro I caught myself straightening my posture; I even switched playlists from ambient to something with a bit of tempo. By the time I walked into the first interview I wasn\u2019t forcing myself to be \u201con\u201d\u2014I actually felt present, curious, even playful. That mattered because the participant was anxious about sharing negative feedback. Sensing her tension, I leaned in, mirrored her breathing, and the jasmine dry-down wrapped me in this soft, steady warmth. It kept me from reacting defensively when she called a feature \u201ccluttered.\u201d Instead I asked one more follow-up that ended up uncovering a workflow issue we\u2019d missed completely.\n\nThe high faded around mid-afternoon and I remember debating another spritz, but I held back\u2014partly to respect the tiny test lab, partly because I wanted to notice the shift. As the fragrance softened, my energy dipped too; the last session felt more mechanical. That contrast made it clear just how much scent can modulate my baseline mood, not just provide a quick spike. It\u2019s one reason I plan fragrance the same way I plan playlists\u2014deliberately, almost like setting lighting cues for different scenes in the day.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_6",
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:20.414371+00:00",
+          "emotional": 2,
+          "answer": "The first thing I\u2019m after is a kind of grounded calm\u2014the same feeling I get when I\u2019m finishing a long exhale in yoga class. If I pick up Chanel 31 Rue Cambon in the morning, it\u2019s because the iris\u2013patchouli mix settles my nerves while I\u2019m checking overnight Slack messages. The scent becomes a physical reminder to slow my breathing and keep my shoulders down.\n\nLayered onto that calm, I want a gentle mental spark. Floral notes with a green edge\u2014neroli, a touch of hyacinth\u2014nudge my brain into \u201cmakers-mode.\u201d There\u2019s a very specific moment most afternoons, around 3 p.m., when my energy dips. I used to reach for coffee, but the caffeine was making me jittery. One day I swapped the coffee for a spritz of Les Exclusifs de Chanel Gard\u00e9nia, half expecting nothing to change. The soft white-floral lift cleared the fog enough for me to jump back into a tricky Figma prototype. That was the moment I realized scent could replace a stimulant for me; it still surprises me how quickly it flips the switch.\n\nI also use fragrance to mark transitions. After a long day of usability tests\u2014especially when a session goes sideways and users look plainly frustrated\u2014I feel that knot of guilt in my chest. Swapping my work scent for something warmer, like a sandalwood-heavy floral, signals \u201cwork is closed; process the feedback tomorrow.\u201d I probably leaned on that ritual most during the pandemic when home and office blurred. Without it, I carried work stress straight into dinner.\n\nThere are still misses. Last winter I tried a gourmand vanilla I\u2019d bought on impulse. It was cozy on the blotter, but in the studio it clung to my sweater, felt syrupy, and actually made me sluggish. I kept blaming the cold weather for my lethargy until I realized every slump coincided with wearing that perfume. Letting go of the bottle reminded me that the wrong scent can be as distracting as a loud workspace.\n\nSo, short answer: calm first, then a clean jolt of focus, and finally a boundary between one chapter of the day and the next. If a perfume can do those three things, it earns a spot in the rotation.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_7",
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:32.111893+00:00",
+          "emotional": 2,
+          "answer": "Yes, once. A friend gifted me a bright citrus-woody scent\u2014lots of grapefruit up top, then black pepper and cedar. The first couple of wears were fine, but during a crunch week for a product launch I sprayed it before heading to the office. By noon I felt strangely on edge\u2014heart racing, shoulders tight. At first I blamed the looming deadline, but the next morning I reached for the same bottle and the same nervous buzz set in before I\u2019d even opened my laptop.  \n\nThat\u2019s when it clicked: the sharp acidity and pepper were priming me for alertness verging on anxiety. I tried dial-downs\u2014one spritz, then spraying the air and walking through\u2014but the association was baked in. The scent became a shortcut to that stressful launch period, and I could almost taste the stale coffee and hear Slack pings the moment it hit my skin.  \n\nI remember standing in my bathroom, bottle in hand, arguing with myself because it was an expensive gift. Eventually I tucked it into a drawer, half-hoping distance would break the link. It didn\u2019t. A few months later I passed it to my sister, who loves bold notes and feels energized, not rattled, by them.  \n\nThe experience reinforced something I carry into design work: sensory cues aren\u2019t neutral. They can amplify whatever emotion is already hovering under the surface. Now, before committing to a new perfume, I wear it on a quiet Sunday first\u2014if it can sit calmly with me over coffee and sketching, it earns a place in the collection.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_8",
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:42.681018+00:00",
+          "emotional": 2,
+          "answer": "Chanel Chance Eau Tendre is the one that really shifted my motivation. I bought it right after I\u2019d joined the wellness-platform project\u2014first week on the job, feeling a bit of impostor syndrome. The scent opens soft and juicy, almost like biting into a grapefruit, then settles into this sheer jasmine. I\u2019d spray it just before walking into stakeholder reviews. Something about that combination\u2014bright but still delicate\u2014helped me breathe a little slower, stand a bit taller. The first time I noticed the effect was a meeting where I had to defend a rather risky color-palette choice; my palms were sweating, but the scent grounded me. When the PM nodded instead of pushing back, I realized, Oh, the calm I\u2019m projecting is contagious. That was new for me.\n\nOn the confidence side, Gabrielle by Chanel is trickier. I love its creamy white-floral heart, but it\u2019s loud. There was a sprint showcase where I went overboard\u2014two sprays instead of one\u2014 and, um, halfway through the demo the dev sitting next to me leaned back ever so slightly. I spent the rest of the session hyper-aware of my own trail, which completely killed my focus. Since then I keep it for evenings out, not workdays. That little embarrassment taught me the line between presence and distraction is razor thin, both in fragrance and design choices.\n\nI\u2019m still searching for a scent that feels like a second skin\u2014something I can forget I\u2019m wearing yet know is supporting me. For now, Chance Eau Tendre remains my quiet ritual before any moment that counts.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_9",
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:48:55.126245+00:00",
+          "emotional": 2,
+          "answer": "Most mornings I pause in front of the little tray by my window, take one long breath, and ask myself two questions:  \n\n1. What headspace do I need today?  \n2. Who will be physically close to me?\n\nIf I\u2019m heading into a day packed with design critiques\u2014where I know the team energy can spike\u2014I reach for Chanel Chance Eau Tendre. The soft grapefruit keeps me centered but the jasmine gives just enough lift so I don\u2019t fade by mid-afternoon. I started using it after noticing I fidget less in tense meetings when that scent is on my wrists; the calm is almost Pavlovian now.\n\nCreative days are different. When I\u2019m sketching new concepts or painting after work, I want something that nudges me into flow, so I\u2019ll dab a brighter white-floral extrait\u2014tuberose, a bit demanding, almost bossy. The pushiness forces me to stay present on the canvas instead of drifting back to Slack.\n\nWeather matters too. Barcelona\u2019s humidity can amplify anything sweet, and I learned the hard way. Last summer I wore a dense vanilla-amber to a tiny user-testing lab. Within ten minutes the room felt stuffy, and one participant kept rubbing her nose. I felt mortified\u2014couldn\u2019t focus on her feedback because I was busy regretting my own cloud. That slip made \u201cproximity\u201d a permanent part of my decision checklist.\n\nSo the ritual is quick\u2014headspace, proximity, weather\u2014but it frames my whole day. Once the spritz lands, it\u2019s like locking in an intention I can\u2019t easily ignore.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_10",
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:05.382685+00:00",
+          "emotional": 2,
+          "answer": "It\u2019s almost always a memory that tips the scale for me. I\u2019ll stand in front of the tray and, without even looking, my hand drifts to the bottle that echoes whatever feeling I want to relive or reshape.\n\nOne example: a small vial of Chanel Paris-Deauville. The first time I wore it, I\u2019d just moved into my own flat and everything smelled like fresh paint and cardboard. That green-citrus opening mixed with the drying walls, and I felt like the space\u2014and my life\u2014were finally mine. Now, whenever I face a blank canvas at work, I dab it on. The scent pulls up that exact sensation of \u201cnew beginning,\u201d and I start sketching faster because my body remembers that freedom before my mind catches up.\n\nThere\u2019s also a floral-jasmine blend my mother wore to every art exhibit she ever dragged me to. For years I avoided it\u2014too sentimental, too heavy. Then, during a user interview last spring, the participant described her app routine as \u201ca little museum tour for my brain,\u201d and I realized I\u2019d been dismissing a perfectly good anchor. I tried the perfume again that evening. Instead of feeling weighed down, I felt guided, almost coached by my younger self watching Mom analyze paintings. It reminded me that a scent I once labeled \u201cold\u201d could become a bridge to empathy if I reframed the memory.\n\nSo, yeah, picking a perfume isn\u2019t about matching notes to weather; it\u2019s about summoning the version of me I need in the room and letting that past moment color whatever comes next.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_11",
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:16.567316+00:00",
+          "emotional": 2,
+          "answer": "Yes, two moments really stand out.\n\nThe first was a dinner at my parents\u2019 place last spring. I wore Chanel N\u00b0 19, because the galbanum feels crisp and a bit rebellious\u2014perfect after a long, messy sprint. Mid-meal my mum leaned in, smiled, and said, \u201cThat scent reminds me of the lime trees near Abuela\u2019s house.\u201d I hadn\u2019t made that connection, but hearing it made the perfume feel suddenly rooted in family history. Since then I reach for N\u00b0 19 when I want to feel anchored before tricky presentations\u2014it\u2019s like borrowing a layer of home.\n\nThe other moment was less flattering. A close friend mentioned that my tuberose-heavy fragrance\u2014Fr\u00e9d\u00e9ric Malle Carnal Flower\u2014felt \u201coverly intense\u201d during a crowded metro ride. She wasn\u2019t rude, just honest. I remember feeling a twinge of embarrassment; I never want my personal ritual to intrude on someone else\u2019s space. I didn\u2019t ditch the perfume, but I reserve it for evening walks on the beach or outdoor gatherings where it can breathe.\n\nSo, feedback hasn\u2019t changed what I love, but it\u2019s definitely tuned me into context\u2014who will share the air with me and what emotional backdrop I want to create.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "questionId": "question_12",
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "timestamp": "2025-12-10 14:49:30.529594+00:00",
+          "emotional": 2,
+          "answer": "The biggest surprise was how sharply scent can influence the emotional tone of a room. A few months ago I ran in-person usability tests for a meditation app. I\u2019d dabbed on Chanel Gardenia that morning\u2014nothing heavy, just a single spray because I wanted a calm headspace for myself. The first participant walked in, took a breath, and almost immediately relaxed. She said, \u201cIt smells like my grandmother\u2019s balcony in spring.\u201d That tiny, unintended trigger loosened her shoulders and she opened up about anxieties the prototype wasn\u2019t addressing. We uncovered a major gap in our onboarding flow right there.  \n\nI\u2019d always thought of perfume as a private ritual\u2014my mental switch between tasks\u2014but that session showed me its ripple effect on others. Now I keep a travel-size vial in my research kit. If a lab room feels sterile or tense, one discreet spritz can soften the atmosphere and invite more honest conversation. I\u2019m still experimenting, though; a colleague with fragrance sensitivities reminded me that what calms one person can overwhelm another, so I alternate between scent and unscented grounding props like textured stones. Balancing those edges\u2014comfort versus intrusion\u2014is something I\u2019m still figuring out day by day.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    },
+    "Liam Chen": {
+      "source": "regular",
+      "profile_id": "profile_5",
+      "history": [
+        {
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "questionId": "question_1",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:47:23.976781+00:00",
+          "answer": "I\u2019d just wrapped a pretty intense sprint review two Fridays ago and felt drained, so after work I stopped by the Tom Ford counter at ION Orchard. I\u2019d run out of Oud Wood, my default, but I\u2019d been curious about \u00c9b\u00e8ne Fum\u00e9 ever since a colleague walked into a meeting wearing it\u2014it had this smoky resonance that lingered without shouting.\n\nTwo things were on my mind. First, I needed something grounding; my calendar\u2019s been a wall of back-to-back roadmap sessions, and scent is the one ritual that flips me from reactive to intentional. Second, I didn\u2019t want to buy another safe bottle just because it\u2019s familiar. The sales associate let me sample \u00c9b\u00e8ne Fum\u00e9 on blotter first, then on skin. At minute five it softened into this almost meditative palo santo vibe, and I could literally feel my shoulders drop. That somatic cue mattered more than any marketing copy.\n\nHere\u2019s the moment that sealed it: I imagined my 6 a.m. run the next day\u2014humid air, city still waking up\u2014and pictured that scent anchoring me before the chaos. That visualization made the decision; price became secondary. I bought the 50 ml, walked out, and honestly felt a small surge of control return.  \n\nThe only hesitation was longevity. Oud Wood lasts a full workday; \u00c9b\u00e8ne Fum\u00e9 risks fading by late afternoon. I almost talked myself out of it, but realized I was optimizing for edge cases instead of the core need: a morning ritual that sparks focus. If it fades, I can re-spritz after lunch. So I swiped the card, left, and the next morning confirmed it\u2014one spray, quick stretch, and the run felt lighter.\n\nThat purchase reminded me how visceral cues\u2014texture of the cap, first inhale, even the heft of the bottle\u2014override spreadsheets of pros and cons. It\u2019s less a transaction, more a micro-commitment to how I want to show up.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What usually prompts you to look for a new fragrance?",
+          "questionId": "question_2",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:47:37.424846+00:00",
+          "answer": "Two things tend to spark the hunt.\n\nFirst is a mental reset. When I wrap a big product milestone\u2014those all-hands weeks where sleep is optional and Slack never stops\u2014I feel the need to mark the transition back to normal life. Finishing the sprint is great, but it also leaves a bit of residue: adrenaline, loose ends, even a hint of self-doubt about whether we solved the real problem. Picking a new scent becomes a small ritual for closing that chapter. I\u2019ll walk into the Tom Ford counter, spray something unfamiliar on one wrist, then leave and let it linger while I decompress at a coffee shop. If the dry-down still feels like possibility\u2014not pressure\u2014by the time the espresso is gone, I take it home. That\u2019s how Oud Wood joined the lineup right after a launch where we shipped fast but learned we\u2019d misread a key user flow. The smell now reminds me to slow down and listen.\n\nThe second trigger is curiosity in the wild. I\u2019ll be running the river loop at dawn, pass someone, and a trace of cedar or vetiver cuts through the humidity. In that split second I wonder who they are, what story they\u2019re carrying. It\u2019s this brief, almost intimate moment that makes me want to decode the note and, maybe, adopt a bit of that energy for myself. I\u2019ll jot a voice memo\u2014\u201csmoky cedar, 6:10 a.m., Marina Bay footbridge\u201d\u2014and later run a quick search or ask a friend in retail to help identify it. The process isn\u2019t about collecting bottles for the shelf; it\u2019s about collecting perspectives. Each new fragrance becomes a conversation starter with myself about who I want to be showing up as the next day.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "questionId": "question_3",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:47:51.017951+00:00",
+          "answer": "The trigger is usually internal\u2014a sense that my current rotation isn\u2019t matching how I want to show up that month. Maybe I\u2019m starting a new project and I want something a bit darker, more assertive. The first thing I do is pull out a little notion doc where I jot quick notes about gaps in my collection: \u201cNeed: woody-spicy, less sweet than Oud Wood, works in humid evenings.\u201d\n\nStage 1 \u2013 Online scouting  \nI spend an hour or so on Fragrantica and Reddit, toggling between note pyramids and real-world wear reviews. I\u2019ll flag three or four candidates. One mistake I made a couple of years ago was buying off blind-buy hype\u2014lost S$350 on a bottle that smelled great on paper but cloying on skin. Since then I force myself to sample.\n\nStage 2 \u2013 Sampling loop  \nHere\u2019s where the emotional roller coaster kicks in. I\u2019ll head to the Tom Ford counter at Marina Bay Sands after work, spray one option on each wrist, and leave. The temptation to buy right there is strong; the lighting, the sales pitch, the packaging\u2014it\u2019s engineered to make you feel decisive. I walk out anyway, run home the next morning, and pay attention to how the dry-down mingles with post-run sweat. If it still feels \u201cme,\u201d it stays on the shortlist; if it turns syrupy, I cross it out.\n\nStage 3 \u2013 Gut check and budget reality  \nUsually by the second evening I\u2019m down to one contender. I\u2019ll compare price across Sephora online, the Tom Ford boutique, and duty-free preorders. That comparison used to feel like a chore; now it\u2019s more a sanity check so I don\u2019t pay a 20 % premium out of impatience.\n\nStage 4 \u2013 Purchase  \nIf the scent still resonates after 48 hours\u2014and my bank app says the month\u2019s discretionary spend isn\u2019t blown\u2014I order through duty-free pickup. There\u2019s a tiny thrill when I unbox it at Changi, but also relief: I avoided another regret bottle.\n\nPain points that still sting  \n\u2022 Lack of official 2 ml samples in Singapore. I\u2019d happily pay for them, but SA\u2019s guard those vials like gold.  \n\u2022 Nose fatigue. After the third test strip I literally can\u2019t smell nuance; it makes decision-making feel shaky.\n\nSo, that\u2019s the journey\u2014spark, research, skin test, cool-down period, then swipe. The deliberate pauses are my guardrails against shiny-object mistakes I\u2019ve made before.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "questionId": "question_4",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:01.956543+00:00",
+          "answer": "The first signal is almost always my breathing. When I spray something like Tom Ford Oud Wood before a morning stand-up, I pause, inhale, and check whether my shoulders drop or my pulse perks up. A dry, smoky note tends to slow me down\u2014there\u2019s a moment of calm, almost like the exhale at the end of a yoga flow. If that happens, I know the scent will keep me grounded through back-to-back meetings.\n\nThe flip side came last quarter when I tested a bright citrus blend\u2014felt playful in the store, but at my desk it kept nudging me into distraction. I caught myself jumping between Figma frames instead of settling into deeper work. It took three afternoons of fragmented focus to connect the dots. That little realization was annoying, honestly, because I\u2019d assumed \u201clighter\u201d equals \u201cenergizing.\u201d Turns out my energy spikes only when the fragrance has a bit of resin or spice; too much zest pushes me toward restlessness.\n\nI also watch for how long the effect lasts. After a lunchtime run I\u2019ll re-spray; if the second application still lifts me rather than overwhelming me, the balance is right. Anything that feels cloying post-workout goes straight to the back of the shelf.\n\nWhat I\u2019ve learned is that mood cues are subtle and physical\u2014heartbeat, breath, even posture\u2014more than some grand emotional wave. I keep a tiny notebook by the mirror and jot a word or two, like \u201csteady\u201d or \u201cscatter,\u201d right after application. Over a month the patterns are hard to ignore, and it guides what I reach for on autopilot each morning.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "questionId": "question_5",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:14.898965+00:00",
+          "answer": "Last November, the team was running back-to-back usability sessions on a new onboarding flow. I knew the day would be long and slightly tense, so I reached for Tom Ford Oud Wood in the morning. \n\nThe first spritz hit with that dry cedar and a faint sweetness. During the cab ride to the office, I noticed my breathing slow a little; it grounded me before I even opened my laptop. Mid-morning, a participant grew visibly frustrated\u2014the prototype kept freezing. In the past, I\u2019d match that tension without meaning to. That day, the scent felt like an anchor; every time I caught a trace of it on my collar I had a small, embodied reminder to stay composed. I kept my voice level, asked a few extra clarifying questions, and the session recovered. \n\nAround 3 p.m. the usual caffeine crash set in. The fragrance had softened into this warm, almost creamy base. It didn\u2019t re-energize me the way citrus might, but it kept me centered enough to finish synthesizing notes instead of doom-scrolling. By the time I left the office, I realized I\u2019d gone an entire day without that tight feeling in my chest I normally get on heavy testing days. \n\nSince then I keep Oud Wood in rotation for any scenario where I expect emotional volatility\u2014user testing, roadmap reviews, even difficult 1:1s\u2014because, for me, it dampens the spikes and keeps the baseline steady.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "questionId": "question_6",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:24.654896+00:00",
+          "answer": "First, I\u2019m after a sense of being anchored. Mornings here move fast\u2014Slack pings by the second\u2014so I reach for something woody and slightly smoky because it settles my nerves before the chaos hits. The moment that top note lands, it\u2019s like, \u201cOkay, Liam, breathe. You\u2019re in control.\u201d I discovered that need during a brutal launch two years ago: I was sprinting on pure caffeine, and a quick spritz of Oud Wood honestly felt like planting my feet back on the ground. That memory stuck, so now grounding is non-negotiable.\n\nThe second feeling is quiet confidence\u2014not the extroverted, look-at-me buzz, more an internal click that says I\u2019m prepared to speak up for users even if the room\u2019s skeptical. On days with high-stakes reviews I\u2019ll swap to something slightly spicier, still woody, because the sharper edges keep me alert and, weirdly, a little braver. If I walk into that meeting already smelling like the version of myself I want to be, the words come easier.\n\nThose two states\u2014grounded and quietly confident\u2014guide almost every pick from my shelf. Everything else, projection, longevity, whatever, is just tuning knobs.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "questionId": "question_7",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:35.396233+00:00",
+          "answer": "Yeah, once. About two years ago I picked up a bottle of Tom Ford Grey Vetiver. On paper the notes sounded perfect\u2014earthy, a bit smoky, very \u201cgrown-up.\u201d I wore it the week we were pushing a major redesign to production. Long nights, back-to-back stand-ups, a nasty rollback on launch day\u2014the kind of sprint that lives in your nervous system.  \n\nBy Friday I caught myself tensing up the moment the scent hit my skin. It wasn\u2019t the perfume\u2019s fault; my body had just welded that smell to the stress spike\u2014elevated heart rate, jaw clenched, the whole thing. I tried giving it space, wore it again a month later before a casual coffee chat. Same reaction: a low, background buzz of anxiety I couldn\u2019t shake.  \n\nThat bothered me because fragrance is supposed to be my little ritual for feeling grounded before I face a team. Instead, this one kept yanking me back to that chaotic week. After the second try I shelved it, told myself I\u2019d circle back. I never did. Eventually I passed the bottle to a friend who loves vetiver. Watching him light up when he sprayed it felt oddly cathartic\u2014you know, like I\u2019d let the scent have a new life without the baggage.  \n\nThe experience nudged me to pay closer attention to the emotional residue attached to everyday objects. Now, if a fragrance even hints at stress memories, I don\u2019t force it. The goal is energy and clarity, not silent triggers.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "questionId": "question_8",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:47.081982+00:00",
+          "answer": "Oud Wood is the one that really changed things for me. I bought the bottle right before a nerve-racking design review with our VP\u2014fresh team, new product, tons of eyes on me. The first morning I wore it, the dry-down felt like this quiet, almost meditative warmth. I remember stepping into the lift, catching a whiff of the sandalwood, and thinking, \u201cOkay, I can handle whatever shows up in that room.\u201d It wasn\u2019t a loud scent, just a steady reminder to slow my breathing. I still reach for it when a project feels bigger than me; the association is locked in now.\n\nThe opposite happened with a very bright citrus-aquatic sample\u2014can\u2019t even recall the name. Early in my career I thought lighter automatically meant more \u201coffice-safe.\u201d Instead, I kept noticing how quickly it evaporated; by lunch I\u2019d catch a faint synthetic note and feel\u2026 flimsy? That fleeting quality mirrored the way I was second-guessing myself back then. After maybe two weeks I shelved it and realised scent longevity matters to my sense of follow-through.\n\nThose experiences taught me that the fragrance has to mirror the energy I\u2019m trying to project\u2014enduring woods for grounded confidence, fewer airy top-notes when I need staying power. Now I\u2019m more intentional: if I wake up anxious about stakeholder alignment, it\u2019s Oud Wood. If I\u2019m prepping for heads-down wireframing, something slightly spicier like Tobacco Vanille nudges me into flow. It\u2019s become a small but reliable lever for motivation.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "questionId": "question_9",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:48:57.865101+00:00",
+          "answer": "Most mornings I pause right after my run\u2014still cooling down, standing in front of the dresser\u2014because that\u2019s when I have the clearest sense of what the day might demand. Two quick checks guide me:\n\nFirst, mood and intent. I glance at the calendar and ask, \u201cDo I need grounding or lift?\u201d If it\u2019s back-to-back reviews with senior leadership, I reach for Tom Ford Oud Wood. The depth in that scent feels like an anchor; it reminds me to slow my breathing, choose my words. On lighter research or prototyping days, I go with something like Costa Azzurra\u2014the salinity keeps the energy playful, which helps me stay curious with users.\n\nSecond, the Singapore weather. Humidity can amplify a perfume in ways that, um, sometimes overwhelm colleagues in small meeting rooms. I learned that the hard way last year when I wore Tobacco Vanille to a workshop\u2014great scent, wrong climate. People kept cracking windows, and I spent the session worrying about my sillage instead of listening. Now I dab rather than spray if the forecast says 32 \u00b0C and 90 % humidity.\n\nThose two lenses\u2014emotional intent and environment\u2014usually point me to the right bottle. The ritual takes maybe thirty seconds, but it frames the entire day.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "questionId": "question_10",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:49:09.515679+00:00",
+          "answer": "Memories sit in the background like an old-school playlist\u2014I don\u2019t consciously reach for them, but the second the cap comes off they flood in and steer the choice.\n\nThe strongest anchor is Tom Ford Oud Wood. I first wore it during a nerve-racking board review three years ago. I\u2019d pulled an all-nighter polishing prototypes, walked into the conference room half-awake, and the scent\u2014dry wood, a hint of cardamom\u2014hit before the coffee did. The meeting went better than I\u2019d dared to hope. Since then, that smell is wired to the feeling of \u201cI survived, I can do hard things.\u201d On mornings when Slack is already on fire, I\u2019ll catch myself reaching for it almost automatically. It\u2019s less about believing the perfume is lucky and more about borrowing that visceral memory of composure under pressure.\n\nThere\u2019s a softer association with Santal Blush. My partner surprised me with it after my first half-marathon; we celebrated over hawker-stall kopi by the Singapore River, sweat, sandalwood, and slightly burnt toast all mingling in the humidity. When I\u2019m heading into a long afternoon of heads-down design work, that fragrance puts me back on that post-run high\u2014steady heart rate, clear focus. I didn\u2019t plan that link; it just stuck.\n\nI did get it wrong once. I wore Oud Wood to a casual team offsite thinking I\u2019d feel \u201cgrounded,\u201d but colleagues joked I smelled like I was about to present Q4 forecasts. The formality of that memory created distance instead of camaraderie. Since then I double-check: is the memory I\u2019m tapping into aligned with the vibe I want to project to others, not just what I want to feel inside? That tiny pause keeps nostalgia from sabotaging the social context.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "questionId": "question_11",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:49:20.515222+00:00",
+          "answer": "Quite a few times. The one that really stuck happened during a usability test last year. I showed up in Tobacco Vanille\u2014felt confident walking in, that warm, woody-sweet cloud around me. Mid-session, a participant rubbed her temples and quietly asked if we could crack a window. Later she mentioned heavy scents sometimes trigger migraines. I\u2019d been so focused on reading her reactions to the prototype that I\u2019d ignored the possibility my own presence was skewing the environment. Walking back to my desk I felt a knot in my stomach; I kept replaying, \u201cDid I just jeopardize the session?\u201d Since then I go for something lighter\u2014usually Grey Vetiver\u2014or skip fragrance entirely when I\u2019m sitting inches away from users.\n\nOn the flip side, my younger sister once hugged me at a family dinner, caught a whiff of Oud Wood, and said it reminded her of the cedar boxes our grandparents stored tea in. Watching her face soften like that made me realize scent can be a quiet bridge to memory. I still reach for Oud Wood when I\u2019m heading to see family; it feels like bringing a shared story with me.\n\nSo compliments or discomfort\u2014both shape my choices. Now I ask myself, \u201cWho will be in my radius, and what do I want them to feel?\u201d",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "questionId": "question_12",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "refinementCount": 0,
+          "emotional": 2,
+          "timestamp": "2025-12-10 14:49:33.636451+00:00",
+          "answer": "Two moments still catch me off guard when I think about my perfume habits.\n\nFirst, the Oud Wood incident. I\u2019d just bought the bottle, felt invincible, sprayed four times before a Monday stakeholder review. Half-way through the meeting the CFO leaned over and whispered, \u201cGreat deck, but the room smells like an incense shop.\u201d I was mortified. Up to that point I\u2019d assumed projection was linear\u2014more sprays = longer longevity, same perception. Turns out tropical humidity amplifies heavier woods. That single comment made me pull back and start testing every fragrance on skin in real-world settings: commute, elevator, cramped meeting room. I still like Oud Wood, but now it\u2019s strictly a one-spray, end-of-day scent. The surprise was learning my \u201cpersonal\u201d choice wasn\u2019t personal at all; everyone around me was a silent stakeholder.\n\nThe second was how scent memory can blindside me. I rotated in Bois Marocain during a sprint week because I wanted something dry and grounding. On day three, a wave of nostalgia hit\u2014my grandfather\u2019s mah-jong room in Kuala Lumpur, lacquered wood and cigar smoke. I hadn\u2019t smelled that in twenty years. The emotional punch was so strong I couldn\u2019t focus for a good hour. I\u2019d always thought I picked perfumes rationally: notes, longevity, brand. Realizing an aroma could teleport me like that challenged the neat taxonomy I\u2019d built in my head. Now I keep a small journal, jotting not just accords but any mood or memory that surfaces. It slows my purchasing cycle, but it\u2019s worth it.\n\nBoth moments\u2014over-projecting in that meeting and being ambushed by memory\u2014remind me I\u2019m still learning. Fragrance isn\u2019t static data; it\u2019s context, environment, subconscious wiring. Accepting that unpredictability keeps the ritual interesting and, honestly, keeps me humble.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    },
+    "Carlos Smith": {
+      "source": "deeppersona",
+      "profile_id": "profile_3",
+      "history": [
+        {
+          "question": "Can you tell me about the last time you bought or considered buying a perfume?",
+          "questionId": "question_1",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:27.697196+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "About eight months ago I was packing for a close friend\u2019s wedding in Sydney and realised the cologne I\u2019d had for years was basically air. On a lunch break I ducked into the Bourke Street Myer to replace it. \n\nThe moment I hit the fragrance floor I felt a bit stranded\u2014strong lights, competing music tracks, every brand spritzing the air. Descriptions like \u201cwoody-oriental\u201d or \u201caromatic marine\u201d meant nothing once my nose was overloaded. Three paper strips in, I couldn\u2019t tell one from the next.  \n\nWhat really stuck with me was the packaging waste: thick glass, plastic caps, foil-lined boxes. I asked a sales assistant if any brand offered refills or recycled glass. She pointed to a niche label that did, but the price was north of $200. My gut reaction was, \u201cI won\u2019t spray away that much money, especially when I\u2019ll only use it a couple of times a week.\u201d So I walked out empty-handed.  \n\nThat night, back home, I spent half an hour online digging for an Australian company that listed full ingredients and used refillable bottles. Ended up ordering a 30 mL bergamot-and-cedar scent from a Byron Bay outfit. Cardboard sleeve, no plastic, and they give a discount when you send the bottle back. Price was still higher than a mainstream brand, but I felt better about the environmental side and the transparency.  \n\nThe whole episode reminded me how jargon and sensory overload can drive a buyer away, even when they enter the store ready to spend. If the sustainable option had been easier to spot on the shelf, I\u2019d probably have bought on the spot instead of going online later.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What usually prompts you to look for a new fragrance?",
+          "questionId": "question_2",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:39.320898+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Two things push me. First, when the bottle that lives on my dresser is down to its last few sprays, I treat that as a checkpoint rather than an automatic repurchase. I\u2019ll ask myself, \u201cHas this scent still felt like me in client meetings and site visits?\u201d If the answer\u2019s no\u2014maybe it now feels a bit too heavy in Melbourne\u2019s summer\u2014then I start hunting.\n\nThe second is feedback, explicit or subtle. Last year a junior architect said, almost in passing, that the cedar note I was wearing reminded her of her grandfather\u2019s after-shave. I laughed it off, but on the drive home it bothered me more than I expected. That single comment made me realise I\u2019d drifted into a scent that read older than I wanted. I spent the next weekend sampling lighter, greener options with recyclable packaging; the sustainability angle mattered as much as the smell.\n\nSo it\u2019s usually either the bottle running dry or a moment when someone\u2019s reaction tells me the fragrance no longer matches how I want to show up professionally.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you walk me through what happens from the moment you decide you want a perfume to actually making the purchase?",
+          "questionId": "question_3",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:47:55.577300+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "The trigger is almost always practical\u2014my everyday scent runs low and I catch myself tilting the bottle, hoping for one more spray. From that point the process splits into two phases: desk research and sensory testing.\n\nPhase 1 \u2013 desk research  \nI open a note in Notion and list three things: longevity, ingredients transparency, and whether the brand does refillable bottles. I\u2019ll spend an evening on Reddit fragrance threads and a couple of Australian review sites, skimming comments for phrases like \u201cprojects for eight hours\u201d or \u201cgoes musky after lunch.\u201d What still trips me up is the language\u2014terms like \u201cgourmand\u201d or \u201canimalic\u201d feel abstract, so I keep a running glossary for myself. By the end of the night I usually have four candidates and a bit of price shock; niche brands creep past $250, which stings.\n\nPhase 2 \u2013 sensory testing  \nThe next Saturday I drive to the Myer in Melbourne CBD. The counter experience is the stressful bit. After the fourth strip my nose just\u2026flattens; every scent blurs. I\u2019ll ask for samples to take home, but staff turnover means policies change\u2014some days they hand them out, other days it\u2019s a hard no and a polite smile. When they do agree, I label the vials, wear one per day, and jot notes\u2014\u201ccedar kicks in at 2 p.m., still present after gym.\u201d That small ritual feels almost scientific and, honestly, satisfying.\n\nDecision point  \nBy mid-week I\u2019ve lived with each option long enough to know which sits well on my skin. The winner usually isn\u2019t the flashiest top note but the one that still feels like me after dinner. I\u2019ll price-check again online; if the gap is more than 15 percent I order from an authorized web store, otherwise I circle back to the counter\u2014partly loyalty, partly wanting to see the bottle before handing over the card.\n\nThe emotional arc is a mix of curiosity and mild fatigue. The research energises me, but the in-store overload and the fear of a costly blind buy still make me pause. When I finally tap my card I\u2019m relieved more than excited\u2014relieved that the scent matches the spreadsheets in my head and won\u2019t end up gathering dust on the shelf.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you try different perfumes, how do you notice their effect on your mood or energy?",
+          "questionId": "question_4",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:07.038983+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "I usually catch the difference within the first ten minutes. If I spray a bright, citrus-heavy sample\u2014think bergamot or grapefruit\u2014my shoulders come up, my cadence picks up a notch, and I\u2019m suddenly planning the rest of the afternoon instead of crawling toward it. One afternoon after a five-hour stretch in CAD, I tried a small vial of Atelier\u2019s Orange Sanguine; I\u2019d meant to save it for later, but I was fading. Two breaths in, I was sitting straighter, tapping the keyboard quicker. It wasn\u2019t caffeine, but the effect felt similar\u2014like an ambient nudge rather than a jolt.\n\nWoody or resinous scents hit me differently. A vetiver-amber blend I\u2019ve been testing lately lands low in the chest; my breathing slows and the studio chatter almost fades into the background. That\u2019s useful when I need to comb through drawings for errors\u2014steady focus, no rush. The downside is it can bleed into lethargy if I overapply; I caught myself rereading the same spec sheet three times because I\u2019d gone a bit heavy on the wrist spray.\n\nThe tricky bit is olfactory fatigue. After three or four trials my nose taps out, and then mood signals get fuzzy\u2014I think I feel something, but I\u2019m mostly riding on expectation. I\u2019ve started limiting tests to one in the morning, one late afternoon, so I can link scent to energy shift with some honesty. Still learning, but those distinct moments\u2014citrus lift, woody grounding\u2014are clear enough that they influence which bottle I reach for before a design review versus a late-night render session.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Can you recall a time when a fragrance influenced how you felt during the day?",
+          "questionId": "question_5",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:21.536485+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Last winter I grabbed a small decant of a bright neroli-based scent\u2014kind of a crisp, sun-lit citrus with a bit of white floral. I\u2019d been up late debugging a finicky CAD script, so I started the next morning groggy, already dreading a design review with a client who\u2019s, you know, famously detail-obsessed. I sprayed that fragrance while I was packing my laptop. Within a few minutes the sharp citrus hit woke me up more than the coffee. Walking to the car I noticed I was literally breathing deeper; the air felt clearer. \n\nThe real shift happened in the meeting room. Usually I\u2019m hyper-focused on slide order and structural tolerances, but that scent kept nudging me into a lighter headspace\u2014almost playful. I found myself explaining a sustainability trade-off with a bit more warmth than usual, and the client actually smiled instead of diving straight into numbers. It wasn\u2019t data, obviously, but I could feel the room soften. By lunch I realised I\u2019d moved through a three-hour review without that usual tension in my shoulders.\n\nFlip side: a month later I tested a heavier oud on a site visit\u2014thought it would project confidence. Instead, in the cramped elevator with contractors, it felt oppressive. I caught a wrinkle on a foreman\u2019s face and suddenly worried I smelled like I was covering something up. Spent the rest of the day distracted, second-guessing every comment I made about load paths. That taught me the hard way that projection and context matter as much as the notes themselves.\n\nSo yeah, same basic routine\u2014spray, drive, meetings\u2014but the fragrance either lifted me into a calmer, more collaborative mode or dragged me into self-conscious overthinking. It\u2019s a bigger lever on mood than I expected.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What sort of feelings or states do you hope to experience when choosing a perfume?",
+          "questionId": "question_6",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:32.690591+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Mostly I\u2019m chasing two things. First is a kind of grounded focus. When I\u2019m deep in a model for six hours straight, I don\u2019t want something loud; I want a subtle cedar-vetiver note that makes me feel steady, almost like I\u2019m back in my grandfather\u2019s shed where everything smelled of sawdust and fresh timber. That hint of wood settles my nerves and keeps my mind clear enough to catch the small flaws before they snowball.\n\nThe second is quiet confidence for client meetings. A touch of bergamot or light amber gives me that extra lift\u2014nothing flashy, just enough so I catch the scent when I adjust my collar and think, \u201cRight, I\u2019ve got this.\u201d There was a morning last year when I wore a heavier, sweeter fragrance by mistake; halfway through the presentation I felt distracted, even self-conscious. That moment reminded me how scent can either anchor me or pull me off balance, so now I\u2019m careful: I test a strip while sketching, wait an hour, and only then decide. I\u2019m still experimenting, honestly, but when the blend hits that calm-plus-confidence sweet spot, the whole day flows.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have you ever avoided or stopped using a perfume because of the way it made you feel?",
+          "questionId": "question_7",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:48:48.964896+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Yes. A couple of years ago I bought a cedar-and-leather fragrance thinking it would project confidence during client meetings. On paper it smelled refined; on my skin it turned almost smoky, almost claustrophobic. The first morning I wore it I had back-to-back design reviews that were already tense because of budget overruns. About an hour in, the scent felt like an extra layer of pressure\u2014thick, insistent, hard to escape. I caught myself breathing shallowly, almost bracing against it, and that amplified the stress in the room.\n\nI tried it twice more, hoping it was just context, but each time the same heaviness crept in. The perfume started to anchor itself to that sense of being cornered by timelines and resistant stakeholders. After the third attempt I shelved the bottle. I still like cedar in theory, but the emotional association is too strong; even catching a hint of it on a scarf nudges me back to that cramped meeting room.\n\nWhat I learned is that fragrance can cement a moment, good or bad, far more vividly than I\u2019d expected. Now I test new scents on quieter days first, giving myself space to notice how they sit with my mood before bringing them into high-stakes settings.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "When you reflect on the perfumes you've owned, are there any scents that stood out for their impact on your motivation or confidence?",
+          "questionId": "question_8",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:00.894914+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Two come to mind.\n\nFirst is Terre d\u2019Herm\u00e8s. I bought it when we were knee-deep in that software-integration fiasco. Most days I felt like I was dragging a boulder uphill\u2014budget spreadsheets open, colleagues grumbling about broken plug-ins. The scent\u2019s dry citrus and earthy vetiver hit just after the morning coffee; it snapped me into a clearer headspace. I\u2019d catch a whiff while troubleshooting compatibility errors and, weirdly, it reminded me why I\u2019d pushed for the tool in the first place\u2014progress, bigger picture, all that. It didn\u2019t solve the blockers, but it nudged my mindset from defensive to problem-solving. I noticed I volunteered ideas more readily in stand-ups. Once the bottle ran out, my motivation dipped a touch, enough that I realised the fragrance had become a tiny ritual of \u201creset\u201d before the chaos.\n\nThe other is Tom Ford Oud Wood. I wore it the day I confronted the architect about that structural flaw in the Epping project. Walking into the meeting, palms clammy, timeline on the line\u2014one spray felt like armour. The smoky, resinous note stayed with me through the tense back-and-forth. I could feel my posture straighten each time the scent rose off my collar. The confidence boost wasn\u2019t placebo; I spoke slower, held eye contact, and the team eventually agreed to the redesign. Since then I save that scent for high-stakes presentations. The downside: it\u2019s heavy, almost imposes on the space, so I\u2019m hyper-aware of wearing it in tight site offices; too much and I worry about overpowering people, which pulls me out of the confident state I\u2019m after.\n\nEverything else on my shelf\u2014fresh aquatics, a couple of niche gourmands\u2014never moved the needle much. They smell pleasant but they don\u2019t anchor an emotion. I\u2019m still hunting for something lighter than Oud Wood yet just as grounding, without the environmental concerns around exotic woods. That search is ongoing.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "How do you usually decide which scent to wear on a particular day?",
+          "questionId": "question_9",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:12.215623+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "First thing in the morning I check my calendar while the kettle\u2019s boiling. If the day involves client reviews or site walks, I reach for something light\u2014usually a citrus-leaning cologne. On a muddy construction site a heavy amber feels out of place, and a bright scent helps me stay alert when I\u2019m squinting at rebar details.\n\nWhen I\u2019m desk-bound modeling all afternoon, mood matters more than context. If I\u2019m anxious about a tricky geometry problem, I\u2019ll pick a dry vetiver that feels almost meditative. There\u2019s a specific bottle\u2014Terre d\u2019Herm\u00e8s\u2014that I keep near the monitor; one spray and the earthy note reminds me of that moment years ago when I caught the structural flaw. It\u2019s like a quiet cue to slow down and look closer.\n\nThe hardest choice is big presentation days. Part of me wants the boost of something bolder, but I\u2019ve misjudged intensity before and spent the meeting worrying I smelled like I was trying too hard. Now I do a quick wrist test, open the window, come back in five minutes, and see if the scent still feels like background instead of broadcast. If it passes that \u201cbackground\u201d test, I\u2019m good.\n\nSo, mood first, agenda second, and a short pause to make sure the fragrance supports the work rather than compete with it.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "What role, if any, do memories or associations play when you select a perfume?",
+          "questionId": "question_10",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:25.395506+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Memories drive most of my choices. If I\u2019m reaching for Terre d\u2019Herm\u00e8s before a client review, it\u2019s less about the notes on the box and more about a very specific afternoon ten years ago. I\u2019d just flagged that structural flaw in the Epping development\u2014the one that could have derailed the whole build\u2014and the lead architect shook my hand outside the site office. The wind carried this dry, mineral-woody smell from the surrounding gum trees, and later, when I tested Terre, the flinty orange-cedar accord took me straight back to that moment. Now, whenever I need to channel that same steadiness under pressure, I spray it once and let the association do half the psychological work.\n\nThere\u2019s a softer side, too. On quieter weekends I\u2019ll wear L\u2019Artisan\u2019s M\u00e9moire de Roses because it reminds me of sitting in Mum\u2019s garden sketching facade ideas during uni breaks. The first whiff of bright raspberry-rose knocks the edge off my usual analytical mode and nudges me toward looser, more exploratory thinking\u2014useful when I\u2019m ideating sustainability concepts without the weight of deadlines.\n\nSo the bottle isn\u2019t just fragrance; it\u2019s a shortcut to emotional states tied to pivotal memories. If a scent doesn\u2019t anchor to something meaningful, it rarely survives the next wardrobe purge, no matter how technically \u201cgood\u201d it is.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Have friends or family ever commented on your scent choices? If so, how did that affect your decisions?",
+          "questionId": "question_11",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:38.967200+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "Yeah, a couple of moments stand out.  \n\nAbout five years ago a teammate pulled me aside after a tight review meeting and said, \u201cMate, your cologne\u2019s a bit loud in that small room.\u201d I\u2019d honestly never thought about projection before; I\u2019d just grabbed what I liked that morning. I remember feeling a mix of embarrassment and gratitude\u2014embarrassed because I might\u2019ve distracted people, grateful because he was candid. The next day I switched to something lighter and started doing a quick \u201cone-spray, walk-through\u201d instead of the full wrist-neck routine. Since then I always test a new scent in the car on the way to work with the windows up\u2014if it feels heavy, I save it for weekends.\n\nOn the flip side, my sister once hugged me at a family lunch and said the fragrance reminded her of Dad\u2019s old aftershave. That hit me differently\u2014warm, a bit nostalgic\u2014so I kept that particular scent in rotation for family gatherings. It\u2019s less about the scent itself now and more about the little bit of shared memory it sparks each time.\n\nThose two comments\u2014one constructive, one sentimental\u2014pretty much recalibrated how I think about wearing fragrance. Now I weigh context and the people around me just as much as personal preference.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        },
+        {
+          "question": "Looking back on your experiences with perfumes, is there anything that stands out as particularly surprising or unexpected?",
+          "questionId": "question_12",
+          "score": 8.0,
+          "tools": 2,
+          "justification": "Judge disabled",
+          "timestamp": "2025-12-10 14:49:53.056294+00:00",
+          "refinementCount": 0,
+          "emotional": 2,
+          "answer": "One moment stays with me. A year ago I was testing a vetiver-heavy fragrance\u2014picked it because the dry-down reminded me of freshly planed hardwood, something I associate with early site visits. I wore it to a kickoff meeting, expecting nobody to notice. Mid-discussion the site foreman paused, sniffed the air, and said the scent reminded him of his late father\u2019s workshop. He got visibly emotional for a second, and the whole room shifted; the mood softened, conversation turned more personal, and decisions that usually drag on wrapped up in half an hour.  \n\nWhat surprised me wasn\u2019t the compliment\u2014it was how a scent I chose for private, almost technical reasons triggered someone else\u2019s memory so intensely. I\u2019d always framed fragrance as a personal finishing touch, almost like a polished pair of shoes. That meeting forced me to acknowledge the social dimension: aroma leaks into shared space and can nudge dynamics in ways I can\u2019t predict or fully control.  \n\nThe flip side happened later. I tried a citrus-amber blend a colleague recommended. On my skin it ballooned\u2014by lunchtime even I found it cloying. A junior designer finally joked that the office \u201csmelled like a hotel lobby.\u201d I realised I\u2019d over-indexed on external feedback without testing longevity in real conditions. Since then I decant samples into tiny atomisers and wear them on a long workday before committing.  \n\nSo, yeah, the unexpected part is how something as intangible as perfume can both open doors emotionally and, when I misjudge it, distract from the work. I pay more attention now, but I\u2019m still learning where that invisible line sits.",
+          "status": "completed",
+          "llmModel": "gpt-4o-mini"
+        }
+      ]
+    }
+  }
+}

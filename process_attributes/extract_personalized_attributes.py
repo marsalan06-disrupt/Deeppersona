@@ -1,13 +1,25 @@
+#!/usr/bin/env python3
+"""
+Extract personalized attributes from question-reason pairs.
+
+This script uses GPT to analyze questions and extract relevant
+user personalization attributes in X.Y.Z format.
+"""
 import json
 import time
 import os
+import sys
 from typing import Dict
 from openai import OpenAI
 
-# OpenAI API Settings
-OPENAI_API_KEY = "OPENAI_API_KEY"
+# Add parent directory to path for config import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'generate_user_profile'))
+from config import OPENAI_API_KEY, GPT_MODEL
 
-GPT_MODEL = "gpt-4o"
+# Get project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'template.json')
 
 
 class PersonalizedAttributeExtractor:
@@ -17,7 +29,7 @@ class PersonalizedAttributeExtractor:
             api_key=OPENAI_API_KEY,
         )
         # Load template categories
-        with open('/home/zhou/persona/dataset/3.20/template.json', 'r') as f:
+        with open(TEMPLATE_PATH, 'r') as f:
             template_data = json.load(f)
             self.persona_categories = template_data['persona_categories']
 
@@ -196,14 +208,13 @@ Only return the JSON object in the above format."""
             json.dump(sorted_attributes, f, ensure_ascii=False, indent=4)
 
 def main():
-    print('使用代理:', os.environ.get('https_proxy'))
-    
+    print('Using proxy:', os.environ.get('https_proxy'))
+
     extractor = PersonalizedAttributeExtractor()
-    input_file = "PATH.json"
-    output_attributes_file = "PATH.json"
-    output_full_file = "PATH.json"
-    attributes_dir = "PATH"
-    
+    input_file = os.path.join(DATA_DIR, 'questions.json')
+    output_attributes_file = os.path.join(DATA_DIR, 'extracted_attributes.json')
+    output_full_file = os.path.join(DATA_DIR, 'extracted_full.json')
+
     extractor.process_questions(input_file, output_attributes_file, output_full_file, num_questions=1224)
 
 if __name__ == "__main__":

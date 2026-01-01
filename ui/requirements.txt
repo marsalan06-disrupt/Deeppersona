@@ -1,0 +1,10 @@
+# UI dependencies
+streamlit>=1.28.0
+
+# Already in main project (included for completeness)
+openai>=1.0.0
+numpy
+scikit-learn
+tqdm
+geonamescache
+sentence-transformers

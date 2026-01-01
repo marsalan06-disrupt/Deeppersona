@@ -1,11 +1,26 @@
+#!/usr/bin/env python3
+"""
+Filter and validate personalized attributes.
+
+This script validates attributes to ensure they are:
+1. General categories (not specific instances)
+2. User-centric (describe personal characteristics)
+3. Properly categorized under valid top-level categories
+"""
 import json
-from openai import OpenAI
 import os
+import sys
+from openai import OpenAI
 from typing import Dict, List, Tuple
 
-# OpenAI API Settings
-OPENAI_API_KEY = "OPENAI_API_KEY"
-GPT_MODEL = "gpt-4o"
+# Add parent directory to path for config import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'generate_user_profile'))
+from config import OPENAI_API_KEY, GPT_MODEL
+
+# Get project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'template.json')
 
 def check_last_segment(client: OpenAI, segment: str) -> bool:
     """检查属性的最后一段是否符合描述要求"""
@@ -46,8 +61,8 @@ Return only: true or false"""
 
 class PersonalizedAttributeAnalyzer:
     def __init__(self):
-        # 读取模板文件中的一级属性
-        with open('/home/zhou/persona/dataset/2.7/template.json', 'r') as f:
+        # Load top-level categories from template file
+        with open(TEMPLATE_PATH, 'r') as f:
             template = json.load(f)
             self.valid_categories = list(template['persona_categories'])
     
@@ -292,9 +307,9 @@ def process_attributes(input_file: str, output_file: str):
         raise
 
 def main():
-    input_file = "PATH.json"
-    output_file = "PATH.json"
-    
+    input_file = os.path.join(DATA_DIR, 'extracted_attributes.json')
+    output_file = os.path.join(DATA_DIR, 'filtered_attributes.json')
+
     process_attributes(input_file, output_file)
 
 if __name__ == "__main__":

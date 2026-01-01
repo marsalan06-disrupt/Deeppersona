@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "SlashCommand(/commando:meta:create-agent:*)",
+      "Bash(find:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "atlassian",
+    "browsermcp",
+    "figma-dev-mode-mcp-server"
+  ]
+}

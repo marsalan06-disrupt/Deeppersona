@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
+"""
+Attribute leaf node quality checker.
+
+This script filters attribute paths using:
+1. Semantic similarity check (removes near-duplicates)
+2. GPT quality validation (ensures attributes are general categories)
+"""
 import os
+import sys
 import json
 from tqdm import tqdm
 from typing import Tuple, List
@@ -8,13 +16,19 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-# 初始化sentence transformer模型
+# Add parent directory to path for config import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'generate_user_profile'))
+from config import OPENAI_API_KEY, GPT_MODEL
+
+# Get project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'outputs')
+
+# Initialize sentence transformer model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# 设置OpenAI客户端
-OPENAI_API_KEY = "OPENAI_API_KEY"
-GPT_MODEL = "gpt-4o"
-
+# Set up OpenAI client
 client = OpenAI(
     api_key=OPENAI_API_KEY,
 )
@@ -358,73 +372,78 @@ def get_all_paths(d: dict, current_path: str = "") -> List[str]:
     return paths
 
 def main():
-    print("开始处理...")
-    input_file = "/home/zhou/persona/src/process_attributes_test/2.24/outputs/run_20250326_125810/attributes_merged.json"
-    output_file = os.path.join(os.path.dirname(input_file), "filtered_attributes1.json")
-    log_file = os.path.join(os.path.dirname(input_file), "filter_log1.txt")
-    
+    print("Starting processing...")
+
+    # Use project data directory for input, outputs directory for output
+    input_file = os.path.join(DATA_DIR, "attributes_merged.json")
+
+    # Create outputs directory if not exists
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_file = os.path.join(OUTPUT_DIR, "filtered_attributes.json")
+    log_file = os.path.join(OUTPUT_DIR, "filter_log.txt")
+
     try:
-        print("读取输入文件...")
+        print(f"Reading input file: {input_file}")
         with open(input_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
     except Exception as e:
-        print(f"读取文件失败: {e}")
+        print(f"Failed to read file: {e}")
         return
 
     original_leaves = count_leaves(data)
     all_paths = get_all_paths(data)
-    print(f"开始过滤 {original_leaves} 个叶子节点...")
-    
-    # 创建日志文件
+    print(f"Starting to filter {original_leaves} leaf nodes...")
+
+    # Create log file
     with open(log_file, 'w', encoding='utf-8') as f:
-        f.write(f"开始时间: {os.path.basename(input_file)}\n")
-        f.write(f"原始叶子节点数: {original_leaves}\n\n")
-    
-    # 创建 PathFilter 实例并进行过滤
+        f.write(f"Input file: {os.path.basename(input_file)}\n")
+        f.write(f"Original leaf count: {original_leaves}\n\n")
+
+    # Create PathFilter instance and filter
     path_filter = PathFilter()
     with tqdm(total=original_leaves, desc="Filtering nodes") as pbar:
         filtered_data = path_filter.filter_tree(data, pbar=pbar)
-    
+
     filtered_leaves = count_leaves(filtered_data)
     filtered_paths = get_all_paths(filtered_data)
     removed_paths = set(all_paths) - set(filtered_paths)
     similar_paths = set(all_paths) - set(filtered_paths) - set(path_filter.retained_paths)
 
     try:
-        print("\n保存结果...")
-        # 保存过滤后的数据
+        print("\nSaving results...")
+        # Save filtered data
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(filtered_data, f, ensure_ascii=False, indent=2)
-            
-        # 追加日志信息
+
+        # Append log info
         with open(log_file, 'a', encoding='utf-8') as f:
-            f.write("\n保留的路径:\n")
+            f.write("\nRetained paths:\n")
             for path in sorted(path_filter.retained_paths):
                 f.write(f"+ {path}\n")
-                
-            f.write("\n删除的路径:\n")
+
+            f.write("\nRemoved paths:\n")
             for path in sorted(removed_paths):
                 if path in similar_paths:
-                    f.write(f"- {path} (与其他路径相似)\n")
+                    f.write(f"- {path} (similar to another path)\n")
                 else:
-                    f.write(f"- {path} (不符合要求)\n")
-                    
-            f.write(f"\n统计信息:\n")
-            f.write(f"- 原始叶子节点数: {original_leaves}\n")
-            f.write(f"- 过滤后叶子节点数: {filtered_leaves}\n")
-            f.write(f"- 删除的节点数: {original_leaves - filtered_leaves}\n")
-            f.write(f"- 其中相似路径数: {len(similar_paths)}\n")
-            
-        print(f"完成! 结果已保存到: {output_file}")
-        print(f"日志已保存到: {log_file}")
-        print(f"\n统计信息:")
-        print(f"- 原始叶子节点数: {original_leaves}")
-        print(f"- 过滤后叶子节点数: {filtered_leaves}")
-        print(f"- 删除的节点数: {original_leaves - filtered_leaves}")
-        print(f"- 其中相似路径数: {len(similar_paths)}")
-        print(f"- 总删除率: {((original_leaves - filtered_leaves) / original_leaves * 100):.2f}%")
+                    f.write(f"- {path} (does not meet requirements)\n")
+
+            f.write(f"\nStatistics:\n")
+            f.write(f"- Original leaf count: {original_leaves}\n")
+            f.write(f"- Filtered leaf count: {filtered_leaves}\n")
+            f.write(f"- Removed count: {original_leaves - filtered_leaves}\n")
+            f.write(f"- Similar paths removed: {len(similar_paths)}\n")
+
+        print(f"Done! Results saved to: {output_file}")
+        print(f"Log saved to: {log_file}")
+        print(f"\nStatistics:")
+        print(f"- Original leaf count: {original_leaves}")
+        print(f"- Filtered leaf count: {filtered_leaves}")
+        print(f"- Removed count: {original_leaves - filtered_leaves}")
+        print(f"- Similar paths removed: {len(similar_paths)}")
+        print(f"- Total removal rate: {((original_leaves - filtered_leaves) / original_leaves * 100):.2f}%")
     except Exception as e:
-        print(f"保存文件失败: {e}")
+        print(f"Failed to save file: {e}")
 
 if __name__ == "__main__":
     main()

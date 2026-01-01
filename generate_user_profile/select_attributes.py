@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# 属性选择器脚本
-# 此脚本用于分析用户配置文件并选择最适合的属性
+# Attribute Selector Script
+# This script analyzes user profiles and selects the most suitable attributes
 
 import json
 import os
@@ -18,12 +18,12 @@ from tqdm import tqdm
 import time
 ATTRIBUTE_SELECTION_CACHE = None
 
-# 导入项目配置
+# Import project configuration
 from config import client, GPT_MODEL, parse_json_response
 
-# 定义get_completion函数
+# Define get_completion function
 def get_completion(messages, model=GPT_MODEL, temperature=0.7):
-    """使用OpenAI API生成文本完成"""
+    """Generate text completion using OpenAI API"""
     try:
         response = client.chat.completions.create(
             model=model,
@@ -35,7 +35,7 @@ def get_completion(messages, model=GPT_MODEL, temperature=0.7):
         logger.error(f"Error calling OpenAI API: {e}")
         return None
 
-# 导入based_data模块中的函数
+# Import functions from based_data module
 from based_data import (
     generate_age_info,
     generate_gender,
@@ -47,207 +47,210 @@ from based_data import (
     generate_interests_and_hobbies
 )
 
-# 配置日志
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# 属性数据集路径
-ATTRIBUTES_PATH = "/home/zhou/deeppersona/generate_user_profile_test/data/large_attributes.json"  # 属性数据集路径
+# Project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-# 向量数据库路径
-EMBEDDINGS_PATH = "/home/zhou/deeppersona/generate_user_profile_test/data/attribute_embeddings.pkl"  # 属性嵌入向量路径
+# Attribute dataset path
+ATTRIBUTES_PATH = os.path.join(PROJECT_ROOT, 'data', 'large_attributes.json')
 
-# 默认模型来自配置
+# Vector database path
+EMBEDDINGS_PATH = os.path.join(PROJECT_ROOT, 'data', 'attribute_embeddings.pkl')
+
+# Default model from config
 DEFAULT_MODEL = GPT_MODEL
 
-# 向量搜索参数
-NEAR_NEIGHBOR_COUNT = 7  # 近邻数量
-MID_NEIGHBOR_COUNT = 2   # 中距离邻居数量
-FAR_NEIGHBOR_COUNT = 1   # 远距离邻居数量
-DIVERSITY_THRESHOLD = 0.7  # 多样性阈值（余弦相似度）
+# Vector search parameters
+NEAR_NEIGHBOR_COUNT = 7  # Near neighbor count
+MID_NEIGHBOR_COUNT = 2   # Mid-distance neighbor count
+FAR_NEIGHBOR_COUNT = 1   # Far-distance neighbor count
+DIVERSITY_THRESHOLD = 0.7  # Diversity threshold (cosine similarity)
 
 class AttributeSelector:
     """
-    属性选择器类
-    用于分析用户配置文件并使用GPT-4o选择适当的属性
+    Attribute Selector Class
+    Analyzes user profiles and selects appropriate attributes using GPT-4o
     """
-    
+
     def __init__(self, model: str = DEFAULT_MODEL, user_profile: Dict = None):
         """
-        初始化属性选择器
-        
-        参数：
-            model: 要使用的GPT模型
-            user_profile: 用户配置文件数据（可选）
+        Initialize attribute selector
+
+        Args:
+            model: GPT model to use
+            user_profile: User profile data (optional)
         """
         self.model = model
-        
-        # OpenAI客户端已在config.py中设置
-        
-        # 加载属性数据
-        self.attributes = self._load_json(ATTRIBUTES_PATH)  # 加载属性数据
-        
-        # 设置用户配置文件
+
+        # OpenAI client is set up in config.py
+
+        # Load attribute data
+        self.attributes = self._load_json(ATTRIBUTES_PATH)
+
+        # Set user profile
         self.user_profile = user_profile
-        
-        # 验证数据
+
+        # Validate data
         self._validate_data()
-        
-        # 加载向量数据库
+
+        # Load vector database
         self.embeddings_data = self._load_embeddings()
-        
-        # 初始化属性路径和向量映射
+
+        # Initialize attribute paths and vector mappings
         self.path_to_embedding = {}
         self.paths = []
         self.embeddings = []
-        
+
         if self.embeddings_data:
             self.paths = self.embeddings_data.get('paths', [])
             self.embeddings = self.embeddings_data.get('embeddings', [])
-            
-            # 创建路径到向量的映射
+
+            # Create path to vector mapping
             for i, path in enumerate(self.paths):
                 if i < len(self.embeddings):
                     self.path_to_embedding[path] = self.embeddings[i]
-            
-            logger.info(f"已加载 {len(self.paths)} 条属性路径和对应的向量嵌入")
-        
-        logger.info(f"已加载属性，包含 {len(self.attributes.keys())} 个顶级类别")
+
+            logger.info(f"Loaded {len(self.paths)} attribute paths with corresponding embeddings")
+
+        logger.info(f"Loaded attributes with {len(self.attributes.keys())} top-level categories")
     
     def _load_json(self, file_path: str) -> Dict:
-        """从文件加载JSON数据"""
+        """Load JSON data from file"""
         try:
             return json.loads(Path(file_path).read_text(encoding='utf-8'))
         except Exception as e:
-            logger.error(f"从 {file_path} 加载JSON时出错: {e}")
+            logger.error(f"Error loading JSON from {file_path}: {e}")
             raise
-            
+
     def _load_embeddings(self) -> Dict:
-        """加载属性嵌入向量数据库"""
+        """Load attribute embeddings vector database"""
         try:
             if not os.path.exists(EMBEDDINGS_PATH):
-                logger.warning(f"嵌入向量文件 {EMBEDDINGS_PATH} 不存在")
+                logger.warning(f"Embeddings file {EMBEDDINGS_PATH} does not exist")
                 return None
-                
+
             with open(EMBEDDINGS_PATH, 'rb') as f:
                 embeddings_data = pickle.load(f)
-                
-            # 检查数据结构并标准化键名
+
+            # Check data structure and standardize key names
             paths_key = 'attribute_paths' if 'attribute_paths' in embeddings_data else 'paths'
             embeddings_key = 'embeddings'
-            
-            # 获取路径和嵌入向量
+
+            # Get paths and embeddings
             paths = embeddings_data.get(paths_key, [])
             embeddings = embeddings_data.get(embeddings_key, [])
-            
-            # 如果数据无效，返回空值
+
+            # Return None if data is invalid
             if not isinstance(embeddings_data, dict) or not paths or not isinstance(embeddings, np.ndarray):
-                logger.warning("嵌入向量数据格式无效")
+                logger.warning("Invalid embeddings data format")
                 return None
-            
-            # 标准化返回的数据字典
+
+            # Standardize returned data dictionary
             standardized_data = {
                 'paths': paths,
                 'embeddings': embeddings
             }
-                
-            logger.info(f"从 {EMBEDDINGS_PATH} 加载了 {len(paths)} 条属性嵌入向量")
+
+            logger.info(f"Loaded {len(paths)} attribute embeddings from {EMBEDDINGS_PATH}")
             return standardized_data
-            
+
         except Exception as e:
-            logger.error(f"加载嵌入向量时出错: {e}")
+            logger.error(f"Error loading embeddings: {e}")
             return None
-    
+
     def _validate_data(self):
-        """验证加载的数据并转换格式（如需要）"""
-        # 检查属性格式
+        """Validate loaded data and convert format if needed"""
+        # Check attribute format
         if isinstance(self.attributes, dict):
-            # 如果是嵌套字典格式（如large_attributes.json），转换为路径格式
+            # If nested dict format (like large_attributes.json), convert to path format
             if "paths" not in self.attributes:
-                logger.info("正在将属性从嵌套字典格式转换为路径格式")
+                logger.info("Converting attributes from nested dict format to path format")
                 self.attributes = {"paths": self._flatten_attributes(self.attributes)}
         else:
-            raise ValueError("无效的属性格式：不是字典")
+            raise ValueError("Invalid attribute format: not a dictionary")
             
     def _create_profile_embedding(self, profile: Dict) -> np.ndarray:
         """
-        为用户配置文件创建嵌入向量
-        
-        参数：
-            profile: 用户配置文件字典
-            
-        返回：
-            配置文件的嵌入向量
+        Create embedding vector for user profile
+
+        Args:
+            profile: User profile dictionary
+
+        Returns:
+            Profile embedding vector
         """
         try:
-            # 提取配置文件摘要
+            # Extract profile summary
             profile_summary = self._extract_profile_summary(profile)
-            
-            # 使用OpenAI API生成嵌入向量
+
+            # Generate embedding using OpenAI API
             response = client.embeddings.create(
                 model="text-embedding-ada-002",
                 input=profile_summary
             )
-            
-            # 提取嵌入向量
+
+            # Extract embedding vector
             embedding = np.array(response.data[0].embedding)
-            logger.info(f"成功为用户配置文件创建了嵌入向量")
+            logger.info(f"Successfully created embedding for user profile")
             return embedding
-            
+
         except Exception as e:
-            logger.error(f"创建配置文件嵌入向量时出错: {e}")
+            logger.error(f"Error creating profile embedding: {e}")
             return None
             
     def _compute_cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """
-        计算两个向量之间的余弦相似度
-        
-        参数：
-            vec1: 第一个向量
-            vec2: 第二个向量
-            
-        返回：
-            余弦相似度值，范围为[-1, 1]
+        Compute cosine similarity between two vectors
+
+        Args:
+            vec1: First vector
+            vec2: Second vector
+
+        Returns:
+            Cosine similarity value, range [-1, 1]
         """
-        # 处理空向量或None值
+        # Handle empty vectors or None values
         if vec1 is None or vec2 is None or len(vec1) == 0 or len(vec2) == 0:
             return 0.0
-            
-        # 确保向量维度匹配
+
+        # Ensure vector dimensions match
         if len(vec1) != len(vec2):
-            logger.warning(f"向量维度不匹配: {len(vec1)} vs {len(vec2)}")
+            logger.warning(f"Vector dimension mismatch: {len(vec1)} vs {len(vec2)}")
             return 0.0
-            
-        # 计算向量范数
+
+        # Compute vector norms
         norm1 = np.linalg.norm(vec1)
         norm2 = np.linalg.norm(vec2)
-        
-        # 处理零向量
+
+        # Handle zero vectors
         if norm1 == 0 or norm2 == 0:
             return 0.0
-            
-        # 计算余弦相似度
+
+        # Compute cosine similarity
         return np.dot(vec1, vec2) / (norm1 * norm2)
-    
+
     def get_profile(self) -> Dict:
-        """获取用户配置文件"""
+        """Get user profile"""
         return self.user_profile
         
     def _check_if_career_needed(self, profile: Dict, profile_summary: str) -> bool:
         """
-        使用GPT判断是否需要"Career and Work Identity"属性
-        
-        参数：
-            profile: 用户配置文件字典
-            profile_summary: 用户配置文件摘要
-            
-        返回：
-            布尔值，表示是否需要职业相关属性
+        Use GPT to determine if "Career and Work Identity" attributes are needed
+
+        Args:
+            profile: User profile dictionary
+            profile_summary: User profile summary
+
+        Returns:
+            Boolean indicating whether career-related attributes are needed
         """
-        # 创建专门用于判断职业属性必要性的提示词
+        # Create prompt for determining career attribute necessity
         prompt = f"""
         # Career Attribute Necessity Assessment
         
@@ -272,39 +275,39 @@ class AttributeSelector:
         """
         
         try:
-            # 调用GPT API，使用config.py中的get_completion函数
+            # Call GPT API using get_completion function from config.py
             messages = [
-                {"role": "system", "content": "You are an AI assistant that analyzes user profiles and determines whether career attributes are necessary. You always respond with valid JSON."}, 
+                {"role": "system", "content": "You are an AI assistant that analyzes user profiles and determines whether career attributes are necessary. You always respond with valid JSON."},
                 {"role": "user", "content": prompt}
             ]
             content = get_completion(messages, model=self.model, temperature=0.3)
-            
+
             # Use the project's JSON parsing function
-            result = parse_json_response(content, {"is_career_needed": True, "reasoning": "默认需要职业属性"})
-            
-            # 确保结果包含必要的键
+            result = parse_json_response(content, {"is_career_needed": True, "reasoning": "Career attributes needed by default"})
+
+            # Ensure result contains necessary keys
             if "is_career_needed" not in result:
                 logger.warning("Missing 'is_career_needed' key in GPT response, defaulting to True")
                 result["is_career_needed"] = True
-                
+
             logger.info(f"Career attributes needed: {result['is_career_needed']}, Reason: {result.get('reasoning', 'No reasoning provided')}")
-            
+
             return result["is_career_needed"]
-                
+
         except Exception as e:
             logger.error(f"Error calling GPT API for career assessment: {e}")
-            # 出错时默认需要职业属性
+            # Default to needing career attributes on error
             return True
     
     def _extract_profile_summary(self, profile: Dict) -> str:
         """
-        提取配置文件摘要，用于GPT分析
-        
-        参数：
-            profile: 用户配置文件字典
-            
-        返回：
-            配置文件摘要字符串
+        Extract profile summary for GPT analysis
+
+        Args:
+            profile: User profile dictionary
+
+        Returns:
+            Profile summary string
         """
         summary_parts = []
         
@@ -320,9 +323,9 @@ class AttributeSelector:
         if "gender" in profile:
             gender = profile["gender"]
             # Convert Chinese characters to English if needed
-            if gender == "男":
+            if gender == "male":
                 gender = "Male"
-            elif gender == "女":
+            elif gender == "female":
                 gender = "Female"
             summary_parts.append(f"Gender: {gender}")
         
@@ -356,61 +359,61 @@ class AttributeSelector:
             if interests and isinstance(interests, list):
                 summary_parts.append(f"Interests: {', '.join(interests)}")
         
-        # Add personal story (life_story) - 现在包含这部分内容
+        # Add personal story (life_story)
         if "personal_story" in profile and "personal_story" in profile["personal_story"]:
             life_story = profile["personal_story"]["personal_story"]
             if life_story:
                 summary_parts.append(f"Life Story: {life_story}")
-        
+
         # Add summary if available
         if "summary" in profile:
             summary_parts.append(f"Profile Summary: {profile['summary']}")
-            
-        # 现在包含完整的based_data信息，包括life_story
-        
+
+        # Now includes complete based_data info including life_story
+
         return "\n".join(summary_parts)
     
     def _flatten_attributes(self, attributes: Dict, prefix: str = "") -> List[str]:
         """
-        将属性字典扁平化为属性路径列表
-        
-        参数：
-            attributes: 属性字典或子字典
-            prefix: 当前路径前缀
+        Flatten attribute dictionary into attribute path list
+
+        Args:
+            attributes: Attribute dictionary or sub-dictionary
+            prefix: Current path prefix
         """
         result = []
-        
+
         def _flatten(attr_dict, curr_prefix):
             for k, v in attr_dict.items():
                 path = f"{curr_prefix}.{k}" if curr_prefix else k
-                # 只有叶子节点（空字典）才添加到结果中
+                # Only leaf nodes (empty dicts) are added to result
                 if isinstance(v, dict):
-                    if not v:  # 空字典，这是叶子节点
+                    if not v:  # Empty dict, this is a leaf node
                         result.append(path)
-                    else:  # 非空字典，继续递归
+                    else:  # Non-empty dict, continue recursion
                         _flatten(v, path)
-                else:  # 非字典值，直接添加
+                else:  # Non-dict value, add directly
                     result.append(path)
-        
+
         _flatten(attributes, prefix)
         return result
-    
+
     def _get_attribute_categories(self) -> List[str]:
-        """获取顶级属性类别"""
-        # 从路径中提取唯一的顶级类别
+        """Get top-level attribute categories"""
+        # Extract unique top-level categories from paths
         return sorted({path.split('.')[0] for path in self.attributes["paths"]})
     
     def _format_attributes_tree(self, attributes_dict: Dict, prefix: str = "", depth: int = 0) -> List[str]:
         """
-        将属性字典格式化为文本格式的树结构
-        
-        参数：
-            attributes_dict: 属性字典
-            prefix: 当前路径前缀
-            depth: 树中的当前深度
-            
-        返回：
-            表示树的格式化行列表
+        Format attribute dictionary as text tree structure
+
+        Args:
+            attributes_dict: Attribute dictionary
+            prefix: Current path prefix
+            depth: Current depth in tree
+
+        Returns:
+            List of formatted lines representing tree
         """
         lines = []
         
@@ -433,61 +436,61 @@ class AttributeSelector:
     
     def analyze_profile_for_attributes(self, profile: Dict) -> Dict[str, List[str]]:
         """
-        分析用户配置文件并确定应该生成哪些属性
-        
-        参数：
-            profile: 用户配置文件字典
-            
-        返回：
-            包含'recommended'和'not_recommended'属性类别的字典
+        Analyze user profile and determine which attributes should be generated
+
+        Args:
+            profile: User profile dictionary
+
+        Returns:
+            Dictionary containing 'recommended' and 'not_recommended' attribute categories
         """
-        # 提取配置文件摘要
+        # Extract profile summary
         profile_summary = self._extract_profile_summary(profile)
-        
-        # 获取属性类别
+
+        # Get attribute categories
         categories = self._get_attribute_categories()
-        
-        # 第一步：使用GPT判断是否需要"Career and Work Identity"
+
+        # Step 1: Use GPT to determine if "Career and Work Identity" is needed
         career_needed = self._check_if_career_needed(profile, profile_summary)
-        
-        # 第二步：保留所有一级属性（除了可能被排除的"Career and Work Identity"）
+
+        # Step 2: Keep all first-level attributes (except possibly excluded "Career and Work Identity")
         recommended_categories = []
         not_recommended_categories = []
-        
+
         for category in categories:
             if category == "Career and Work Identity" and not career_needed:
                 not_recommended_categories.append(category)
-                logger.info(f"根据分析，不需要职业和工作身份属性")
+                logger.info(f"Based on analysis, career and work identity attributes not needed")
             else:
                 recommended_categories.append(category)
-        
-        # 生成结果
+
+        # Generate result
         result = {
             "recommended": recommended_categories,
             "not_recommended": not_recommended_categories,
-            "reasoning": f"根据用户背景分析，{'需要' if career_needed else '不需要'}职业和工作身份属性。保留所有其他一级属性，从每个属性中选择最符合用户背景的特征。"
+            "reasoning": f"Based on user background analysis, career and work identity attributes {'are' if career_needed else 'are not'} needed. Keeping all other first-level attributes, selecting features that best match user background."
         }
-        
+
         return result
     
     def process_profile(self) -> Dict:
         """
-        处理用户配置文件并生成属性推荐
-        
-        返回：
-            包含配置文件和属性推荐的字典
+        Process user profile and generate attribute recommendations
+
+        Returns:
+            Dictionary containing profile and attribute recommendations
         """
-        # 如果未提供用户配置文件，生成一个
+        # Generate user profile if not provided
         if not self.user_profile:
             self.user_profile = generate_user_profile()
-        
-        # 提取配置文件摘要
+
+        # Extract profile summary
         profile_summary = self._extract_profile_summary(self.user_profile)
-        
-        # 分析配置文件并获取属性推荐
+
+        # Analyze profile and get attribute recommendations
         attribute_recommendations = self.analyze_profile_for_attributes(self.user_profile)
-        
-        # 返回结果
+
+        # Return result
         return {
             "profile_summary": profile_summary,
             "attribute_recommendations": attribute_recommendations
@@ -495,39 +498,39 @@ class AttributeSelector:
     
     def _get_nested_attributes(self, category: str) -> Dict:
         """
-        通过从路径重建获取特定类别的嵌套属性
-        
-        参数：
-            category: 类别名称
+        Get nested attributes for specific category by rebuilding from paths
+
+        Args:
+            category: Category name
         """
         result = {}
-        
-        # 筛选以该类别开头的路径并重建嵌套结构
+
+        # Filter paths starting with this category and rebuild nested structure
         for path in [p for p in self.attributes["paths"] if p.startswith(f"{category}.")]:
-            parts = path.split('.')[1:]  # 跳过第一部分（类别）
+            parts = path.split('.')[1:]  # Skip first part (category)
             current = result
-            
+
             for i, part in enumerate(parts):
                 if i == len(parts) - 1:
-                    current[part] = {}  # 叶节点
+                    current[part] = {}  # Leaf node
                 else:
-                    current.setdefault(part, {})  # 如果键不存在则创建
+                    current.setdefault(part, {})  # Create if key doesn't exist
                     current = current[part]
-        
+
         return result
     
 
     
     def select_top_attributes(self, path_list, target_count=200):
         """
-        从路径列表中选择最重要和最具代表性的顶级属性。
-        
-        参数：
-            path_list: 属性路径列表
-            target_count: 要选择的目标属性数量
-            
-        返回：
-            选定的属性路径列表
+        Select the most important and representative top-level attributes from path list.
+
+        Args:
+            path_list: List of attribute paths
+            target_count: Target number of attributes to select
+
+        Returns:
+            List of selected attribute paths
         """
         if not path_list:
             return []
@@ -599,65 +602,65 @@ class AttributeSelector:
         
         return selected_paths
     
-    # 注意：删除了_select_best_matching_attributes方法，因为它已经被新的随机选择和GPT筛选方法替代
-        
-    def _find_interesting_neighbors(self, profile_embedding: np.ndarray, category_paths: List[str], 
+    # Note: Removed _select_best_matching_attributes method as it was replaced by new random selection and GPT filtering method
+
+    def _find_interesting_neighbors(self, profile_embedding: np.ndarray, category_paths: List[str],
     target_count: int = 300) -> List[str]:
         """
-        实现"有趣的邻居"向量搜索方案
-        
-        参数：
-            profile_embedding: 用户配置文件的嵌入向量
-            category_paths: 特定类别的属性路径列表
-            target_count: 要选择的目标属性数量
-            
-        返回：
-            选定的属性路径列表或空列表（如果出现读取问题）
+        Implement "interesting neighbors" vector search scheme
+
+        Args:
+            profile_embedding: User profile embedding vector
+            category_paths: List of attribute paths for specific category
+            target_count: Target number of attributes to select
+
+        Returns:
+            List of selected attribute paths or empty list if read issues occur
         """
-        # 如果没有向量数据库或路径为空，返回空列表
+        # Return empty list if no vector database or paths are empty
         if not self.embeddings_data or not category_paths:
-            logger.warning("没有可用的向量数据库或类别路径为空，返回空列表")
+            logger.warning("No vector database available or category paths empty, returning empty list")
             return []
-        
-        # 过滤出在向量数据库中有嵌入向量的路径
+
+        # Filter paths that have embeddings in vector database
         valid_paths = [path for path in category_paths if path in self.path_to_embedding]
-        
+
         if not valid_paths:
-            logger.warning("没有有效的属性路径匹配向量数据库，返回空列表")
+            logger.warning("No valid attribute paths match vector database, returning empty list")
             return []
-        
-        # 计算每个路径与配置文件的相似度
+
+        # Calculate similarity between each path and profile
         path_similarities = []
         for path in valid_paths:
             embedding = self.path_to_embedding[path]
             similarity = self._compute_cosine_similarity(profile_embedding, embedding)
             path_similarities.append((path, similarity))
-        
-        # 按相似度排序
+
+        # Sort by similarity
         path_similarities.sort(key=lambda x: x[1], reverse=True)
-        
-        # 计算要选择的数量
+
+        # Calculate number to select
         total_paths = len(path_similarities)
-        
-        # 如果路径数量少于目标数量，返回所有路径
+
+        # Return all paths if fewer than target count
         if total_paths <= target_count:
             return [p[0] for p in path_similarities]
-        
+
         selected_paths = []
         used_indices = set()
-        
-        # 按5:3:2比例分配近邻、中距离、远距离邻居
-        total_ratio = 5 + 3 + 2  # 总比例 = 10
-        
-        # 1. 选择近邻（相似度最高的属性）- 50% (5/10)
+
+        # Allocate near, mid-distance, far-distance neighbors in 5:3:2 ratio
+        total_ratio = 5 + 3 + 2  # Total ratio = 10
+
+        # 1. Select near neighbors (highest similarity) - 50% (5/10)
         near_count = min(int(target_count * 5 / total_ratio), total_paths // 3)
         near_indices = list(range(near_count))
         for i in random.sample(near_indices, min(near_count, len(near_indices))):
             if i not in used_indices:
                 selected_paths.append(path_similarities[i][0])
                 used_indices.add(i)
-        
-        # 2. 选择中距离邻居 - 30% (3/10)
+
+        # 2. Select mid-distance neighbors - 30% (3/10)
         mid_start = total_paths // 3
         mid_end = 2 * total_paths // 3
         mid_count = min(int(target_count * 3 / total_ratio), (mid_end - mid_start))
@@ -667,8 +670,8 @@ class AttributeSelector:
                 if i not in used_indices:
                     selected_paths.append(path_similarities[i][0])
                     used_indices.add(i)
-        
-        # 3. 选择远距离邻居（相似度最低的属性）- 20% (2/10)
+
+        # 3. Select far-distance neighbors (lowest similarity) - 20% (2/10)
         far_start = 2 * total_paths // 3
         far_count = min(int(target_count * 2 / total_ratio), (total_paths - far_start))
         far_indices = list(range(far_start, total_paths))
@@ -677,8 +680,8 @@ class AttributeSelector:
                 if i not in used_indices:
                     selected_paths.append(path_similarities[i][0])
                     used_indices.add(i)
-        
-        # 如果还需要更多属性来达到目标数量，从未使用的索引中随机选择
+
+        # If more attributes needed to reach target, randomly select from unused indices
         remaining_count = target_count - len(selected_paths)
         if remaining_count > 0:
             remaining_indices = [i for i in range(total_paths) if i not in used_indices]
@@ -686,109 +689,109 @@ class AttributeSelector:
                 additional_count = min(remaining_count, len(remaining_indices))
                 for i in random.sample(remaining_indices, additional_count):
                     selected_paths.append(path_similarities[i][0])
-        
-        logger.info(f"使用向量搜索选择了 {len(selected_paths)} 条属性（近邻: {near_count}, 中距离: {mid_count}, 远距离: {far_count}）")
+
+        logger.info(f"Selected {len(selected_paths)} attributes using vector search (near: {near_count}, mid: {mid_count}, far: {far_count})")
         return selected_paths
     
     def get_top_attributes(self, result: Dict, target_count: int = 200) -> List[str]:
         """
-        获取属性列表
-        
-        参数：
-            result: 来自analyze_profile_for_attributes的结果
-            target_count: 目标属性数量
-            
-        返回：
-            属性路径列表
+        Get attribute list
+
+        Args:
+            result: Result from analyze_profile_for_attributes
+            target_count: Target attribute count
+
+        Returns:
+            List of attribute paths
         """
         try:
-            # 收集所有推荐的类别
+            # Collect all recommended categories
             all_recommended = set()
-            
+
             if "recommended" in result:
                 all_recommended.update(result["recommended"])
-            
-            # 提取所有路径
+
+            # Extract all paths
             all_paths = []
             category_paths = {}
-            
+
             if "paths" in self.attributes:
-                # 如果我们使用带有路径的新格式
+                # If using new format with paths
                 for path in self.attributes["paths"]:
-                    # 只包括来自推荐类别的路径
+                    # Only include paths from recommended categories
                     category = path.split('.')[0] if '.' in path else path
                     if category in all_recommended:
                         all_paths.append(path)
-                        # 按类别分组路径
+                        # Group paths by category
                         if category not in category_paths:
                             category_paths[category] = []
                         category_paths[category].append(path)
             else:
-                # 如果我们使用旧的嵌套格式，将其扁平化
+                # If using old nested format, flatten it
                 for category in all_recommended:
                     paths = self._flatten_attributes(self._get_nested_attributes(category), category)
                     all_paths.extend(paths)
                     category_paths[category] = paths
-            
-            # 使用传入的target_count参数，不再随机选择
-            
-            # 如果有向量数据库，使用向量搜索
+
+            # Use passed target_count parameter, no longer random selection
+
+            # If vector database available, use vector search
             if self.embeddings_data and self.user_profile:
-                # 创建用户配置文件的嵌入向量
+                # Create user profile embedding
                 profile_embedding = self._create_profile_embedding(self.user_profile)
-                
+
                 if profile_embedding is not None:
-                    # 为每个类别选择属性
+                    # Select attributes for each category
                     final_paths = []
                     for category, paths in category_paths.items():
-                        # 根据类别大小按比例分配目标数量
+                        # Allocate target count proportionally based on category size
                         category_ratio = len(paths) / len(all_paths)
                         category_target = max(3, int(target_count * category_ratio))
-                        
-                        # 使用向量搜索选择该类别的属性
+
+                        # Use vector search to select attributes for this category
                         category_selected = self._find_interesting_neighbors(
                             profile_embedding, paths, category_target
                         )
                         final_paths.extend(category_selected)
-                    
-                    # 如果选择的属性超过目标数量，随机减少
+
+                    # If selected attributes exceed target count, randomly reduce
                     if len(final_paths) > target_count:
                         final_paths = random.sample(final_paths, target_count)
-                    
-                    logger.info(f"使用向量搜索从 {len(all_paths)} 条属性中选择了 {len(final_paths)} 条属性")
+
+                    logger.info(f"Selected {len(final_paths)} attributes from {len(all_paths)} using vector search")
                     return final_paths
-            
-            # 如果没有向量数据库或向量搜索失败，直接返回空列表
-            logger.warning(f"没有可用的向量数据库或向量搜索失败，返回空列表")
+
+            # If no vector database or vector search failed, return empty list
+            logger.warning(f"No vector database available or vector search failed, returning empty list")
             return []
-            
+
         except Exception as e:
             logger.error(f"Error generating attribute list: {e}")
-            # 如果出错，直接返回空列表
-            logger.error(f"属性选择过程出错，返回空列表")
+            # Return empty list on error
+            logger.error(f"Attribute selection process error, returning empty list")
             return []
-            
-    # 注意：删除了_random_select_from_top_categories方法，因为现在直接在get_top_attributes中随机选择属性
+
+    # Note: Removed _random_select_from_top_categories method as random selection now happens directly in get_top_attributes
     
 
 
 def generate_user_profile() -> Dict:
-    """生成用户基础信息配置文件"""
-    # 生成并存储直接函数返回值
+    """Generate user base profile"""
+    # Generate and store direct function return values
     age_info = generate_age_info()
     gender = generate_gender()
     location = generate_location()
     career_info = generate_career_info(age_info["age"])
-    
-    # 生成个人价值观
+
+    # Generate personal values
     values = generate_personal_values(
         age=age_info["age"],
         gender=gender,
         occupation=career_info["status"],
         location=location
     )
-    
-    # 生成生活态度
+
+    # Generate life attitude
     life_attitude = generate_life_attitude(
         age=age_info["age"],
         gender=gender,
@@ -796,8 +799,8 @@ def generate_user_profile() -> Dict:
         location=location,
         values_orientation=values.get("values_orientation", "")
     )
-    
-    # 生成个人故事
+
+    # Generate personal story
     personal_story = generate_personal_story(
         age=age_info["age"],
         gender=gender,
@@ -806,11 +809,11 @@ def generate_user_profile() -> Dict:
         values_orientation=values.get("values_orientation", ""),
         life_attitude=life_attitude
     )
-    
-    # 生成兴趣爱好
+
+    # Generate interests and hobbies
     interests = generate_interests_and_hobbies(personal_story)
-    
-    # 存储函数返回值
+
+    # Store function return values
     user_profile = {
         "age_info": age_info,
         "gender": gender,
@@ -821,36 +824,36 @@ def generate_user_profile() -> Dict:
         "personal_story": personal_story,
         "interests": interests
     }
-    
+
     return user_profile
 
 def get_selected_attributes(user_profile=None, attribute_count=200):
     global ATTRIBUTE_SELECTION_CACHE
-    # 注释掉缓存机制，确保每次都重新选择属性
+    # Cache mechanism commented out to ensure fresh attribute selection each time
     # if ATTRIBUTE_SELECTION_CACHE is not None:
     #     return ATTRIBUTE_SELECTION_CACHE
 
     try:
-        # 如果没有提供用户配置文件，生成一个
+        # Generate user profile if not provided
         if user_profile is None:
             user_profile = generate_user_profile()
-        
-        # 创建选择器并传入用户配置文件
+
+        # Create selector with user profile
         selector = AttributeSelector(user_profile=user_profile)
-        
-        # 处理配置文件
+
+        # Process profile
         result = selector.process_profile()
-        
-        # 获取属性推荐
+
+        # Get attribute recommendations
         attribute_recommendations = result.get("attribute_recommendations", {})
-        
-        # 获取属性列表，使用传入的attribute_count参数
+
+        # Get attribute list using passed attribute_count parameter
         top_paths = selector.get_top_attributes(attribute_recommendations, target_count=attribute_count)
-        
-        # 返回属性列表
+
+        # Return attribute list
         ATTRIBUTE_SELECTION_CACHE = top_paths
         return top_paths
-        
+
     except Exception as e:
         logger.error(f"Error getting selected attributes: {e}")
         return []
@@ -866,41 +869,43 @@ def build_nested_dict(paths: List[str]) -> Dict:
             current = current[part]
     return result
 
-def save_results(user_profile: Dict, selected_paths: List[str], output_dir: str = '/home/zhou/persona/generate_user_profile/output') -> None:
+def save_results(user_profile: Dict, selected_paths: List[str], output_dir: str = None) -> None:
     """
-    保存用户配置文件和选定的属性路径到文件
-    参数：
-        user_profile: 用户配置文件
-        selected_paths: 选定的属性路径 (列表形式)
-        output_dir: 输出目录（默认为 '/home/zhou/persona/generate_user_profile/output'）
+    Save user profile and selected attribute paths to files.
+    Args:
+        user_profile: User profile dictionary
+        selected_paths: Selected attribute paths (list format)
+        output_dir: Output directory (defaults to 'generate_user_profile/output')
     """
+    if output_dir is None:
+        output_dir = os.path.join(os.path.dirname(__file__), 'output')
     try:
         from pathlib import Path
         import json
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
-        
-        # 保存用户配置文件
+
+        # Save user profile
         profile_path = output_path / "user_profile.json"
         with open(profile_path, 'w', encoding='utf-8') as f:
             json.dump(user_profile, f, ensure_ascii=False, indent=2)
-        logger.info(f"用户配置文件已保存到 {profile_path}")
-        
-        # 将 selected_paths 转换为嵌套字典结构
+        logger.info(f"User profile saved to {profile_path}")
+
+        # Convert selected_paths to nested dictionary structure
         nested_selected_paths = build_nested_dict(selected_paths)
-        
-        # 保存属性路径（嵌套字典格式）
+
+        # Save attribute paths (nested dictionary format)
         paths_path = output_path / "selected_paths.json"
         with open(paths_path, 'w', encoding='utf-8') as f:
             json.dump(nested_selected_paths, f, ensure_ascii=False, indent=2)
-        logger.info(f"属性路径已保存到 {paths_path}")
+        logger.info(f"Attribute paths saved to {paths_path}")
     except Exception as e:
-        logger.error(f"保存结果时出错: {e}")
+        logger.error(f"Error saving results: {e}")
         raise
 
-# 示例：在生成用户基本信息和属性列表的函数中自动调用保存（请根据实际情况将此调用添加到合适位置）
-user_profile = generate_user_profile()
-selected_paths = get_selected_attributes(user_profile)
-save_results(user_profile, selected_paths)
-
-# 此文件只供其他文件导入使用
+# Example: Auto-save in user profile and attribute list generation functions
+# Only run when executed directly, not when imported
+if __name__ == "__main__":
+    user_profile = generate_user_profile()
+    selected_paths = get_selected_attributes(user_profile)
+    save_results(user_profile, selected_paths)

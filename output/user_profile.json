@@ -1,0 +1,31 @@
+{
+  "age_info": {
+    "age": 9,
+    "age_group": "child"
+  },
+  "gender": "female",
+  "location": {
+    "country": "Brazil",
+    "city": "Dionísio Cerqueira"
+  },
+  "career_info": {
+    "status": "Elementary school student"
+  },
+  "personal_values": {
+    "values_orientation": "Curious about learning and enjoying simple pleasures while being kind and respectful to others."
+  },
+  "life_attitude": {
+    "attitude": "Eager to explore and find joy in small things.",
+    "attitude_details": "She approaches each day with curiosity, enjoying learning and being kind to those around her.",
+    "coping_mechanism": "She asks questions and seeks help when confused."
+  },
+  "personal_story": {
+    "personal_story": "Story 1: Last year in Dionísio Cerqueira, I was very curious about the river near our home. One afternoon, I decided to explore it with my friends after school. We found small fish and colorful stones, which made me very happy. However, I also noticed some trash in the water and felt sad because it could hurt the animals. I told my teacher about it, and she helped organize a clean-up day. Even though it was hard work, I enjoyed learning about nature and helping to keep it clean. It made me realize how important it is to respect the environment. This experience taught me a lot about caring for my surroundings and working together with others at school. I still love walking by the river and discovering new things, but now I’m more careful to keep it safe for everyone.\n\nStory 2: One day at school in Dionísio Cerqueira, I was excited to share my drawing of the city with my classmates. During recess, a group of kids started teasing me about my picture because I used bright colors and drew things differently. I felt upset and didn’t want to join them anymore. Later, my teacher noticed I was quiet and asked what happened. She talked to the class about being kind and respectful, which made some kids apologize to me. Even though it was hard to handle those feelings, I learned that sometimes people don’t understand each other right away. I still enjoy drawing and showing my work, but now I’m more confident and patient when others don’t see things the same way as I do."
+  },
+  "interests": {
+    "interests": [
+      "nature exploration",
+      "drawing and painting"
+    ]
+  }
+}

@@ -1,12 +1,26 @@
 #!/usr/bin/env python3
+"""
+Convert nested attribute JSON to X.Y.Z path format.
+
+This script:
+1. Reads a nested attribute JSON file
+2. Extracts all paths in X.Y.Z format
+3. Generates a tree visualization
+"""
 import os
 import json
 from collections import defaultdict
 
+# Get project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'outputs')
+
+
 def extract_paths(data, prefix=""):
     """
-    递归提取嵌套字典中所有路径，路径以点号分隔
-    如果节点值为 None 或非字典，则认为达到叶子节点，返回当前路径
+    Recursively extract all paths from nested dict, separated by dots.
+    If node value is None or non-dict, it's considered a leaf node.
     """
     paths = []
     if isinstance(data, dict):
@@ -110,43 +124,48 @@ def generate_tree_text(parent_child_map):
     return tree_lines
 
 def main():
-    # 指定输入输出文件路径
-    input_file = "/home/zhou/persona/src/process_attributes_test/2.24/outputs/run_20250326_125810/attributes_merged.json"   
-    output_json = os.path.join(os.path.dirname(input_file), "X.Y.Z_3.6.json")
-    output_txt = os.path.join(os.path.dirname(input_file), "X.Y.Z_3.6.txt")
-    
-    # 读取 JSON 数据
+    # Use project data directory for input, outputs directory for output
+    input_file = os.path.join(DATA_DIR, "attributes_merged.json")
+
+    # Create outputs directory if not exists
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_json = os.path.join(OUTPUT_DIR, "paths_X.Y.Z.json")
+    output_txt = os.path.join(OUTPUT_DIR, "paths_tree.txt")
+
+    # Read JSON data
     try:
+        print(f"Reading input file: {input_file}")
         with open(input_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
     except Exception as e:
-        print(f"读取文件失败: {e}")
+        print(f"Failed to read file: {e}")
         return
 
-    # 提取所有X.Y.Z形式的路径
+    # Extract all X.Y.Z paths
     paths = extract_paths(data)
-    
-    # 将结果保存为 JSON
+    print(f"Extracted {len(paths)} paths")
+
+    # Save as JSON
     result = {"paths": sorted(paths)}
     try:
         with open(output_json, 'w', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
-        print(f"转换后的路径信息已保存至: {output_json}")
+        print(f"Path info saved to: {output_json}")
     except Exception as e:
-        print(f"保存JSON文件失败: {e}")
+        print(f"Failed to save JSON: {e}")
         return
-    
-    # 生成树形文本结构
+
+    # Generate tree text structure
     try:
         parent_child_map = build_parent_child_map(paths)
         tree_lines = generate_tree_text(parent_child_map)
-        
-        # 保存树形文本
+
+        # Save tree text
         with open(output_txt, 'w', encoding='utf-8') as f:
             f.write('\n'.join(tree_lines))
-        print(f"树形文本结构已保存至: {output_txt}")
+        print(f"Tree structure saved to: {output_txt}")
     except Exception as e:
-        print(f"保存树形文本失败: {e}")
+        print(f"Failed to save tree text: {e}")
 
 if __name__ == "__main__":
     main()

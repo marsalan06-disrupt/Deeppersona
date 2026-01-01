@@ -1,0 +1,23 @@
+{
+  "age_info": {
+    "age": 11,
+    "age_group": "child"
+  },
+  "gender": "male",
+  "location": {
+    "country": "India",
+    "city": "Sāngola"
+  },
+  "career_info": {
+    "status": "Middle school student"
+  },
+  "personal_values": {
+    "values_orientation": "Curious about learning, respectful of rules, and open to new ideas without strong preferences"
+  },
+  "life_attitude": "{\n  \"attitude\": \"Eager to explore and understand the world around.\",\n  \"attitude_details\": \"He approaches new subjects with enthusiasm, follows classroom rules carefully, and listens to different viewpoints attentively.\",\n  \"coping_mechanism\": \"Asks questions and seeks guidance from teachers.\"\n}",
+  "personal_story": {
+    "personal_story": "Story 1: During the summer break in Sāngola, I visited the local library to learn more about India's history for a school project. While there, I found an old book about the Maratha Empire that fascinated me. I spent hours reading and taking notes, eager to share my findings with my classmates. However, the library's limited opening hours made it difficult to access all the materials I wanted, and sometimes the resources were outdated. Despite this, I managed to complete my project on time and received praise from my teacher, which encouraged me to keep learning independently.\n\nStory 2: Last monsoon season, heavy rains caused flooding near our home in Sāngola. The streets were waterlogged, making it unsafe to travel to school. I was curious about how the rain affected the local environment, so I observed the changes in nearby fields and how farmers dealt with the waterlogged crops. Unfortunately, some of the crops were damaged, which worried my family since farming is their main source of income. This experience made me realize the challenges our community faces during extreme weather and sparked my interest in studying environmental science to understand how to prevent such damage in the future.\n\nStory 3: At school, we were introduced to a new computer class, and I was eager to learn how to use the software. Our teacher explained basic coding concepts, which I found intriguing. However, not everyone in the class had access to a computer at home, including me, which made practicing difficult. I tried to use the computer lab during breaks but had limited time. I also respected the school's rules about sharing equipment and waiting my turn. Even though progress was slow, I appreciated the opportunity to explore coding and planned to ask my parents about saving money for a basic computer to continue learning at home."
+  },
+  "interests": "{\n  \"interests\": [\n    \"reading historical books\",\n    \"studying environmental science\",\n    \"learning computer coding\"\n  ]\n}",
+  "Occupations": []
+}

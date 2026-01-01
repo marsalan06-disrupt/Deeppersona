@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 from config import get_completion
 import subprocess
-# 添加当前目录到系统路径
+# Add current directory to system path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def safe_str(value):
@@ -24,33 +24,33 @@ def safe_str(value):
     return value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, indent=2)
 
 def get_project_root() -> str:
-    """获取项目根目录的路径"""
+    """Get the project root directory path."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(current_dir, '..'))
     return project_root
 
 
 def copy_files_from_source_to_target():
-    """复制文件从源位置到目标位置"""
-    # 源路径 - 现在已经不需要复制，因为我们直接保存到正确的目录
-    # 但为了兼容性，我们保留这个函数
+    """Copy files from source to target location."""
+    # Source path - no longer needed as we save directly to correct directory
+    # But kept for compatibility
     correct_output_dir = os.path.join(get_project_root(), "output")
-    
-    # 确保目标目录存在
+
+    # Ensure target directory exists
     os.makedirs(correct_output_dir, exist_ok=True)
-    
-    print(f"输出目录已设置为: {correct_output_dir}")
+
+    print(f"Output directory set to: {correct_output_dir}")
     return True
 
 
 def get_timestamped_filename(base_path: str) -> str:
-    """为文件路径添加时间戳
-    
+    """Add timestamp to file path.
+
     Args:
-        base_path: 基础文件路径
-        
+        base_path: Base file path.
+
     Returns:
-        str: 带时间戳的文件路径
+        str: File path with timestamp.
     """
     directory = os.path.dirname(base_path)
     filename = os.path.basename(base_path)
@@ -61,46 +61,46 @@ def get_timestamped_filename(base_path: str) -> str:
 
 
 def save_json_file(file_path: str, data: Dict, use_timestamp: bool = True) -> str:
-    """保存JSON文件
-    
+    """Save JSON file.
+
     Args:
-        file_path: 目标文件路径
-        data: 要保存的数据
-        use_timestamp: 是否使用时间戳，默认为True
-        
+        file_path: Target file path.
+        data: Data to save.
+        use_timestamp: Whether to use timestamp, default True.
+
     Returns:
-        str: 实际保存的文件路径
+        str: Actual saved file path.
     """
     try:
         if use_timestamp:
             actual_path = get_timestamped_filename(file_path)
         else:
             actual_path = file_path
-            
+
         os.makedirs(os.path.dirname(actual_path), exist_ok=True)
         with open(actual_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         return actual_path
     except Exception as e:
-        print(f"保存JSON文件时出错: {e}")
+        print(f"Error saving JSON file: {e}")
         return file_path
 
 
 def extract_paths(obj: Dict, prefix: str = "") -> List[str]:
-    """从嵌套的JSON对象中提取所有属性路径
-    
+    """Extract all attribute paths from nested JSON object.
+
     Args:
-        obj: 嵌套的JSON对象
-        prefix: 当前路径前缀
-        
+        obj: Nested JSON object.
+        prefix: Current path prefix.
+
     Returns:
-        List[str]: 属性路径列表
+        List[str]: List of attribute paths.
     """
     paths = []
     for key, value in obj.items():
         new_prefix = f"{prefix}.{key}" if prefix else key
         if isinstance(value, dict):
-            if not value:  # 空字典表示叶子节点
+            if not value:  # Empty dict means leaf node
                 paths.append(new_prefix)
             else:
                 paths.extend(extract_paths(value, new_prefix))
@@ -109,86 +109,87 @@ def extract_paths(obj: Dict, prefix: str = "") -> List[str]:
 
 
 def generate_category_attributes(category_paths: Dict, custom_prompt: str, category_name: str) -> Dict:
-    """一次性生成一个一级大类下的所有属性值。
-    
-    参数:
-        category_paths: 一级大类下的所有属性路径及其结构。
-        custom_prompt: 自定义的完整prompt，包含具体的生成指令。
-        category_name: 一级大类名称。
-        
-    返回:
-        Dict: 生成的所有属性值。
+    """Generate all attribute values for a top-level category at once.
+
+    Args:
+        category_paths: All attribute paths and structure under the category.
+        custom_prompt: Custom prompt with specific generation instructions.
+        category_name: Top-level category name.
+
+    Returns:
+        Dict: All generated attribute values.
     """
-    # 收集该类别下的所有叶子节点路径
+    # Collect all leaf node paths under this category
     leaf_paths = []
-    
+
     def collect_leaf_paths(obj, current_path):
         for key, value in obj.items():
             path = f"{current_path}.{key}" if current_path else key
             if isinstance(value, dict):
-                if not value:  # 叶子节点
+                if not value:  # Leaf node
                     leaf_paths.append(path)
                 else:
                     collect_leaf_paths(value, path)
-    
+
     collect_leaf_paths(category_paths, "")
-    
-    # 如果没有叶子节点，直接返回空字典
+
+    # If no leaf nodes, return empty dict
     if not leaf_paths:
         return {}
     
-    # 简化的系统提示，只负责JSON格式
+    # Simplified system prompt for JSON format
     system_prompt = """Format your response as a JSON object where each key is the attribute path and each value is the generated attribute value (not exceeding 100 characters)."""
-    
-    # 使用自定义prompt + 属性路径列表
+
+    # Custom prompt + attribute paths list
     user_prompt = f"{custom_prompt}\n\nAttribute Paths to generate values for:\n"
     for path in leaf_paths:
         user_prompt += f"- {path}\n"
     user_prompt += "\nGenerate suitable values for all these attributes in JSON format."
-    
+
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
-    
+
     try:
-        print(f"  正在一次性生成 {category_name} 下的 {len(leaf_paths)} 个属性值...")
+        print(f"  Generating {len(leaf_paths)} attribute values for {category_name}...")
         response = get_completion(messages)
         if not response:
-            print(f"  生成 {category_name} 属性值失败: 空响应")
+            print(f"  Failed to generate {category_name} attributes: empty response")
             return {}
-            
-        # 尝试解析JSON响应
+
+        # Try to parse JSON response
         try:
             import json
-            # 清理响应，移除可能的markdown代码块标记
+            # Clean response, remove possible markdown code block markers
             cleaned_response = response.strip()
             if cleaned_response.startswith("```json"):
                 cleaned_response = cleaned_response[7:]
             if cleaned_response.endswith("```"):
                 cleaned_response = cleaned_response[:-3]
             cleaned_response = cleaned_response.strip()
-            
+
             generated_values = json.loads(cleaned_response)
-            print(f"  成功生成 {len(generated_values)} 个属性值")
+            print(f"  Successfully generated {len(generated_values)} attribute values")
             return generated_values
         except json.JSONDecodeError as e:
-            print(f"  解析 {category_name} 属性值JSON失败: {e}")
-            print(f"  响应内容: {response[:100]}..." if len(response) > 100 else f"响应内容: {response}")
+            print(f"  Failed to parse {category_name} JSON: {e}")
+            print(f"  Response content: {response[:100]}..." if len(response) > 100 else f"Response content: {response}")
             return {}
     except Exception as e:
-        print(f"  生成 {category_name} 属性值时出错: {e}")
+        print(f"  Error generating {category_name} attributes: {e}")
         return {}
 
 
 def generate_final_summary(profile: Dict, base_info: Dict = None) -> str:
-    """为用户档案生成最终摘要。
-    
-    参数:
-        profile: 完整的用户档案数据。
-        base_info: 基础信息，包含life_story等内容。
-    返回:
-        str: 最终的摘要文本。
+    """Generate final summary for user profile.
+
+    Args:
+        profile: Complete user profile data.
+        base_info: Base info containing life_story etc.
+
+    Returns:
+        str: Final summary text.
     """
     system_prompt = """
 Your task: Based solely on the provided user attributes and personal story, create an objective and factual personal profile, strictly between 150–400 words.
@@ -243,11 +244,11 @@ Weave all elements into a cohesive story, not a simple list of facts."""
 
 
 def print_section(section: Dict, indent: int = 0) -> None:
-    """打印配置部分的内容
-    
-    参数:
-        section: 要打印的配置部分
-        indent: 缩进级别
+    """Print config section content.
+
+    Args:
+        section: Config section to print.
+        indent: Indentation level.
     """
     indent_str = "  " * indent
     for key, value in section.items():
@@ -259,67 +260,67 @@ def print_section(section: Dict, indent: int = 0) -> None:
 
 
 def generate_section(template_section: Dict, base_info: str, section_name: str, indent: int = 0) -> Dict:
-    """生成配置文件的一个部分。
-    
-    参数:
-        template_section: 模板中的对应部分。
-        base_info: 基础信息文本。
-        section_name: 部分名称。
-        indent: 缩进级别。
-        
-    返回:
-        Dict: 生成的配置部分。
+    """Generate a section of the profile.
+
+    Args:
+        template_section: Corresponding section in template.
+        base_info: Base info text.
+        section_name: Section name.
+        indent: Indentation level.
+
+    Returns:
+        Dict: Generated config section.
     """
     section_result = {}
     indent_str = "  " * indent
-    
-    print(f"{indent_str}正在生成 {section_name} 部分...")
-    
-    # 如果是一级大类，一次性生成所有属性
-    if indent == 0:  # 一级大类
-        # 使用新函数一次性生成所有属性值
+
+    print(f"{indent_str}Generating {section_name} section...")
+
+    # If top-level category, generate all attributes at once
+    if indent == 0:  # Top-level category
+        # Use new function to generate all attribute values at once
         all_attributes = generate_category_attributes(template_section, base_info, section_name)
-        
-        # 如果成功生成了属性值，将其添加到结果中
+
+        # If attributes were generated successfully, add them to result
         if all_attributes:
-            # 构建结果字典
+            # Build result dictionary
             for path, value in all_attributes.items():
-                # 分解路径
+                # Split path
                 parts = path.split('.')
-                # 跳过第一部分（大类名称）
+                # Skip first part (category name)
                 if len(parts) > 1 and parts[0] == section_name:
                     parts = parts[1:]
-                
-                # 递归构建嵌套字典
+
+                # Recursively build nested dictionary
                 current = section_result
                 for i, part in enumerate(parts):
-                    if i == len(parts) - 1:  # 最后一个部分，设置值
+                    if i == len(parts) - 1:  # Last part, set value
                         current[part] = value
                         print(f"{indent_str}  - {'.'.join(parts)}: {value}")
                     else:
                         if part not in current:
                             current[part] = {}
                         current = current[part]
-            
+
             return section_result
-    
-    # 如果不是一级大类或者一次性生成失败，则使用原来的递归方式
+
+    # If not top-level or batch generation failed, use recursive approach
     for key, value in template_section.items():
         current_path = f"{section_name}.{key}" if section_name else key
-        
+
         if isinstance(value, dict):
-            if not value:  # 叶子节点
+            if not value:  # Leaf node
                 generated_value = generate_attribute_value(current_path, base_info)
                 section_result[key] = generated_value
                 print(f"{indent_str}  - {key}: {generated_value}")
-            else:  # 嵌套节点
+            else:  # Nested node
                 section_result[key] = generate_section(value, base_info, current_path, indent + 1)
-    
+
     return section_result
 
 
 def enforce_word_limit(text: str, limit: int = 300) -> str:
-    """将文本修剪为最多`limit`个单词。"""
+    """Trim text to at most `limit` words."""
     words = text.split()
     if len(words) > limit:
         return ' '.join(words[:limit])
@@ -327,20 +328,20 @@ def enforce_word_limit(text: str, limit: int = 300) -> str:
 
 
 def append_profile_to_json(file_path: str, profile: Dict, use_timestamp: bool = True) -> str:
-    """追加个人资料到 JSON 文件
-    
-    参数:
-        file_path: 目标文件路径
-        profile: 要追加的个人资料
-        use_timestamp: 是否使用时间戳，默认为True
-        
-    返回:
-        str: 实际保存的文件路径
+    """Append profile to JSON file.
+
+    Args:
+        file_path: Target file path.
+        profile: Profile to append.
+        use_timestamp: Whether to use timestamp, default True.
+
+    Returns:
+        str: Actual saved file path.
     """
     try:
         if use_timestamp:
             actual_path = get_timestamped_filename(file_path)
-            profiles = [profile]  # 新文件，只包含当前profile
+            profiles = [profile]  # New file, only contains current profile
         else:
             actual_path = file_path
             if os.path.exists(file_path):
@@ -349,66 +350,75 @@ def append_profile_to_json(file_path: str, profile: Dict, use_timestamp: bool = 
             else:
                 profiles = []
             profiles.append(profile)
-        
+
         os.makedirs(os.path.dirname(actual_path), exist_ok=True)
         with open(actual_path, 'w', encoding='utf-8') as f:
             json.dump(profiles, f, ensure_ascii=False, indent=2)
         return actual_path
     except Exception as e:
-        print(f"追加个人资料到 JSON 文件时出错: {e}")
+        print(f"Error appending profile to JSON file: {e}")
         return file_path
 
 
-def generate_single_profile(template: Dict = None, profile_index: int = 0, attribute_count: int = 200) -> Dict:
-    """根据给定的模板生成完整的用户档案。
-    
-    参数:
-        template: 可选的用于生成的模板。
-        profile_index: 要生成的档案索引。
-        attribute_count: 要包含的属性数量。
-        
-    返回:
-        Dict: 生成的用户档案。
+def generate_single_profile(template: Dict = None, profile_index: int = 0, attribute_count: int = 200,
+                           base_profile: Dict = None, selected_attributes: List = None) -> Dict:
+    """Generate a complete user profile based on the given template.
+
+    Args:
+        template: Optional template for generation.
+        profile_index: Index of the profile to generate.
+        attribute_count: Number of attributes to include.
+        base_profile: Optional pre-generated base profile. If provided, skips base profile generation.
+        selected_attributes: Optional pre-selected attributes list. If provided, skips attribute selection.
+
+    Returns:
+        Dict: The generated user profile.
     """
 
-    
-    # First, run select_attributes.py to update base files (user_profile.json and selected_paths.json)
-    print(f'Running select_attributes.py to update base files with {attribute_count} attributes...')
-    try:
-        # 直接导入select_attributes模块的函数，而不是通过subprocess运行
-        import sys
-        import os
-        sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-        from select_attributes import generate_user_profile as gen_profile
-        from select_attributes import get_selected_attributes, save_results
-        
-        # 生成用户配置文件
-        user_profile = gen_profile()
-        # 获取指定数量的属性
-        selected_paths = get_selected_attributes(user_profile, attribute_count)
-        # 保存结果
-        correct_output_dir = os.path.join(get_project_root(), "output")
-        save_results(user_profile, selected_paths, correct_output_dir)
-        
-        # 复制文件从源位置到目标位置
-        copy_files_from_source_to_target()
-    except Exception as e:
-        print(f"Error executing select_attributes functions: {e}")
-        return {}
+    # Import required functions
+    from select_attributes import generate_user_profile as gen_profile
+    from select_attributes import get_selected_attributes, save_results, build_nested_dict
 
-    # Load basic profile information and selected paths (base info is only a reference for GPT generation)
+    # Use provided base_profile or generate a new one
+    if base_profile is not None:
+        print('Using provided base profile...')
+        user_profile = base_profile
+    else:
+        print(f'Generating new base profile...')
+        user_profile = gen_profile()
+
+    # Use provided selected_attributes or generate new ones
+    if selected_attributes is not None:
+        print(f'Using provided {len(selected_attributes)} attributes...')
+        selected_paths_list = selected_attributes
+    else:
+        print(f'Selecting {attribute_count} attributes via vector search...')
+        selected_paths_list = get_selected_attributes(user_profile, attribute_count)
+
+    # Save results to output directory
+    correct_output_dir = os.path.join(get_project_root(), "output")
+    save_results(user_profile, selected_paths_list, correct_output_dir)
+
+    # Copy files from source to target location
+    copy_files_from_source_to_target()
+
+    # Load the saved data (selected_paths needs to be in nested dict format)
     project_root = get_project_root()
     output_dir = os.path.join(project_root, "output")
-    base_info_path = os.path.join(output_dir, 'user_profile.json')
-    with open(base_info_path, 'r', encoding='utf-8') as f:
-        base_info = json.load(f)
+
+    # Use the user_profile we already have
+    base_info = user_profile
     if 'Occupations' not in base_info:
         print("Warning: 'Occupations' key is missing in the user profile. Setting it to an empty list.")
         base_info['Occupations'] = []
 
-    selected_paths_path = os.path.join(output_dir, 'selected_paths.json')
-    with open(selected_paths_path, 'r', encoding='utf-8') as f:
-        selected_paths = json.load(f)
+    # Convert selected_paths list to nested dict if needed
+    if isinstance(selected_paths_list, list):
+        selected_paths = build_nested_dict(selected_paths_list)
+    else:
+        selected_paths_path = os.path.join(output_dir, 'selected_paths.json')
+        with open(selected_paths_path, 'r', encoding='utf-8') as f:
+            selected_paths = json.load(f)
 
     # Ensure these fields are strings
     for k in ("life_attitude", "interests"):
@@ -417,14 +427,14 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     # Example assertion: ensure the profile includes an 'Occupations' field
     assert 'Occupations' in base_info, "The 'Occupations' key is missing in the user profile."
     
-    # 初始化个人资料字典
+    # Initialize profile dictionary
     profile = {
         "Base Info": base_info,
         "Generated At": time.strftime("%Y-%m-%d %H:%M:%S"),
         "Profile Index": profile_index + 1
     }
-    
-    # 步骤1：生成 Demographic Information
+
+    # Step 1: Generate Demographic Information
     life_story = base_info.get("personal_story", {}).get("personal_story", "")
     demographic_input = (
         "Base Information (for reference):\n" + json.dumps(base_info, ensure_ascii=False, indent=2) + "\n\n"
@@ -435,7 +445,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if demographic_template and demographic_template != "":
         print('Generating Demographic Information...')
         demographic_section = generate_category_attributes(demographic_template, demographic_input, "Demographic Information")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in demographic_section.items():
             parts = path.split('.')
@@ -454,7 +464,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Demographic Information" template found in selected_paths, skipping Demographic Information.')
     
-    # 步骤2：生成职业信息
+    # Step 2: Generate Career Information
     career_template = selected_paths.get("Career and Work Identity")
     if career_template and career_template != "":
         print('Generating Career and Work Identity...')
@@ -471,7 +481,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
             "The section should be an insightful and coherent expansion of what can be understood from the source material."
         )
         career_info_section = generate_category_attributes(career_template, career_input, "Career and Work Identity")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in career_info_section.items():
             parts = path.split('.')
@@ -490,7 +500,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Career and Work Identity" template found in selected_paths, skipping.')
     
-    # 步骤3：生成 Core Values, Beliefs, and Philosophy
+    # Step 3: Generate Core Values, Beliefs, and Philosophy
     pv_orientation = base_info.get("personal_values", {}).get("values_orientation", "")
     if not isinstance(pv_orientation, str):
         pv_orientation = json.dumps(pv_orientation, ensure_ascii=False)
@@ -505,7 +515,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if core_template and core_template != "":
         print('Generating Core Values, Beliefs, and Philosophy...')
         core_values_section = generate_category_attributes(core_template, core_input, "Core Values, Beliefs, and Philosophy")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in core_values_section.items():
             parts = path.split('.')
@@ -524,7 +534,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Core Values, Beliefs, and Philosophy" template found in selected_paths, skipping.')
     
-    # 步骤4：生成 Lifestyle and Daily Routine
+    # Step 4: Generate Lifestyle and Daily Routine
     life_attitude = base_info["life_attitude"]
     lifestyle_input = (
         "Life Story (for reference):\n" + str(life_story) + "\n\n"
@@ -538,7 +548,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if lifestyle_template and lifestyle_template != "":
         print('Generating Lifestyle and Daily Routine...')
         lifestyle_section = generate_category_attributes(lifestyle_template, lifestyle_input, "Lifestyle and Daily Routine")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in lifestyle_section.items():
             parts = path.split('.')
@@ -557,7 +567,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Lifestyle and Daily Routine" template found in selected_paths, skipping.')
     
-    # 步骤5：生成 Cultural and Social Context
+    # Step 5: Generate Cultural and Social Context
     cultural_input = (
         "Life Story (for reference):\n" + str(life_story) + "\n\n"
         "Life Attitude (for reference):\n" + life_attitude + "\n\n"
@@ -571,7 +581,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if cultural_template and cultural_template != "":
         print('Generating Cultural and Social Context...')
         cultural_section = generate_category_attributes(cultural_template, cultural_input, "Cultural and Social Context")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in cultural_section.items():
             parts = path.split('.')
@@ -590,7 +600,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Cultural and Social Context" template found in selected_paths, skipping.')
     
-    # 步骤6：生成 Hobbies, Interests, and Lifestyle
+    # Step 6: Generate Hobbies, Interests, and Lifestyle
     interests = base_info["interests"]
     hobbies_input = (
         "Base Information (for reference):\n" + json.dumps(base_info, ensure_ascii=False, indent=2) + "\n\n"
@@ -606,7 +616,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if hobbies_template and hobbies_template != "":
         print('Generating Hobbies, Interests, and Lifestyle...')
         hobbies_section = generate_category_attributes(hobbies_template, hobbies_input, "Hobbies, Interests, and Lifestyle")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in hobbies_section.items():
             parts = path.split('.')
@@ -625,7 +635,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     else:
         print('No valid "Hobbies, Interests, and Lifestyle" template found in selected_paths, skipping.')
     
-    # 步骤7：生成 Other Attributes
+    # Step 7: Generate Other Attributes
     other_attributes_input = (
         "Life Story (for reference):\n" + str(life_story) + "\n\n"
         "Complete Profile (for reference):\n" + json.dumps(profile, ensure_ascii=False, indent=2) + "\n\n"
@@ -635,7 +645,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     if other_template and other_template != "":
         print('Generating Other Attributes...')
         other_attributes_section = generate_category_attributes(other_template, other_attributes_input, "Other Attributes")
-        # 构建嵌套字典结构
+        # Build nested dictionary structure
         nested_result = {}
         for path, value in other_attributes_section.items():
             parts = path.split('.')
@@ -671,90 +681,90 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
 
 
 def generate_multiple_profiles(num_rounds: int = 8) -> None:
-    """生成多轮完整的用户档案，每轮包含不同数量的属性，并将它们保存到一个合并的 JSON 文件中。
-    
-    参数:
-        num_rounds: 要生成的轮数，默认为8轮，每轮会生成8种不同属性数量的档案。
+    """Generate multiple rounds of user profiles with varying attribute counts.
+
+    Args:
+        num_rounds: Number of rounds to generate, default 8. Each round generates profiles with different attribute counts.
     """
     start_time = time.time()
-    print(f"开始生成 {num_rounds} 轮个人资料，每轮包含8种不同数量的属性...")
-    
-    # 获取项目根目录
+    print(f"Starting generation of {num_rounds} rounds of profiles with varying attribute counts...")
+
+    # Get project root directory
     project_root = get_project_root()
-    
-    # 创建输出目录
-    output_dir = "/home/zhou/deeppersona/generate_user_profile_final/output"
+
+    # Create output directory
+    output_dir = os.path.join(os.path.dirname(__file__), 'output')
     os.makedirs(output_dir, exist_ok=True)
-    
-    # 定义每个档案的属性数量
+
+    # Define attribute counts for each profile
     attribute_counts = [100, 150, 200, 250, 300, 350]
     total_profiles = num_rounds * len(attribute_counts)
-    
-    # 初始化存储所有配置文件的字典
+
+    # Initialize dictionary to store all profiles
     all_profiles = {
         "metadata": {
             "profiles_completed": 0,
             "total_profiles": total_profiles,
             "total_rounds": num_rounds,
-            "description": "包含多轮不同属性数量的用户档案集合"
+            "description": "Collection of user profiles with varying attribute counts across multiple rounds"
         }
     }
-    
-    # 设置合并文件路径（不使用时间戳）
+
+    # Set merged file path (no timestamp)
     base_all_profiles_path = os.path.join(output_dir, f"profile_ind.json")
     all_profiles_path = base_all_profiles_path
-    
-    # 初始化保存合并文件
+
+    # Initialize and save merged file
     actual_path = save_json_file(all_profiles_path, all_profiles, use_timestamp=False)
-    print(f"初始化合并文件: {actual_path}")
-    all_profiles_path = actual_path  # 使用实际保存的路径
-    
-    # 计数器，用于跟踪总共生成的档案数量
+    print(f"Initialized merged file: {actual_path}")
+    all_profiles_path = actual_path  # Use actual saved path
+
+    # Counter to track total profiles generated
     profile_count = 0
-    
-    # 逐轮生成配置文件
+
+    # Generate profiles round by round
     for round_num in range(num_rounds):
-        print(f"\n===== 开始生成第 {round_num+1}/{num_rounds} 轮用户资料 =====\n")
-        
-        # 在每轮中生成所有不同属性数量的档案
+        print(f"\n===== Starting round {round_num+1}/{num_rounds} =====\n")
+
+        # Generate profiles with all different attribute counts in each round
         for attr_index, current_attribute_count in enumerate(attribute_counts):
             profile_count += 1
-            
-            print(f"\n----- 开始生成第 {round_num+1}.{attr_index+1} 个用户资料 (属性数量: {current_attribute_count}) -----\n")
-            
+
+            print(f"\n----- Generating profile {round_num+1}.{attr_index+1} (attribute count: {current_attribute_count}) -----\n")
+
             try:
-                # 生成单个配置文件，传入属性数量
+                # Generate single profile with attribute count
                 profile = generate_single_profile(None, profile_count-1, current_attribute_count)
-                
+
                 if not profile:
-                    print(f"第 {round_num+1}.{attr_index+1} 个资料生成失败，跳过")
+                    print(f"Profile {round_num+1}.{attr_index+1} generation failed, skipping")
                     continue
-                
-                # 添加到总字典并保存
+
+                # Add to dictionary and save
                 profile_key = f"Profile_R{round_num+1}_A{attr_index+1}_Count_{current_attribute_count}"
                 all_profiles[profile_key] = profile
                 all_profiles["metadata"]["profiles_completed"] = profile_count
-                
-                # 保存更新后的合并文件
+
+                # Save updated merged file
                 save_json_file(all_profiles_path, all_profiles, use_timestamp=False)
-                print(f"\n总进度更新: {profile_count}/{total_profiles} 个资料已完成 (第 {round_num+1}/{num_rounds} 轮)")
-                print(f"已将第 {round_num+1}.{attr_index+1} 个用户资料 (属性数量: {current_attribute_count}) 添加到合并文件: {all_profiles_path}")
+                print(f"\nProgress: {profile_count}/{total_profiles} profiles completed (round {round_num+1}/{num_rounds})")
+                print(f"Added profile {round_num+1}.{attr_index+1} (attribute count: {current_attribute_count}) to: {all_profiles_path}")
                 print("\n" + "-"*50 + "\n")
             except Exception as e:
-                print(f"生成第 {round_num+1}.{attr_index+1} 个个人资料时出错: {e}")
+                print(f"Error generating profile {round_num+1}.{attr_index+1}: {e}")
                 continue
-        
-        print(f"\n===== 第 {round_num+1}/{num_rounds} 轮用户资料生成完成 =====\n")
+
+        print(f"\n===== Round {round_num+1}/{num_rounds} completed =====\n")
         print("\n" + "="*50 + "\n")
-    
-    # 添加生成完成状态
+
+    # Add completion status
     all_profiles["metadata"]["status"] = "completed"
     save_json_file(all_profiles_path, all_profiles, use_timestamp=False)
-    
+
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"\n所有 {all_profiles['metadata']['profiles_completed']} 个个人资料已成功生成并保存到: {all_profiles_path}")
-    print(f"生成完成，耗时 {elapsed_time:.2f} 秒")
+    print(f"\nAll {all_profiles['metadata']['profiles_completed']} profiles successfully generated and saved to: {all_profiles_path}")
+    print(f"Generation completed in {elapsed_time:.2f} seconds")
 
 if __name__ == "__main__":
     generate_multiple_profiles(10)

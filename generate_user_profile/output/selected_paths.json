@@ -1,0 +1,560 @@
+{
+  "Cultural and Social Context": {
+    "parenting_style": {
+      "approach": {}
+    },
+    "Personal Attitudes": {
+      "Recovery Orientation": {}
+    },
+    "Interests": {
+      "Inspirational Themes": {}
+    },
+    "Cultural": {
+      "Cultural Traditions": {},
+      "Mental Health Advocate": {},
+      "Culinary Preferences": {},
+      "History": {}
+    },
+    "Organizational Membership": {
+      "Type": {}
+    },
+    "Health Perspectives": {
+      "Aging Attitudes": {}
+    },
+    "Church Activities": {
+      "Involvement": {}
+    },
+    "language": {
+      "proficiency": {}
+    },
+    "Travel Experiences": {
+      "UserPreferences": {}
+    },
+    "Personal Life": {
+      "Interaction Style": {}
+    },
+    "Personal": {
+      "Personal Values": {}
+    },
+    "Personal Values": {
+      "Environmental Consciousness": {},
+      "Privacy Orientation": {}
+    },
+    "Regional Influence": {
+      "Upbringing": {}
+    },
+    "SocialContext": {
+      "TravelPreferences": {}
+    },
+    "Background": {
+      "PersonalAttributes": {}
+    },
+    "Society": {
+      "Tradition Awareness": {}
+    },
+    "Preferences": {
+      "Travel Preferences": {}
+    },
+    "Local Community": {
+      "Affiliation Type": {}
+    }
+  },
+  "Physical and Health Characteristics": {
+    "Exercise History": {
+      "Inactive": {}
+    },
+    "userValues": {
+      "healthConsciousness": {}
+    },
+    "children": {
+      "dietary_restrictions": {}
+    },
+    "Beliefs": {
+      "Philosophy": {},
+      "AttitudesTowardsDrugs": {}
+    },
+    "BMI": {
+      "current_BMI": {}
+    },
+    "Thinking Patterns": {
+      "Goal-Oriented": {}
+    },
+    "Fitness Level": {
+      "Activity": {}
+    },
+    "Cognitive Style": {
+      "Reflective Development": {}
+    },
+    "nutritional": {
+      "needs": {}
+    },
+    "Health Conditions": {
+      "Neurodevelopmental Conditions": {}
+    },
+    "Personal Health": {
+      "Health Background": {}
+    },
+    "HealthcareNeeds": {
+      "SpecificCondition": {}
+    }
+  },
+  "Emotional and Relational Skills": {
+    "EmotionalIntelligence": {
+      "Personal_Challenges": {},
+      "Interpersonal_Connection": {}
+    },
+    "Leadership": {
+      "Influence": {}
+    },
+    "WorkLifeBalance": {
+      "Preferences": {}
+    },
+    "OpenMindedness": {
+      "ReceptivityToInnovation": {}
+    },
+    "Resilience": {
+      "Journey": {}
+    }
+  },
+  "Media Consumption and Engagement": {
+    "communication_channel": {
+      "preferences": {}
+    },
+    "StorytellingElements": {},
+    "Artists": {
+      "PersonalizationAttributes": {}
+    },
+    "contentStyle": {
+      "challenging": {}
+    },
+    "Engagement": {
+      "User Influence": {}
+    },
+    "content_engagement": {
+      "personal_beliefs": {}
+    },
+    "Interests": {
+      "TechnologyAndMedia": {}
+    },
+    "softwareUse": {
+      "experienceLevel": {}
+    },
+    "Industry": {
+      "News": {}
+    },
+    "consumption_frequency": {
+      "cryptocurrency_news": {}
+    },
+    "tech_resources": {
+      "familiarity": {}
+    },
+    "ReadingPreferences": {
+      "Character Backgrounds": {}
+    },
+    "Music": {
+      "GenrePreferences": {}
+    },
+    "Online Presence": {
+      "Current Behavior": {}
+    },
+    "ArtisticInspirations": {},
+    "NewYorker": {
+      "Familiarity": {}
+    },
+    "Language": {
+      "UserAttributes": {}
+    },
+    "meme": {
+      "knowledge": {}
+    },
+    "preferredMediaFormat": {
+      "video": {}
+    }
+  },
+  "Demographic Information": {
+    "Lifestyle": {
+      "FinancialResponsibility": {}
+    },
+    "Age": {
+      "MiddleAged": {},
+      "LifeStage": {},
+      "Decades": {}
+    },
+    "Personal": {
+      "Age Group": {},
+      "Interests": {}
+    },
+    "Household": {
+      "Characteristics": {}
+    },
+    "Animal Preference": {
+      "Pet Breed": {}
+    },
+    "Geographical": {
+      "Region": {},
+      "Neighborhood": {}
+    },
+    "Employment": {
+      "Position": {}
+    },
+    "Life Stage": {
+      "Maturity Level": {}
+    },
+    "Ethnicity": {
+      "ethnicity_middle_eastern": {}
+    },
+    "place_of_birth": {
+      "Atlanta": {}
+    }
+  },
+  "Hobbies, Interests, and Lifestyle": {
+    "Interests": {
+      "FurryFandom": {},
+      "SocialContributions": {},
+      "Sustainability": {},
+      "Seasons": {},
+      "Storytelling": {},
+      "CommunityEngagement": {},
+      "MusicGenres": {
+        "musical_involvement": {
+          "guitar": {}
+        }
+      },
+      "PersonalDevelopment": {},
+      "TechnologySecurity": {},
+      "PhilosophicalFields": {},
+      "Topics": {
+        "Furries": {}
+      },
+      "ParticularFields": {},
+      "CulturalActivities": {
+        "commentary": {}
+      },
+      "InterestLevel": {},
+      "Innovation": {},
+      "Advocacy": {},
+      "BlockchainTechnologies": {}
+    },
+    "Storytelling": {
+      "Preference": {}
+    },
+    "Spirituality": {
+      "interest_intensity": {},
+      "personal_interest": {}
+    },
+    "Preferences": {
+      "Preferences": {},
+      "tech_savvy": {}
+    },
+    "Culinary Interests": {
+      "UserExperience": {}
+    },
+    "Travel Preferences": {
+      "User Interests": {}
+    },
+    "Academic Interests": {
+      "Preferences": {}
+    },
+    "Creative Interests": {
+      "Goals": {}
+    },
+    "Aesthetic Preferences": {
+      "personalPreference": {}
+    },
+    "Professional Interests": {
+      "Entrepreneurship": {}
+    },
+    "Skills": {
+      "LearningStatus": {}
+    },
+    "Children": {
+      "Approaches": {}
+    },
+    "Social Interests": {
+      "Social Contributions": {}
+    },
+    "Culinary Preferences": {
+      "specificCuisines": {}
+    },
+    "Technology Interests": {
+      "Usage": {}
+    }
+  },
+  "Education and Learning": {
+    "FocusArea": {
+      "Themes": {}
+    },
+    "field": {
+      "Business": {}
+    },
+    "writing": {
+      "Ability": {}
+    },
+    "experience": {
+      "Qualifications": {},
+      "Personal Attributes": {}
+    },
+    "knowledge": {
+      "Technical Knowledge": {}
+    },
+    "institution": {
+      "PersonalAttributes": {}
+    },
+    "motivation": {
+      "educational_experience": {}
+    },
+    "academic_background": {
+      "PersonalDevelopment": {}
+    },
+    "highestLevel": {
+      "Higher Education": {}
+    },
+    "education": {
+      "EducationLevel": {}
+    },
+    "subject": {
+      "Personal_Attributes": {}
+    },
+    "familiarity": {
+      "NetworkingSkills": {}
+    },
+    "personalDevelopment": {
+      "Interests": {}
+    },
+    "interests": {
+      "Technical Skills": {}
+    },
+    "skillLevel": {
+      "Skill Set": {}
+    },
+    "learningApproach": {
+      "ParentalInvolvement": {}
+    },
+    "knowledgeArea": {
+      "Personal Interests": {}
+    }
+  },
+  "Psychological and Cognitive Aspects": {
+    "Innovation": {
+      "Openness": {}
+    },
+    "Adaptability": {
+      "level": {}
+    },
+    "Risk Tolerance": {
+      "Entrepreneurial": {},
+      "Proficiency": {}
+    },
+    "Communication": {
+      "Casual": {}
+    },
+    "Openness": {
+      "Interest in Technology": {},
+      "Educational Background": {}
+    },
+    "Relationship Style": {
+      "insecure_preoccupied": {}
+    },
+    "Personality": {
+      "AdventureSeeking": {},
+      "Mindset": {}
+    },
+    "Perspective": {
+      "PersonalBeliefs": {},
+      "PersonalAttributes": {}
+    },
+    "Neurodiversity": {
+      "Neurodevelopmental_Disorder": {}
+    },
+    "Emotional State": {
+      "SelfPerceptionAttributes": {}
+    },
+    "Therapy": {
+      "User Experience": {}
+    },
+    "Feedback": {
+      "handling": {}
+    },
+    "Mindfulness": {
+      "Personal Development": {}
+    },
+    "Problem Solving": {
+      "analyticalSkills": {}
+    },
+    "Humor": {
+      "UserType": {}
+    },
+    "Political Views": {
+      "orientation": {}
+    },
+    "Logical Reasoning": {
+      "Skill_Level": {}
+    },
+    "Cognitive Aspects": {
+      "SkillProficiency": {}
+    },
+    "Tone": {
+      "preference": {}
+    },
+    "Traits": {
+      "Personal Growth": {}
+    },
+    "Ego Management": {},
+    "Resilience": {
+      "PersonalExperience": {}
+    }
+  },
+  "Relationships and Social Networks": {
+    "Social Role": {
+      "Mentorship_Role": {}
+    },
+    "Social Circles": {
+      "Network Size": {}
+    },
+    "Team Dynamics": {
+      "Team Dynamics": {}
+    },
+    "Professional": {
+      "Community_Involvement": {},
+      "Knowledge_Experience": {},
+      "Leadership_Attributes": {}
+    },
+    "Professional Network": {
+      "personal_attributes": {}
+    },
+    "Support System": {
+      "Personal_Attributes": {}
+    },
+    "Interactions": {
+      "User Intent": {}
+    },
+    "Community": {
+      "Affiliations": {}
+    },
+    "Peers": {
+      "Dynamics": {}
+    },
+    "Family Dynamics": {
+      "interaction_styles": {}
+    },
+    "Professional Skills": {
+      "Entrepreneurship": {}
+    },
+    "Interests": {
+      "SocialConnections": {}
+    },
+    "Communication Style": {
+      "communicationTone": {}
+    }
+  },
+  "Lifestyle and Daily Routine": {
+    "Daily Routine": {
+      "DailyRoutines": {},
+      "PersonalAttributes": {}
+    },
+    "Sleep": {
+      "Habits": {},
+      "irregularity": {}
+    },
+    "Transportation": {
+      "UserProfile": {}
+    },
+    "Time Management": {
+      "Punctuality": {}
+    },
+    "Rest": {
+      "pattern": {}
+    },
+    "Location": {
+      "Community": {}
+    },
+    "Travel": {
+      "Experience": {}
+    },
+    "Meal Preferences": {
+      "schedule": {}
+    },
+    "Learning": {
+      "personal_dedication": {}
+    },
+    "Retirement": {
+      "Age": {}
+    }
+  },
+  "Core Values, Beliefs, and Philosophy": {
+    "DietaryRestrictions": {
+      "restrictions": {}
+    },
+    "PersonalBeliefs": {
+      "Personal Philosophy": {},
+      "Personal Traits": {}
+    },
+    "Attitudes": {
+      "StigmaAwareness": {},
+      "SubstanceRelatedBehavior": {}
+    },
+    "Religious": {
+      "PersonalAttributes": {}
+    },
+    "learning_attitude": {
+      "openness": {}
+    },
+    "Cultural": {
+      "Personal Characteristics": {}
+    },
+    "PersonalGrowth": {
+      "Resilience": {},
+      "Goals": {}
+    },
+    "Goals": {
+      "Personal Approach": {}
+    },
+    "Beliefs": {
+      "Belief Systems": {}
+    },
+    "FinancialGoals": {
+      "financial_attitude": {}
+    }
+  },
+  "Core Values, Beliefs, Philosophy": {
+    "Worldview": {
+      "Nationalistic Views": {}
+    }
+  },
+  "Lifestyle and Habits": {
+    "Daily Routine": {
+      "Home Usage Frequency": {}
+    }
+  },
+  "Cultural and Social Contexts": {
+    "Community": {
+      "Engagement Level": {}
+    }
+  },
+  "Psychological and Cognitive": {
+    "User Characteristics": {
+      "Personal Characteristics": {}
+    }
+  },
+  "Lifestyle and Routine": {
+    "Personal Habits": {
+      "User Personalization Attributes": {}
+    }
+  },
+  "Core Values and Beliefs": {
+    "Wellness": {
+      "Health Prioritization": {}
+    },
+    "Personal Philosophy": {
+      "Opinions": {}
+    },
+    "Goals": {
+      "Priorities": {}
+    }
+  },
+  "Core Values and Philosophy": {
+    "Beliefs": {
+      "Outcome-Oriented": {}
+    }
+  }
+}

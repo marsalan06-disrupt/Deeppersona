@@ -1,12 +1,27 @@
+#!/usr/bin/env python3
+"""
+Attribute tree merger.
+
+This script merges attribute trees using GPT to:
+1. Identify semantically similar nodes
+2. Merge them intelligently
+3. Validate parent-child relationships
+"""
 import json
 import os
+import sys
 from openai import OpenAI
 from typing import List, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 
-OPENAI_API_KEY = "OPENAI_API_KEY"
-GPT_MODEL = "gpt-4o"
+# Add parent directory to path for config import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'generate_user_profile'))
+from config import OPENAI_API_KEY, GPT_MODEL
+
+# Get project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 
 
 
@@ -343,44 +358,55 @@ def build_simple_tree_structure(attributes: list) -> dict:
     return tree
 
 def main():
-    input_file = "PATH.json"
+    # Use project data directory - expects a paths JSON file as input
+    # You can change this to any JSON file containing attribute paths
+    input_file = os.path.join(DATA_DIR, "paths_to_merge.json")
+
+    # Check if input file exists, provide helpful message if not
+    if not os.path.exists(input_file):
+        print(f"Input file not found: {input_file}")
+        print(f"Please create a JSON file with attribute paths to merge.")
+        print(f"Example format: [\"Category.Subcategory.Attribute\", ...]")
+        return
+
     output_manager = OutputManager()
-    
+
     try:
-        # 读取属性列表并构建树结构
+        # Read attribute list and build tree structure
+        print(f"Reading input file: {input_file}")
         print("Building and optimizing tree structure...")
         with open(input_file, 'r', encoding='utf-8') as f:
             attributes = json.load(f)
-        
-        # 构建初始树结构
+
+        # Build initial tree structure
         tree = build_simple_tree_structure(attributes)
-        
-        # 保存初始树结构
+
+        # Save initial tree structure
         initial_tree_path = output_manager.get_output_path("initial_tree.json")
         with open(initial_tree_path, 'w', encoding='utf-8') as f:
             json.dump(tree, f, indent=2, ensure_ascii=False)
         print(f"Saved initial tree structure to {initial_tree_path}")
-        
-        # 转换为TreeNode结构
+
+        # Convert to TreeNode structure
         print("Converting to TreeNode structure...")
         root = TreeNode(value="root", level=0)
         for key, value in sorted(tree.items()):
             child_node = json_to_tree(value, key, level=1, path=key)
             root.children[key] = child_node
         print(f"Successfully loaded tree with {len(root.children)} top-level nodes")
-        
+
     except Exception as e:
         print(f"Error building tree structure: {str(e)}")
         return
-    
-    # 初始化OpenAI客户端
+
+    # Initialize OpenAI client
     client = OpenAI(api_key=OPENAI_API_KEY)
-    
-    # 开始合并过程
+
+    # Start merge process
     print("\nStarting tree merge process...")
     process_tree_level_by_level(root, client, output_manager)
-    
-    # 保存最终结果
+
+    # Save final results
     print("Saving final results...")
     final_json = tree_to_json(root)
     output_path = output_manager.get_output_path("attributes_merged.json")

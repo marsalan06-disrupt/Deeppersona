@@ -1,33 +1,42 @@
-from .config import get_completion
-from .utils import (
-    extract_json_from_markdown,
-    extract_paths_from_nested,
-    load_attributes_from_file,
-    flatten_persona
-)
-from .data_sources import get_bls_occupations, generate_location
-from .profile_generators import (
+# generate_user_profile package
+# Import key functions from submodules
+
+from config import get_completion, parse_gpt_response, parse_json_response
+from based_data import (
     generate_age_info,
-    generate_base_demographics,
     generate_career_info,
-    generate_single_profile,
-    generate_user_profiles
+    generate_location,
+    generate_gender,
+    generate_personal_values,
+    generate_life_attitude,
+    generate_personal_story,
+    generate_interests_and_hobbies,
+    get_occupations
 )
-from .main import save_profiles_to_file, main
+from select_attributes import (
+    generate_user_profile,
+    get_selected_attributes
+)
+from generate_profile import generate_single_profile
 
 __all__ = [
+    # Config
     'get_completion',
-    'extract_json_from_markdown',
-    'extract_paths_from_nested',
-    'load_attributes_from_file',
-    'flatten_persona',
-    'get_bls_occupations',
-    'generate_location',
+    'parse_gpt_response',
+    'parse_json_response',
+    # Based data
     'generate_age_info',
-    'generate_base_demographics',
     'generate_career_info',
+    'generate_location',
+    'generate_gender',
+    'generate_personal_values',
+    'generate_life_attitude',
+    'generate_personal_story',
+    'generate_interests_and_hobbies',
+    'get_occupations',
+    # Select attributes
+    'generate_user_profile',
+    'get_selected_attributes',
+    # Generate profile
     'generate_single_profile',
-    'generate_user_profiles',
-    'save_profiles_to_file',
-    'main'
 ]
