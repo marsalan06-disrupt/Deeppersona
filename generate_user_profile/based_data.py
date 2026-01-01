@@ -12,7 +12,7 @@ import os
 import random
 from typing import Dict, List, Optional, Union, Any
 from geonamescache import GeonamesCache
-from config import get_completion, parse_gpt_response, parse_json_response, extract_json_from_markdown, parse_nested_json_response
+from generate_user_profile.config import get_completion, parse_gpt_response, parse_json_response, extract_json_from_markdown, parse_nested_json_response
 
 _occupations_cache = None
 

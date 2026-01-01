@@ -19,7 +19,7 @@ import time
 ATTRIBUTE_SELECTION_CACHE = None
 
 # Import project configuration
-from config import client, GPT_MODEL, parse_json_response
+from generate_user_profile.config import client, GPT_MODEL, parse_json_response
 
 # Define get_completion function
 def get_completion(messages, model=GPT_MODEL, temperature=0.7):
@@ -36,7 +36,7 @@ def get_completion(messages, model=GPT_MODEL, temperature=0.7):
         return None
 
 # Import functions from based_data module
-from based_data import (
+from generate_user_profile.based_data import (
     generate_age_info,
     generate_gender,
     generate_career_info,

@@ -16,8 +16,8 @@ from datetime import datetime
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from select_attributes import generate_user_profile, get_selected_attributes, save_results
-from generate_profile import generate_single_profile
+from generate_user_profile.select_attributes import generate_user_profile, get_selected_attributes, save_results
+from generate_user_profile.generate_profile import generate_single_profile
 
 
 def print_section(title: str, char: str = "="):

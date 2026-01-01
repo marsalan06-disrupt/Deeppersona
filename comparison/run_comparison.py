@@ -18,7 +18,7 @@ import sys
 import json
 import argparse
 from datetime import datetime
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Tuple, Optional
 
 # Add parent directories to path for imports
 DEEPPERSONA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -88,6 +88,18 @@ def get_personas_from_research(research: Dict[str, Any]) -> List[Dict[str, Any]]
     return research.get("step2", {}).get("selectedPersonas", [])
 
 
+def get_persona_by_id(db, research_id: str, persona_id: str) -> Optional[Dict[str, Any]]:
+    """Fetch a specific persona by ID from research document."""
+    research = fetch_research(db, research_id)
+    personas = get_personas_from_research(research)
+    
+    for persona in personas:
+        if persona.get("id") == persona_id:
+            return persona
+    
+    return None
+
+
 def backup_personas(personas: List[Dict[str, Any]], research_id: str) -> str:
     """Backup existing personas to a JSON file."""
     backup_dir = os.path.join(os.path.dirname(__file__), "backups")
@@ -114,6 +126,141 @@ def backup_personas(personas: List[Dict[str, Any]], research_id: str) -> str:
 
     print(f"Backed up {len(personas)} personas to: {backup_file}")
     return backup_file
+
+
+def extract_base_profile_from_persona(persona: Dict[str, Any], profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Extract primary attributes from existing persona to create a base profile.
+    Only extracts attributes that are actually present in the persona.
+    
+    Args:
+        persona: Existing persona dictionary
+        profile: Optional profile dictionary containing primary/secondary attributes definition
+        
+    Returns:
+        Base profile dictionary with only the primary attributes that are present
+    """
+    base_profile = {}
+    
+    # Extract age if present
+    if "age" in persona:
+        age = persona["age"]
+        base_profile["age_info"] = {
+            "age": age,
+            "age_group": "young_adult" if age <= 29 else "adult" if age <= 45 else "middle_aged"
+        }
+    
+    # Extract gender if present (no inference)
+    if "gender" in persona:
+        base_profile["gender"] = persona["gender"]
+    
+    # Extract location if present
+    if "location" in persona:
+        location_str = persona["location"]
+        location_parts = location_str.split(",")
+        base_profile["location"] = {
+            "city": location_parts[0].strip() if len(location_parts) > 0 else "Unknown",
+            "country": location_parts[1].strip() if len(location_parts) > 1 else "Unknown"
+        }
+    
+    # Extract career info if present
+    if "role" in persona or "experience" in persona:
+        career_info = {}
+        if "role" in persona:
+            career_info["status"] = persona["role"]
+        elif "experience" in persona:
+            career_info["status"] = persona["experience"]
+        if "experience" in persona and "role" in persona:
+            career_info["experience"] = persona["experience"]
+        base_profile["career_info"] = career_info
+    
+    # Extract primary attributes from persona if profile provides the list
+    primary_attributes = {}
+    if profile:
+        profile_attrs = profile.get("attributes", {})
+        primary_attr_names = profile_attrs.get("primary", [])
+        
+        # Extract values for each primary attribute from persona (only if present)
+        for attr_name in primary_attr_names:
+            if attr_name in persona:
+                primary_attributes[attr_name] = persona[attr_name]
+    
+    # Also check for common primary attributes directly in persona
+    common_primary_attrs = [
+        "industry_type", "industry", 
+        "size_of_business", "company_size_range",
+        "decision_authority_level", 
+        "average_monthly_spending_on_marketing",
+        "frequency_of_service_use_last_30d"
+    ]
+    for attr_name in common_primary_attrs:
+        if attr_name in persona and attr_name not in primary_attributes:
+            primary_attributes[attr_name] = persona[attr_name]
+    
+    # Store primary attributes if any were found
+    if primary_attributes:
+        base_profile["_primary_attributes"] = primary_attributes
+    
+    return base_profile
+
+
+def generate_deeppersona_from_existing_persona(
+    persona: Dict[str, Any],
+    profile: Optional[Dict[str, Any]] = None,
+    attribute_count: int = 200
+) -> Dict[str, Any]:
+    """
+    Generate a DeepPersona using the same primary attributes as existing persona,
+    with similar secondary attributes via vector similarity search.
+    
+    Args:
+        persona: Existing persona dictionary
+        profile: Optional profile dictionary containing primary/secondary attributes definition
+        attribute_count: Number of attributes to select (default: 200)
+        
+    Returns:
+        Dictionary with base_profile, complete_persona, and backstory
+    """
+    print(f"\n{'='*60}")
+    print(f"Generating DeepPersona from existing persona: {persona.get('name', 'Unknown')}")
+    print(f"{'='*60}")
+    
+    # Extract base profile from existing persona (includes primary attributes)
+    print("\n[1/4] Extracting primary attributes from existing persona...")
+    base_profile = extract_base_profile_from_persona(persona, profile)
+    
+    primary_attrs = base_profile.get("_primary_attributes", {})
+    print(f"  Age: {base_profile.get('age_info', {}).get('age', '?')}")
+    print(f"  Gender: {base_profile.get('gender', '?')}")
+    print(f"  Location: {base_profile.get('location', {}).get('city', '?')}, {base_profile.get('location', {}).get('country', '?')}")
+    print(f"  Career: {base_profile.get('career_info', {}).get('status', '?')}")
+    if primary_attrs:
+        print(f"  Primary attributes extracted: {len(primary_attrs)} ({', '.join(list(primary_attrs.keys())[:3])}...)")
+    
+    # Select attributes using vector similarity search (will find similar secondary attributes)
+    # The base_profile already contains primary attributes, so vector search will find similar ones
+    print(f"\n[2/4] Selecting similar secondary attributes via vector search...")
+    selected_attributes = get_selected_attributes(base_profile, attribute_count=attribute_count)
+    print(f"  Selected {len(selected_attributes) if isinstance(selected_attributes, list) else 'N/A'} attributes")
+    
+    # Generate complete persona using the base profile and selected attributes
+    print("\n[3/4] Generating complete persona with similar attributes...")
+    complete_persona = generate_single_profile(
+        template=None,
+        profile_index=0,
+        attribute_count=attribute_count,
+        base_profile=base_profile,
+        selected_attributes=selected_attributes
+    )
+    
+    backstory = complete_persona.get("Summary", "")
+    print(f"  Backstory length: {len(backstory)} characters")
+    
+    return {
+        "base_profile": base_profile,
+        "complete_persona": complete_persona,
+        "backstory": backstory
+    }
 
 
 def generate_deeppersona_for_profile(profile: Dict[str, Any], problem_statement: str) -> Dict[str, Any]:
@@ -215,18 +362,98 @@ def update_firestore(db, research_id: str, updated_personas: List[Dict[str, Any]
     print(f"\nFirestore updated with {len(updated_personas)} personas")
 
 
+def add_deeppersona_to_research(
+    db,
+    research_id: str,
+    base_persona_id: str,
+    deep_persona_data: Dict[str, Any],
+    profile_id: str,
+    profile_role: str,
+    profile_industry: Optional[str] = None,
+    dry_run: bool = False
+) -> Dict[str, Any]:
+    """
+    Generate and add a DeepPersona to research document with reference to base persona.
+    
+    Args:
+        db: Firestore database client
+        research_id: Research document ID
+        base_persona_id: ID of the base persona this DeepPersona is derived from
+        deep_persona_data: Deep persona generation data (from generate_deeppersona_from_existing_persona)
+        profile_id: Profile ID this persona belongs to
+        profile_role: Role from the profile
+        profile_industry: Optional industry from profile
+        dry_run: If True, don't update Firestore
+        
+    Returns:
+        Transformed persona dictionary
+    """
+    # Transform to regular schema
+    print(f"\n[4/4] Converting to regular persona schema...")
+    transformed_persona = transform_to_regular_persona(
+        deep_persona=deep_persona_data,
+        profile_id=profile_id,
+        profile_role=profile_role,
+        profile_industry=profile_industry
+    )
+    
+    # Add deep persona flags and base persona reference
+    transformed_persona["isDeepPersona"] = True
+    transformed_persona["basePersonaId"] = base_persona_id
+    transformed_persona["source"] = "deeppersona"
+    transformed_persona["createdAt"] = datetime.now()
+    transformed_persona["updatedAt"] = datetime.now()
+    
+    print(f"  Result: {get_persona_summary(transformed_persona)}")
+    print(f"  Base Persona ID: {base_persona_id}")
+    
+    # Get current personas list
+    research = fetch_research(db, research_id)
+    personas = get_personas_from_research(research)
+    
+    # Add the new deep persona to the list
+    personas.append(transformed_persona)
+    
+    # Update Firestore (unless dry run)
+    if not dry_run:
+        print(f"\n[SAVE] Saving DeepPersona to Firestore...")
+        update_firestore(db, research_id, personas)
+    else:
+        print(f"\n[DRY RUN] Would save DeepPersona to Firestore")
+        # Save to local file
+        output_file = os.path.join(
+            os.path.dirname(__file__),
+            "output",
+            f"deeppersona_from_{base_persona_id}_{research_id}.json"
+        )
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(transformed_persona, f, indent=2, default=str)
+        print(f"  Saved to: {output_file}")
+    
+    return transformed_persona
+
+
 def main():
     parser = argparse.ArgumentParser(description="Run DeepPersona comparison")
     parser.add_argument("--research-id", required=True, help="Research ID to process")
+    parser.add_argument("--persona-id", help="Persona ID to generate DeepPersona from (if provided, generates from existing persona)")
+    parser.add_argument("--attribute-count", type=int, default=200, help="Number of attributes to select (default: 200)")
     parser.add_argument("--dry-run", action="store_true", help="Generate personas without updating Firestore")
     args = parser.parse_args()
 
     research_id = args.research_id
+    persona_id = args.persona_id
+    attribute_count = args.attribute_count
     dry_run = args.dry_run
 
     print(f"\n{'#'*60}")
     print(f"# DeepPersona Comparison Script")
     print(f"# Research ID: {research_id}")
+    if persona_id:
+        print(f"# Persona ID: {persona_id} (generating from existing persona)")
+    print(f"# Attribute Count: {attribute_count}")
     print(f"# Dry Run: {dry_run}")
     print(f"{'#'*60}")
 
@@ -240,6 +467,60 @@ def main():
     print(f"  Research Name: {research.get('researchName', 'Unknown')}")
     print(f"  Current Step: {research.get('currentStep', '?')}")
 
+    # If persona_id is provided, generate DeepPersona from existing persona
+    if persona_id:
+        print(f"\n[FETCH] Fetching persona {persona_id}...")
+        base_persona = get_persona_by_id(db, research_id, persona_id)
+        
+        if not base_persona:
+            raise ValueError(f"Persona {persona_id} not found in research {research_id}")
+        
+        print(f"  Found persona: {base_persona.get('name', 'Unknown')}")
+        print(f"  Profile ID: {base_persona.get('profileId', '?')}")
+        print(f"  Role: {base_persona.get('role', '?')}")
+        
+        # Get profile information
+        profiles = get_profiles_from_research(research)
+        profile_id = base_persona.get("profileId")
+        profile = next((p for p in profiles if p.get("id") == profile_id), None)
+        
+        if not profile:
+            raise ValueError(f"Profile {profile_id} not found for persona {persona_id}")
+        
+        profile_role = profile.get("role", base_persona.get("role", "Professional"))
+        profile_industry = profile.get("industry", base_persona.get("industry"))
+        
+        # Generate DeepPersona from existing persona (pass profile to extract primary attributes)
+        deep_persona_data = generate_deeppersona_from_existing_persona(
+            base_persona,
+            profile=profile,
+            attribute_count=attribute_count
+        )
+        
+        # Add to research
+        transformed_persona = add_deeppersona_to_research(
+            db=db,
+            research_id=research_id,
+            base_persona_id=persona_id,
+            deep_persona_data=deep_persona_data,
+            profile_id=profile_id,
+            profile_role=profile_role,
+            profile_industry=profile_industry,
+            dry_run=dry_run
+        )
+        
+        print("\n" + "="*60)
+        print("DEEP PERSONA GENERATION COMPLETE")
+        print("="*60)
+        print(f"\nGenerated DeepPersona:")
+        print(f"  Name: {transformed_persona.get('name', 'Unknown')}")
+        print(f"  ID: {transformed_persona.get('id', '?')}")
+        print(f"  Base Persona ID: {persona_id}")
+        print(f"  Is Deep Persona: {transformed_persona.get('isDeepPersona', False)}")
+        
+        return transformed_persona
+
+    # Original workflow: Generate DeepPersonas for all profiles with existing personas
     # Get problem statement
     step1 = research.get("step1", {})
     problem_statement = step1.get("problemStatement") or step1.get("researchGoal") or ""

@@ -10,7 +10,7 @@ import time
 import shutil
 from datetime import datetime
 from typing import Dict, List, Any, Optional
-from config import get_completion
+from generate_user_profile.config import get_completion
 import subprocess
 # Add current directory to system path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -376,8 +376,8 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     """
 
     # Import required functions
-    from select_attributes import generate_user_profile as gen_profile
-    from select_attributes import get_selected_attributes, save_results, build_nested_dict
+    from generate_user_profile.select_attributes import generate_user_profile as gen_profile
+    from generate_user_profile.select_attributes import get_selected_attributes, save_results, build_nested_dict
 
     # Use provided base_profile or generate a new one
     if base_profile is not None:

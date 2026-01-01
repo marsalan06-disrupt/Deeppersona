@@ -1,8 +1,8 @@
 # generate_user_profile package
 # Import key functions from submodules
 
-from config import get_completion, parse_gpt_response, parse_json_response
-from based_data import (
+from generate_user_profile.config import get_completion, parse_gpt_response, parse_json_response
+from generate_user_profile.based_data import (
     generate_age_info,
     generate_career_info,
     generate_location,
@@ -13,11 +13,11 @@ from based_data import (
     generate_interests_and_hobbies,
     get_occupations
 )
-from select_attributes import (
+from generate_user_profile.select_attributes import (
     generate_user_profile,
     get_selected_attributes
 )
-from generate_profile import generate_single_profile
+from generate_user_profile.generate_profile import generate_single_profile
 
 __all__ = [
     # Config
