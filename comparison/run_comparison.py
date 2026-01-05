@@ -580,15 +580,27 @@ def main():
         profile_role = profile.get("role", profile_name)  # Use profile name as role if not specified
         profile_industry = profile.get("industry")
 
-        # Find base persona ID before replacement (for linking)
+        # Find existing persona for this profile (to extract primary attributes)
+        base_persona = None
         base_persona_id = None
         for persona in personas:
             if persona.get("profileId") == profile_id:
+                base_persona = persona
                 base_persona_id = persona.get("id")
                 break
+        
+        if not base_persona:
+            print(f"  Warning: No existing persona found for profile {profile_id}, skipping...")
+            continue
 
-        # Generate DeepPersona (preserves primary attributes, generates secondary via similarity)
-        deep_persona_data = generate_deeppersona_for_profile(profile, problem_statement)
+        # Generate DeepPersona using primary attributes from existing persona
+        # This preserves primary attributes and generates similar secondary attributes via vector search
+        print(f"\n[GENERATE] Generating DeepPersona from existing persona: {base_persona.get('name', 'Unknown')}")
+        deep_persona_data = generate_deeppersona_from_existing_persona(
+            base_persona,
+            profile=profile,
+            attribute_count=attribute_count
+        )
 
         # Transform to regular schema (preserves primary attributes from base, generates secondary via similarity)
         print(f"\n[TRANSFORM] Converting to regular persona schema...")
@@ -613,30 +625,30 @@ def main():
             print(f"  Base Persona ID: {base_persona_id} (linked via basePersonaId)")
         deep_personas[profile_id] = transformed_persona
 
-    # Replace one persona per profile
-    print("\n[REPLACE] Replacing one persona per profile...")
+    # Add deep personas without replacing originals (keep all personas)
+    print("\n[ADD] Adding deep personas to existing personas (keeping all)...")
     updated_personas = personas.copy()
-    replaced_personas = []
+    added_personas = []
 
     for profile_id, new_persona in deep_personas.items():
-        updated_personas, replaced = replace_persona_in_list(
-            updated_personas,
-            profile_id,
-            new_persona
-        )
-        if replaced:
-            # Deep persona already has basePersonaId linking to base persona
-            # No bidirectional link - base persona is NOT modified
-            base_persona_id = replaced.get("id")
-            deep_persona_id = new_persona.get("id")
-            print(f"  Replaced: Base Persona {base_persona_id} -> Deep Persona {deep_persona_id}")
-            print(f"  (Deep persona links to base via basePersonaId, no reverse link)")
-            replaced_personas.append(replaced)
-
-    # Save replaced personas to backup
-    if replaced_personas:
-        replaced_backup = backup_personas(replaced_personas, f"{research_id}_replaced")
-        print(f"  Saved replaced personas to: {replaced_backup}")
+        # Find the base persona for this profile (for linking)
+        base_persona_id = None
+        for persona in updated_personas:
+            if persona.get("profileId") == profile_id:
+                base_persona_id = persona.get("id")
+                break
+        
+        # Add the new deep persona to the list (keeping all original personas)
+        updated_personas.append(new_persona)
+        added_personas.append(new_persona)
+        
+        deep_persona_id = new_persona.get("id")
+        print(f"  Added: Deep Persona {deep_persona_id} for Profile {profile_id}")
+        if base_persona_id:
+            print(f"    (Links to base persona {base_persona_id} via basePersonaId)")
+    
+    if added_personas:
+        print(f"  Added {len(added_personas)} deep persona(s) to the list")
 
     # Show final personas
     print("\n[FINAL PERSONAS]")
