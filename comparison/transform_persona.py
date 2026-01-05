@@ -169,16 +169,19 @@ def transform_to_regular_persona(
     deep_persona: Dict[str, Any],
     profile_id: str,
     profile_role: str,
-    profile_industry: Optional[str] = None
+    profile_industry: Optional[str] = None,
+    base_persona_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Transform DeepPersona output to match step2.selectedPersonas structure.
+    Preserves primary attributes from base persona, generates secondary attributes via similarity.
 
     Args:
         deep_persona: Output from DeepPersona generation containing base_profile and complete_persona
         profile_id: The profile ID this persona belongs to
         profile_role: The role from the profile (e.g., "Startup Founder")
         profile_industry: Optional industry from profile
+        base_persona_id: Optional ID of the base persona this deep persona is derived from
 
     Returns:
         Dict matching the regular persona schema
@@ -186,45 +189,68 @@ def transform_to_regular_persona(
     base = deep_persona["base_profile"]
     complete = deep_persona["complete_persona"]
 
-    # Generate unique ID with deep_ prefix for identification
+    # Generate unique ID with "deep" prefix for identification
     persona_id = f"persona_deep_{int(time.time() * 1000)}_{random.randint(100000000, 999999999)}"
 
-    # Extract values with fallbacks
+    # Extract values with fallbacks (these come from base_profile which contains primary attributes)
     age = base.get("age_info", {}).get("age", 35)
     gender = base.get("gender", "male")
     location = base.get("location", {})
     city = location.get("city", "Unknown")
     country = location.get("country", "Unknown")
+    
+    # Extract primary attributes from base_profile (these are preserved from base persona)
+    primary_attributes = base.get("_primary_attributes", {})
 
-    # Build the persona
+    # Build the persona - preserve primary attributes from base persona
     persona = {
         # Required fields matching regular schema
         "id": persona_id,
         "profileId": profile_id,
         "name": generate_name_from_gender(gender),
-        "age": age,
+        "age": age,  # Primary attribute from base persona
         "role": profile_role,  # Use profile role for consistency
         "company": extract_company_from_complete(complete),
-        "location": f"{city}, {country}",
+        "location": f"{city}, {country}",  # Primary attribute from base persona
         "industry": profile_industry or extract_industry_from_complete(complete),
         "seniority_level": map_age_to_seniority(age),
-        "company_size_range": "51-200",
+        "company_size_range": primary_attributes.get("company_size_range") or primary_attributes.get("size_of_business") or "51-200",
         "experience": extract_experience_from_complete(complete),
         "pain_points": extract_pain_points_from_complete(complete),
+        
+        # Preserve primary attributes from base persona at top level
+        # These are the key attributes that link the deep persona to the base persona
+        "_primary_attributes": primary_attributes,
 
         # DeepPersona enrichment (extra fields for richer interviews)
         # Parse stringified JSON and flatten nested structures
+        # These are stored at top level for quick access and compatibility with regular personas
         "backstory": complete.get("Summary", ""),
         "personal_values": parse_if_string(base.get("personal_values", {})),
         "life_attitude": parse_if_string(base.get("life_attitude", {})),
         "interests": flatten_nested_field(parse_if_string(base.get("interests", {})), "interests"),
         "personal_story": flatten_nested_field(parse_if_string(base.get("personal_story", {})), "personal_story"),
 
+        # Store full deep persona data for complete preservation
+        # Note: personal_values, life_attitude, interests, personal_story are already at top level above
+        # deep_persona_base contains the full base_profile structure (including primary attributes)
+        # deep_persona_complete contains all sections with all attributes from vector similarity search
+        "deep_persona_base": base,  # Full base_profile with primary attributes + generated values
+        "deep_persona_complete": complete,  # Full complete_persona with all sections (secondary attributes via similarity)
+
+        # Link to base persona (one-way link: deep persona -> base persona)
+        # The deep persona ID includes "deep" prefix and links back via basePersonaId
+        # Base persona is NOT modified (no bidirectional link)
+        
         # Metadata
         "source": "deeppersona",  # Tag to identify in comparison
         "createdAt": datetime.now(),
         "updatedAt": datetime.now()
     }
+    
+    # Add basePersonaId if provided (links deep persona to base persona)
+    if base_persona_id:
+        persona["basePersonaId"] = base_persona_id
 
     return persona
 

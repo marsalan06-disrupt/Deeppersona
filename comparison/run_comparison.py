@@ -394,24 +394,44 @@ def add_deeppersona_to_research(
         deep_persona=deep_persona_data,
         profile_id=profile_id,
         profile_role=profile_role,
-        profile_industry=profile_industry
+        profile_industry=profile_industry,
+        base_persona_id=base_persona_id
     )
     
-    # Add deep persona flags and base persona reference
+    # Add deep persona flags (basePersonaId already added in transform function)
+    deep_persona_id = transformed_persona.get("id")
     transformed_persona["isDeepPersona"] = True
-    transformed_persona["basePersonaId"] = base_persona_id
     transformed_persona["source"] = "deeppersona"
     transformed_persona["createdAt"] = datetime.now()
     transformed_persona["updatedAt"] = datetime.now()
     
     print(f"  Result: {get_persona_summary(transformed_persona)}")
     print(f"  Base Persona ID: {base_persona_id}")
+    print(f"  Deep Persona ID: {deep_persona_id}")
     
     # Get current personas list
     research = fetch_research(db, research_id)
     personas = get_personas_from_research(research)
     
-    # Add the new deep persona to the list
+    # Check if a deep persona already exists for this base persona
+    existing_deep_persona = None
+    existing_deep_persona_index = None
+    for i, persona in enumerate(personas):
+        if persona.get("basePersonaId") == base_persona_id and persona.get("isDeepPersona"):
+            existing_deep_persona = persona
+            existing_deep_persona_index = i
+            break
+    
+    if existing_deep_persona:
+        print(f"\n  WARNING: Deep persona already exists for base persona {base_persona_id}")
+        print(f"  Existing Deep Persona ID: {existing_deep_persona.get('id')}")
+        print(f"  Existing Deep Persona Name: {existing_deep_persona.get('name', 'Unknown')}")
+        print(f"  Replacing existing deep persona with new one...")
+        # Remove the existing deep persona
+        personas.pop(existing_deep_persona_index)
+    
+    # Add the new deep persona to the list (no bidirectional link - only deep persona links to base)
+    # The deep persona has basePersonaId to link back to base, but base persona is not modified
     personas.append(transformed_persona)
     
     # Update Firestore (unless dry run)
@@ -560,19 +580,37 @@ def main():
         profile_role = profile.get("role", profile_name)  # Use profile name as role if not specified
         profile_industry = profile.get("industry")
 
-        # Generate DeepPersona
+        # Find base persona ID before replacement (for linking)
+        base_persona_id = None
+        for persona in personas:
+            if persona.get("profileId") == profile_id:
+                base_persona_id = persona.get("id")
+                break
+
+        # Generate DeepPersona (preserves primary attributes, generates secondary via similarity)
         deep_persona_data = generate_deeppersona_for_profile(profile, problem_statement)
 
-        # Transform to regular schema
+        # Transform to regular schema (preserves primary attributes from base, generates secondary via similarity)
         print(f"\n[TRANSFORM] Converting to regular persona schema...")
         transformed_persona = transform_to_regular_persona(
             deep_persona=deep_persona_data,
             profile_id=profile_id,
             profile_role=profile_role,
-            profile_industry=profile_industry
+            profile_industry=profile_industry,
+            base_persona_id=base_persona_id
         )
 
+        # Add deep persona flags (basePersonaId already added in transform function)
+        deep_persona_id = transformed_persona.get("id")
+        transformed_persona["isDeepPersona"] = True
+        transformed_persona["source"] = "deeppersona"
+        transformed_persona["createdAt"] = datetime.now()
+        transformed_persona["updatedAt"] = datetime.now()
+
         print(f"  Result: {get_persona_summary(transformed_persona)}")
+        print(f"  Deep Persona ID: {deep_persona_id}")
+        if base_persona_id:
+            print(f"  Base Persona ID: {base_persona_id} (linked via basePersonaId)")
         deep_personas[profile_id] = transformed_persona
 
     # Replace one persona per profile
@@ -587,6 +625,12 @@ def main():
             new_persona
         )
         if replaced:
+            # Deep persona already has basePersonaId linking to base persona
+            # No bidirectional link - base persona is NOT modified
+            base_persona_id = replaced.get("id")
+            deep_persona_id = new_persona.get("id")
+            print(f"  Replaced: Base Persona {base_persona_id} -> Deep Persona {deep_persona_id}")
+            print(f"  (Deep persona links to base via basePersonaId, no reverse link)")
             replaced_personas.append(replaced)
 
     # Save replaced personas to backup
