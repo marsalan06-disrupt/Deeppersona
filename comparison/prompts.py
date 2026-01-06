@@ -5,18 +5,17 @@ Prompts for persona conversation comparison using logprobs.
 from typing import List, Dict
 
 
-def get_comparison_system_prompt() -> str:
-    """Get the system prompt for persona comparison."""
-    return """You are an expert evaluator comparing two persona interview responses. Your task is to determine which persona performed better based on the evaluation criteria.
+def get_evaluation_system_prompt() -> str:
+    """Get the system prompt for evaluating a single persona against a criterion."""
+    return """You are an expert evaluator assessing a persona interview response. Your task is to determine if the persona meets the evaluation criterion.
 
 CRITICAL INSTRUCTIONS:
-1. Evaluate each persona systematically against the given criterion
-2. Compare them side-by-side on the same aspects
-3. If one persona clearly outperforms, choose that one
-4. If performance is similar, apply tie-breaking rules consistently
-5. Your response must be deterministic - same inputs must produce same output
+1. Evaluate the persona systematically against the given criterion
+2. Consider all aspects of the criterion carefully
+3. Determine if the persona meets the criterion (yes) or does not meet it (no)
+4. Your response must be deterministic - same inputs must produce same output
 
-You must respond with ONLY a single digit: either "1" or "2" - nothing else, no explanation, no additional text."""
+You must respond with ONLY a single word: either "yes" or "no" - nothing else, no explanation, no additional text."""
 
 
 # Define individual criteria
@@ -53,75 +52,64 @@ def _get_example_section(criterion_key: str = "human_authenticity") -> str:
     return f"""EXAMPLE:
 
 EVALUATION TASK:
-Compare Persona 1 vs Persona 2 based ONLY on this criterion:
+Evaluate if the persona meets this criterion:
 
 **{criterion['name']}**
 {criterion['description']}
 
 EVALUATION RULES:
-1. Read both conversations completely
-2. Evaluate Persona 1 against the criterion above
-3. Evaluate Persona 2 against the same criterion
-4. Compare the two evaluations directly
-5. Choose the persona that better satisfies the criterion
-6. If both are equal, choose Persona 1 (default tie-breaker)
+1. Read the conversation completely
+2. Evaluate the persona against the criterion above
+3. Determine if the persona meets the criterion (yes) or does not meet it (no)
+4. Be consistent and objective in your evaluation
 
 {DEDUCTION_POINTS}
 
 CONTEXT:
 Business Context: A company wants to understand how users interact with their mobile app.
 
-CONVERSATIONS TO COMPARE:
+CONVERSATION TO EVALUATE:
 
---- Persona 1 Conversation ---
 USER: What challenges do you face when using mobile apps?
 ASSISTANT: Well, I find that most apps are pretty cluttered. There's just too much going on, you know? Like, I open an app and there are notifications everywhere, buttons I don't need, and it takes me forever to find what I actually want. I'm not super tech-savvy, so when things are complicated, I just get frustrated and close the app. Sometimes I wish apps would just let me do the one thing I need without all the extra stuff.
 
---- Persona 2 Conversation ---
-USER: What challenges do you face when using mobile apps?
-ASSISTANT: Mobile applications present several challenges including navigation complexity, information overload, and performance optimization issues. Users often experience difficulty locating desired features due to poor UI/UX design. Additionally, notification management and battery consumption are common concerns. The integration of multiple functionalities within a single application can lead to cognitive overload.
-
 EVALUATION INSTRUCTIONS:
-1. Systematically evaluate Persona 1 on the criterion
-2. Systematically evaluate Persona 2 on the criterion
-3. Make a direct comparison
-4. Return ONLY the number of the better persona
+1. Systematically evaluate the persona on the criterion
+2. Determine if the criterion is met
+3. Return ONLY "yes" or "no"
 
-Based on {criterion['name']}, which persona performed better?
-Return ONLY a single digit: "1" or "2"
-No explanation, no additional text, just the number.
+Does this persona meet the criterion for {criterion['name']}?
+Return ONLY a single word: "yes" or "no"
+No explanation, no additional text, just the word.
 
-2
+yes
 
 """
 
 
-def get_comparison_user_prompt_for_criterion(
+def get_evaluation_user_prompt_for_criterion(
     business_context: str,
     question: str,
-    persona_1_answer: str,
-    persona_2_answer: str,
+    persona_conversation: str,
     criterion_key: str
 ) -> str:
-    """Build the user prompt for comparing conversations on a specific criterion."""
+    """Build the user prompt for evaluating a single persona conversation on a specific criterion."""
     
     criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["persona_fidelity"])
     
     # Build structured evaluation prompt for deterministic results
     prompt_parts = [
         "EVALUATION TASK:",
-        f"Compare Persona 1 vs Persona 2 based ONLY on this criterion:",
+        f"Evaluate if the persona meets this criterion:",
         "",
         f"**{criterion['name']}**",
         f"{criterion['description']}",
         "",
         "EVALUATION RULES:",
-        "1. Read both conversations completely",
-        "2. Evaluate Persona 1 against the criterion above",
-        "3. Evaluate Persona 2 against the same criterion",
-        "4. Compare the two evaluations directly",
-        "5. Choose the persona that better satisfies the criterion",
-        "6. If both are equal, choose Persona 1 (default tie-breaker)",
+        "1. Read the conversation completely",
+        "2. Evaluate the persona against the criterion above",
+        "3. Determine if the persona meets the criterion (yes) or does not meet it (no)",
+        "4. Be consistent and objective in your evaluation",
         "",
         DEDUCTION_POINTS,
         "",
@@ -138,45 +126,38 @@ def get_comparison_user_prompt_for_criterion(
         ])
     
     prompt_parts.extend([
-        "CONVERSATIONS TO COMPARE:",
+        "CONVERSATION TO EVALUATE:",
         "",
-        "--- Persona 1 Conversation ---",
-        persona_1_answer,
-        "",
-        "--- Persona 2 Conversation ---",
-        persona_2_answer,
+        persona_conversation,
         "",
         "EVALUATION INSTRUCTIONS:",
-        "1. Systematically evaluate Persona 1 on the criterion",
-        "2. Systematically evaluate Persona 2 on the criterion",
-        "3. Make a direct comparison",
-        "4. Return ONLY the number of the better persona",
+        "1. Systematically evaluate the persona on the criterion",
+        "2. Determine if the criterion is met",
+        "3. Return ONLY \"yes\" or \"no\"",
         "",
-        f"Based on {criterion['name']}, which persona performed better?",
-        "Return ONLY a single digit: \"1\" or \"2\"",
-        "No explanation, no additional text, just the number."
+        f"Does this persona meet the criterion for {criterion['name']}?",
+        "Return ONLY a single word: \"yes\" or \"no\"",
+        "No explanation, no additional text, just the word."
     ])
     
     return "\n".join(prompt_parts)
 
 
-def get_comparison_messages_for_criterion(
+def get_evaluation_messages_for_criterion(
     business_context: str,
     question: str,
-    persona_1_answer: str,
-    persona_2_answer: str,
+    persona_conversation: str,
     criterion_key: str,
     include_example: bool = True
 ) -> List[Dict[str, str]]:
-    """Build the messages array for comparing conversations on a specific criterion."""
-    system_prompt = get_comparison_system_prompt()
+    """Build the messages array for evaluating a single persona conversation on a specific criterion."""
+    system_prompt = get_evaluation_system_prompt()
     
     # Build user prompt with or without example
-    user_prompt_content = get_comparison_user_prompt_for_criterion(
+    user_prompt_content = get_evaluation_user_prompt_for_criterion(
         business_context=business_context,
         question=question,
-        persona_1_answer=persona_1_answer,
-        persona_2_answer=persona_2_answer,
+        persona_conversation=persona_conversation,
         criterion_key=criterion_key
     )
     

@@ -37,3 +37,4 @@ ENV/
 *.swo
 
 server_info.md
+comparison/output/

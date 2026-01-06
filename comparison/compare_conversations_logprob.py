@@ -3,10 +3,10 @@ Compare persona conversations using logprobs to determine which performed better
 
 This script:
 1. Fetches conversations from Firestore for two personas
-2. Sends comparison prompt with conversations labeled as "1" and "2"
-3. Extracts logprob for first token response ("1" or "2")
-4. Calculates linear probability
-5. Maps response back to original persona IDs
+2. For each criterion, makes 2 independent calls (one per persona)
+3. Evaluates each persona against the criterion (yes/no)
+4. Extracts yes/no probabilities from top 20 logprobs
+5. Compares yes probabilities to determine winner
 6. Saves results to JSON file
 
 Usage:
@@ -29,7 +29,7 @@ sys.path.insert(0, FUNCTIONS_DIR)
 
 import firebase_admin
 from firebase_admin import credentials, firestore
-from prompts import get_comparison_messages_for_criterion, CRITERIA_DEFINITIONS
+from prompts import get_evaluation_messages_for_criterion, CRITERIA_DEFINITIONS
 from generate_user_profile.config import client as openai_client
 
 # Initialize Firebase
@@ -83,43 +83,6 @@ def fetch_conversations(db, research_id: str, persona_id: str) -> List[Dict[str,
     return conversations
 
 
-def extract_qa_pairs(conversation: Dict[str, Any]) -> List[Dict[str, str]]:
-    """Extract question-answer pairs from conversation."""
-    qa_pairs = []
-    
-    # Extract conversation messages if available
-    messages = conversation.get("messages", [])
-    if not messages:
-        # Try alternative field names
-        messages = conversation.get("conversation", []) or conversation.get("history", [])
-    
-    if messages:
-        i = 0
-        while i < len(messages):
-            msg = messages[i]
-            role = msg.get("role", "").lower()
-            content = msg.get("content", "")
-            
-            # Look for USER message followed by ASSISTANT message
-            if role == "user":
-                question = content
-                answer = ""
-                
-                # Look for the next ASSISTANT message
-                if i + 1 < len(messages) and messages[i + 1].get("role", "").lower() == "assistant":
-                    answer = messages[i + 1].get("content", "")
-                    qa_pairs.append({
-                        "question": question,
-                        "answer": answer
-                    })
-                    i += 2  # Skip both user and assistant messages
-                    continue
-            
-            i += 1
-    
-    return qa_pairs
-
-
 def format_conversation_for_prompt(conversation: Dict[str, Any]) -> str:
     """Format conversation data for inclusion in prompt."""
     formatted_parts = []
@@ -146,14 +109,14 @@ def format_conversation_for_prompt(conversation: Dict[str, Any]) -> str:
 
 
 
-def compare_conversations_with_logprob(
+def evaluate_persona_with_logprob(
     client: Any,
     messages: List[Dict[str, str]],
     model: str = "gpt-4o",
     temperature: float = 0.0,
     seed: Optional[int] = None
 ) -> Dict[str, Any]:
-    """Call OpenAI API with logprobs enabled and extract first token response.
+    """Call OpenAI API with logprobs enabled and extract yes/no probabilities.
     
     For deterministic results:
     - temperature must be 0.0
@@ -169,8 +132,8 @@ def compare_conversations_with_logprob(
             "messages": messages,
             "temperature": 0.0,  # Force to 0.0 for determinism
             "logprobs": True,
-            "top_logprobs": 2,  # Get logprob for the chosen token and the not chosen
-            "max_tokens": 1  # We only want the first token ("1" or "2")
+            "top_logprobs": 20,  # Get top 20 logprobs to find yes/no probabilities
+            "max_tokens": 1  # We only want the first token ("yes" or "no")
         }
         
         # Add seed if provided (for additional determinism)
@@ -189,24 +152,58 @@ def compare_conversations_with_logprob(
             token_text = first_token.token
             logprob_value = first_token.logprob
             
-            # Calculate linear probability
+            # Calculate linear probability for the chosen token
             linear_prob = np.round(np.exp(logprob_value) * 100, 2)
+            
+            # Extract yes/no probabilities from top_logprobs
+            yes_prob = None
+            no_prob = None
+            
+            # Helper function to check if token is yes/no
+            def is_yes_token(token: str) -> bool:
+                token_clean = token.strip().lower().rstrip('.,;:!?"\'')
+                return token_clean == "yes"
+            
+            def is_no_token(token: str) -> bool:
+                token_clean = token.strip().lower().rstrip('.,;:!?"\'')
+                return token_clean == "no"
             
             # Get top alternatives if available
             top_logprobs = []
             if hasattr(first_token, 'top_logprobs') and first_token.top_logprobs:
                 for alt in first_token.top_logprobs:
+                    alt_token = alt.token
+                    alt_logprob = alt.logprob
+                    alt_linear_prob = np.round(np.exp(alt_logprob) * 100, 2)
+                    
                     top_logprobs.append({
-                        "token": alt.token,
-                        "logprob": alt.logprob,
-                        "linear_prob": np.round(np.exp(alt.logprob) * 100, 2)
+                        "token": alt_token,
+                        "logprob": alt_logprob,
+                        "linear_prob": float(alt_linear_prob)
                     })
+                    
+                    # Check for yes/no tokens in top_logprobs
+                    # Use the highest probability if multiple matches found
+                    if is_yes_token(alt_token):
+                        if yes_prob is None or alt_linear_prob > yes_prob:
+                            yes_prob = float(alt_linear_prob)
+                    elif is_no_token(alt_token):
+                        if no_prob is None or alt_linear_prob > no_prob:
+                            no_prob = float(alt_linear_prob)
+            
+            # Also check the chosen token (if not found in top_logprobs)
+            if yes_prob is None and is_yes_token(token_text):
+                yes_prob = float(linear_prob)
+            if no_prob is None and is_no_token(token_text):
+                no_prob = float(linear_prob)
             
             return {
                 "response": message_content,
                 "first_token": token_text,
                 "logprob": logprob_value,
                 "linear_probability": float(linear_prob),
+                "yes_probability": yes_prob,
+                "no_probability": no_prob,
                 "top_alternatives": top_logprobs,
                 "full_response": response
             }
@@ -216,6 +213,8 @@ def compare_conversations_with_logprob(
                 "first_token": message_content[0] if message_content else None,
                 "logprob": None,
                 "linear_probability": None,
+                "yes_probability": None,
+                "no_probability": None,
                 "error": "No logprobs returned"
             }
             
@@ -224,22 +223,10 @@ def compare_conversations_with_logprob(
             "error": str(e),
             "response": None,
             "logprob": None,
-            "linear_probability": None
+            "linear_probability": None,
+            "yes_probability": None,
+            "no_probability": None
         }
-
-
-def determine_confidence(linear_prob: float) -> str:
-    """Determine confidence level based on linear probability."""
-    if linear_prob >= 90:
-        return "very_high"
-    elif linear_prob >= 75:
-        return "high"
-    elif linear_prob >= 60:
-        return "medium"
-    elif linear_prob >= 50:
-        return "low"
-    else:
-        return "very_low"
 
 
 def main():
@@ -307,94 +294,249 @@ def main():
     
     # Get all criteria keys
     criteria_keys = list(CRITERIA_DEFINITIONS.keys())
-    total_comparisons = len(criteria_keys)
+    total_evaluations = len(criteria_keys) * 2  # 2 calls per criterion (one per persona)
     
-    # Compare full conversations, evaluating each criterion separately
-    print(f"\n[COMPARE] Comparing full conversations across {len(criteria_keys)} criteria ({total_comparisons} total comparisons)...")
+    # Store individual evaluation results - each call stored independently
+    # Structure: {criterion_key: {persona_1_id: result, persona_2_id: result}}
+    individual_results = {}
     
-    criterion_results = []
-    comparison_count = 0
+    # Evaluate each persona independently for each criterion
+    print(f"\n[EVALUATE] Evaluating personas independently across {len(criteria_keys)} criteria ({total_evaluations} total evaluations)...")
     
-    # Evaluate each criterion separately on the full conversations
+    evaluation_count = 0
+    
+    # Make independent calls - store each result immediately to prevent data loss
     for criterion_key in criteria_keys:
         criterion = CRITERIA_DEFINITIONS[criterion_key]
-        comparison_count += 1
         
-        print(f"\n  [{comparison_count}/{total_comparisons}] Evaluating: {criterion['name']}...")
+        # Initialize storage for this criterion
+        individual_results[criterion_key] = {}
         
-        # Build comparison messages for full conversations and this criterion
-        # Include example only for the very first comparison
-        messages = get_comparison_messages_for_criterion(
+        print(f"\n  Evaluating criterion: {criterion['name']}...")
+        
+        # Evaluate Persona 1 - store result immediately
+        evaluation_count += 1
+        print(f"    [{evaluation_count}/{total_evaluations}] Evaluating Persona 1...")
+        
+        # Include example only for the very first evaluation
+        messages_1 = get_evaluation_messages_for_criterion(
             business_context=business_context,
             question="",  # No specific question, evaluating full conversation
-            persona_1_answer=persona_1_conversation_text,
-            persona_2_answer=persona_2_conversation_text,
+            persona_conversation=persona_1_conversation_text,
             criterion_key=criterion_key,
-            include_example=(comparison_count == 1)
+            include_example=(evaluation_count == 1)
         )
         
-        # Call OpenAI with logprobs
-        result = compare_conversations_with_logprob(
+        result_1 = evaluate_persona_with_logprob(
             client=client,
-            messages=messages,
+            messages=messages_1,
             model=model,
             temperature=temperature,
             seed=seed
         )
         
-        if "error" in result:
-            print(f"    ERROR: {result['error']}")
-            criterion_results.append({
-                "criterion_key": criterion_key,
-                "criterion_name": criterion["name"],
-                "error": result["error"]
-            })
-            continue
+        # Store Persona 1 result immediately (independent of Persona 2)
+        individual_results[criterion_key][persona_1_id] = {
+            "persona_id": persona_1_id,
+            "criterion_key": criterion_key,
+            "criterion_name": criterion["name"],
+            "response": result_1.get("response"),
+            "yes_probability": result_1.get("yes_probability"),
+            "no_probability": result_1.get("no_probability"),
+            "logprob": result_1.get("logprob"),
+            "linear_probability": result_1.get("linear_probability"),
+            "first_token": result_1.get("first_token"),
+            "top_alternatives": result_1.get("top_alternatives", []),
+            "full_response": result_1.get("full_response"),  # Save full API response
+            "error": result_1.get("error"),
+            "timestamp": datetime.now().isoformat()
+        }
         
-        # Map response back to actual persona IDs
-        winner_label = result["first_token"]
-        if winner_label == "1":
-            winner_id = persona_1_id
-            loser_id = persona_2_id
-        elif winner_label == "2":
-            winner_id = persona_2_id
-            loser_id = persona_1_id
+        if result_1.get("error"):
+            print(f"      ERROR: {result_1['error']}")
         else:
-            print(f"    WARNING: Unexpected response token: {winner_label}")
+            yes_prob = result_1.get("yes_probability")
+            no_prob = result_1.get("no_probability")
+            top_alternatives = result_1.get("top_alternatives", [])
+            
+            if yes_prob is not None:
+                print(f"      Persona 1: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+            else:
+                print(f"      Persona 1: {result_1.get('response', 'N/A')}")
+            
+            # Log top token probabilities
+            if top_alternatives:
+                print(f"      Top token probabilities:")
+                for i, alt in enumerate(top_alternatives[:5], 1):  # Show top 5
+                    print(f"        {i}. '{alt.get('token', 'N/A')}': {alt.get('linear_prob', 0):.2f}% (logprob: {alt.get('logprob', 0):.4f})")
+        
+        # Evaluate Persona 2 - store result immediately (independent of Persona 1)
+        evaluation_count += 1
+        print(f"    [{evaluation_count}/{total_evaluations}] Evaluating Persona 2...")
+        
+        messages_2 = get_evaluation_messages_for_criterion(
+            business_context=business_context,
+            question="",  # No specific question, evaluating full conversation
+            persona_conversation=persona_2_conversation_text,
+            criterion_key=criterion_key,
+            include_example=False  # Only include example once
+        )
+        
+        result_2 = evaluate_persona_with_logprob(
+            client=client,
+            messages=messages_2,
+            model=model,
+            temperature=temperature,
+            seed=seed
+        )
+        
+        # Store Persona 2 result immediately (independent of Persona 1)
+        individual_results[criterion_key][persona_2_id] = {
+            "persona_id": persona_2_id,
+            "criterion_key": criterion_key,
+            "criterion_name": criterion["name"],
+            "response": result_2.get("response"),
+            "yes_probability": result_2.get("yes_probability"),
+            "no_probability": result_2.get("no_probability"),
+            "logprob": result_2.get("logprob"),
+            "linear_probability": result_2.get("linear_probability"),
+            "first_token": result_2.get("first_token"),
+            "top_alternatives": result_2.get("top_alternatives", []),
+            "full_response": result_2.get("full_response"),  # Save full API response
+            "error": result_2.get("error"),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        if result_2.get("error"):
+            print(f"      ERROR: {result_2['error']}")
+        else:
+            yes_prob = result_2.get("yes_probability")
+            no_prob = result_2.get("no_probability")
+            top_alternatives = result_2.get("top_alternatives", [])
+            
+            if yes_prob is not None:
+                print(f"      Persona 2: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+            else:
+                print(f"      Persona 2: {result_2.get('response', 'N/A')}")
+            
+            # Log top token probabilities
+            if top_alternatives:
+                print(f"      Top token probabilities:")
+                for i, alt in enumerate(top_alternatives[:5], 1):  # Show top 5
+                    print(f"        {i}. '{alt.get('token', 'N/A')}': {alt.get('linear_prob', 0):.2f}% (logprob: {alt.get('logprob', 0):.4f})")
+    
+    # Now compare results at the end - using stored individual results
+    print(f"\n[COMPARE] Comparing stored results...")
+    
+    criterion_results = []
+    
+    for criterion_key in criteria_keys:
+        criterion = CRITERIA_DEFINITIONS[criterion_key]
+        
+        # Get stored results for this criterion
+        result_1 = individual_results[criterion_key].get(persona_1_id, {})
+        result_2 = individual_results[criterion_key].get(persona_2_id, {})
+        
+        persona_1_yes_prob = result_1.get("yes_probability")
+        persona_1_no_prob = result_1.get("no_probability")
+        persona_2_yes_prob = result_2.get("yes_probability")
+        persona_2_no_prob = result_2.get("no_probability")
+        
+        # Determine winner based on yes probabilities (higher yes_prob = better)
+        # Only compare if both have valid yes probabilities for fair comparison
+        if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
+            if persona_1_yes_prob > persona_2_yes_prob:
+                winner_id = persona_1_id
+                loser_id = persona_2_id
+                winner_label = "1"
+            elif persona_2_yes_prob > persona_1_yes_prob:
+                winner_id = persona_2_id
+                loser_id = persona_1_id
+                winner_label = "2"
+            else:
+                winner_id = None
+                loser_id = None
+                winner_label = "tie"
+        else:
+            # Cannot determine winner if both don't have valid probabilities
+            # Mark as incomplete comparison
             winner_id = None
             loser_id = None
+            winner_label = "incomplete"
+            
+            # Fallback: use response text if probabilities not available
+            response_1 = result_1.get("response", "").strip().lower()
+            response_2 = result_2.get("response", "").strip().lower()
+            
+            if "yes" in response_1 and "no" in response_2:
+                winner_id = persona_1_id
+                loser_id = persona_2_id
+                winner_label = "1"
+            elif "yes" in response_2 and "no" in response_1:
+                winner_id = persona_2_id
+                loser_id = persona_1_id
+                winner_label = "2"
         
         criterion_result = {
             "criterion_key": criterion_key,
             "criterion_name": criterion["name"],
+            "persona_1": result_1,
+            "persona_2": result_2,
             "winner_label": winner_label,
             "winner_persona_id": winner_id,
             "loser_persona_id": loser_id,
-            "logprob": result.get("logprob"),
-            "linear_probability": result.get("linear_probability"),
-            "confidence": determine_confidence(result.get("linear_probability", 0)) if result.get("linear_probability") else None,
-            "response_text": result.get("response"),
-            "top_alternatives": result.get("top_alternatives", [])
+            "comparison": {
+                "persona_1_yes_prob": persona_1_yes_prob,
+                "persona_2_yes_prob": persona_2_yes_prob,
+                "difference": persona_1_yes_prob - persona_2_yes_prob if (persona_1_yes_prob is not None and persona_2_yes_prob is not None) else None
+            }
         }
         
         criterion_results.append(criterion_result)
-        print(f"    Winner: Persona {winner_label} | Confidence: {criterion_result['confidence']} ({criterion_result['linear_probability']}%)")
+        
+        # Print comparison summary
+        if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
+            print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_yes_prob}% vs P2: {persona_2_yes_prob}%)")
+        elif persona_1_yes_prob is not None:
+            print(f"  {criterion['name']}: Persona 1 has result ({persona_1_yes_prob}%), Persona 2 failed")
+        elif persona_2_yes_prob is not None:
+            print(f"  {criterion['name']}: Persona 2 has result ({persona_2_yes_prob}%), Persona 1 failed")
+        else:
+            print(f"  {criterion['name']}: Both personas failed or no valid probabilities")
     
     # Calculate overall winner per criterion
-    criterion_wins = {key: {"persona_1": 0, "persona_2": 0} for key in criteria_keys}
+    # Only count wins when both personas have valid results for fair comparison
+    criterion_wins = {key: {"persona_1": 0, "persona_2": 0, "incomplete": 0} for key in criteria_keys}
     total_persona_1_wins = 0
     total_persona_2_wins = 0
+    total_incomplete = 0
     
     for cr in criterion_results:
-        if "error" not in cr:
-            winner_label = cr.get("winner_label")
-            criterion_key = cr.get("criterion_key")
+        result_1 = cr.get("persona_1", {})
+        result_2 = cr.get("persona_2", {})
+        winner_label = cr.get("winner_label")
+        criterion_key = cr.get("criterion_key")
+        
+        # Only count wins when both have valid yes probabilities (fair comparison)
+        if (result_1.get("error") is None and result_2.get("error") is None and
+            result_1.get("yes_probability") is not None and result_2.get("yes_probability") is not None):
             if winner_label == "1":
                 criterion_wins[criterion_key]["persona_1"] = 1
                 total_persona_1_wins += 1
             elif winner_label == "2":
                 criterion_wins[criterion_key]["persona_2"] = 1
                 total_persona_2_wins += 1
+            elif winner_label == "tie":
+                # Both tied - don't count as win for either
+                pass
+            else:
+                # Incomplete comparison
+                criterion_wins[criterion_key]["incomplete"] = 1
+                total_incomplete += 1
+        else:
+            # Incomplete comparison due to errors or missing probabilities
+            criterion_wins[criterion_key]["incomplete"] = 1
+            total_incomplete += 1
     
     # Determine overall winner
     if total_persona_1_wins > total_persona_2_wins:
@@ -418,14 +560,17 @@ def main():
             winner = "1"
         elif wins["persona_2"] > wins["persona_1"]:
             winner = "2"
-        else:
+        elif wins["persona_1"] == wins["persona_2"] and wins["persona_1"] > 0:
             winner = "tie"
+        else:
+            winner = "incomplete"
         
         criterion_summary[criterion_key] = {
             "criterion_name": criterion["name"],
             "winner": winner,
             "persona_1_wins": wins["persona_1"],
-            "persona_2_wins": wins["persona_2"]
+            "persona_2_wins": wins["persona_2"],
+            "incomplete": wins["incomplete"]
         }
     
     # Prepare output
@@ -440,10 +585,12 @@ def main():
             "loser_persona_id": overall_loser_id,
             "persona_1_wins": total_persona_1_wins,
             "persona_2_wins": total_persona_2_wins,
+            "incomplete_comparisons": total_incomplete,
             "total_criteria": len(criteria_keys)
         },
         "criterion_summary": criterion_summary,
         "criteria_results": criterion_results,
+        "individual_results": individual_results,  # Store all individual call results
         "persona_1_conversation_preview": persona_1_conversation_text[:500] + "..." if len(persona_1_conversation_text) > 500 else persona_1_conversation_text,
         "persona_2_conversation_preview": persona_2_conversation_text[:500] + "..." if len(persona_2_conversation_text) > 500 else persona_2_conversation_text,
         "model_used": model,
@@ -461,32 +608,61 @@ def main():
         output_dir,
         f"comparison_logprob_{research_id}_{persona_1_id[:8]}_{persona_2_id[:8]}_{timestamp}.json"
     )
+    
+    # Convert to absolute path for clarity
+    output_file_abs = os.path.abspath(output_file)
 
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(output_file_abs, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, default=str)
+    
+    # Verify file was created
+    if not os.path.exists(output_file_abs):
+        raise FileNotFoundError(f"Failed to create output file: {output_file_abs}")
 
     # Print results
     print("\n" + "="*60)
     print("COMPARISON RESULTS")
     print("="*60)
+    total_comparable = total_persona_1_wins + total_persona_2_wins
     print(f"\nOverall Winner: Persona {overall_winner_label} ({overall_winner_id})")
-    print(f"Persona 1 Total Wins: {total_persona_1_wins}/{total_persona_1_wins + total_persona_2_wins}")
-    print(f"Persona 2 Total Wins: {total_persona_2_wins}/{total_persona_1_wins + total_persona_2_wins}")
+    if total_comparable > 0:
+        print(f"Persona 1 Total Wins: {total_persona_1_wins}/{total_comparable}")
+        print(f"Persona 2 Total Wins: {total_persona_2_wins}/{total_comparable}")
+    else:
+        print(f"Persona 1 Total Wins: {total_persona_1_wins}")
+        print(f"Persona 2 Total Wins: {total_persona_2_wins}")
+    if total_incomplete > 0:
+        print(f"Incomplete Comparisons: {total_incomplete}/{len(criteria_keys)}")
     
     print(f"\nCriterion-wise Summary:")
     for criterion_key, summary in criterion_summary.items():
         print(f"  {summary['criterion_name']}:")
         print(f"    Winner: Persona {summary['winner']}")
-        print(f"    Persona 1: {summary['persona_1_wins']} wins | Persona 2: {summary['persona_2_wins']} wins")
+        print(f"    Persona 1: {summary['persona_1_wins']} wins | Persona 2: {summary['persona_2_wins']} wins", end="")
+        if summary.get('incomplete', 0) > 0:
+            print(f" | Incomplete: {summary['incomplete']}")
+        else:
+            print()
     
     print(f"\nCriterion Results:")
     for cr in criterion_results:
-        if "error" not in cr:
-            print(f"  {cr['criterion_name']}: Persona {cr['winner_label']} | {cr['confidence']} ({cr['linear_probability']}%) | Logprob: {cr['logprob']}")
+        p1 = cr.get("persona_1", {})
+        p2 = cr.get("persona_2", {})
+        if p1.get("error") is None and p2.get("error") is None:
+            p1_yes = p1.get("yes_probability", "N/A")
+            p2_yes = p2.get("yes_probability", "N/A")
+            print(f"  {cr['criterion_name']}: Persona {cr['winner_label']} wins")
+            print(f"    Persona 1: {p1_yes}% yes | Persona 2: {p2_yes}% yes")
         else:
-            print(f"  {cr.get('criterion_name', 'Unknown')}: ERROR - {cr['error']}")
+            errors = []
+            if p1.get("error"):
+                errors.append(f"Persona 1: {p1['error']}")
+            if p2.get("error"):
+                errors.append(f"Persona 2: {p2['error']}")
+            print(f"  {cr.get('criterion_name', 'Unknown')}: ERROR - {'; '.join(errors)}")
     
-    print(f"\nResults saved to: {output_file}")
+    print(f"\nResults saved to: {output_file_abs}")
+    print(f"  (Relative path: {output_file})")
 
     return output
 
