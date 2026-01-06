@@ -29,7 +29,7 @@ sys.path.insert(0, FUNCTIONS_DIR)
 
 import firebase_admin
 from firebase_admin import credentials, firestore
-from prompts import get_comparison_messages, get_comparison_messages_for_criterion, CRITERIA_DEFINITIONS
+from prompts import get_comparison_messages_for_criterion, CRITERIA_DEFINITIONS
 from generate_user_profile.config import client as openai_client
 
 # Initialize Firebase
@@ -150,18 +150,34 @@ def compare_conversations_with_logprob(
     client: Any,
     messages: List[Dict[str, str]],
     model: str = "gpt-4o",
-    temperature: float = 0.0
+    temperature: float = 0.0,
+    seed: Optional[int] = None
 ) -> Dict[str, Any]:
-    """Call OpenAI API with logprobs enabled and extract first token response."""
+    """Call OpenAI API with logprobs enabled and extract first token response.
+    
+    For deterministic results:
+    - temperature must be 0.0
+    - seed can be set to a fixed value for reproducibility
+    """
     try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            logprobs=True,
-            top_logprobs=2,  # Get logprob for the chosen token and the not chosen
-            max_tokens=1  # We only want the first token ("1" or "2")
-        )
+        # Ensure temperature is 0.0 for deterministic results
+        if temperature != 0.0:
+            print(f"  WARNING: Temperature is {temperature}, not 0.0. Determinism may be affected.")
+        
+        api_params = {
+            "model": model,
+            "messages": messages,
+            "temperature": 0.0,  # Force to 0.0 for determinism
+            "logprobs": True,
+            "top_logprobs": 2,  # Get logprob for the chosen token and the not chosen
+            "max_tokens": 1  # We only want the first token ("1" or "2")
+        }
+        
+        # Add seed if provided (for additional determinism)
+        if seed is not None:
+            api_params["seed"] = seed
+        
+        response = client.chat.completions.create(**api_params)
         
         choice = response.choices[0]
         message_content = choice.message.content.strip()
@@ -232,7 +248,8 @@ def main():
     parser.add_argument("--persona-1-id", required=True, help="First persona ID to compare")
     parser.add_argument("--persona-2-id", required=True, help="Second persona ID to compare")
     parser.add_argument("--model", default="gpt-4o", help="OpenAI model to use (default: gpt-4o)")
-    parser.add_argument("--temperature", type=float, default=0.0, help="Temperature for generation (default: 0.0)")
+    parser.add_argument("--temperature", type=float, default=0.0, help="Temperature for generation (default: 0.0, forced to 0.0 for determinism)")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for deterministic results (optional)")
     args = parser.parse_args()
 
     research_id = args.research_id
@@ -240,6 +257,7 @@ def main():
     persona_2_id = args.persona_2_id
     model = args.model
     temperature = args.temperature
+    seed = args.seed
 
     print(f"\n{'#'*60}")
     print(f"# Persona Conversation Comparison (Logprob Analysis)")
@@ -320,7 +338,8 @@ def main():
             client=client,
             messages=messages,
             model=model,
-            temperature=temperature
+            temperature=temperature,
+            seed=seed
         )
         
         if "error" in result:
@@ -429,6 +448,7 @@ def main():
         "persona_2_conversation_preview": persona_2_conversation_text[:500] + "..." if len(persona_2_conversation_text) > 500 else persona_2_conversation_text,
         "model_used": model,
         "temperature": temperature,
+        "seed": seed,
         "business_context": business_context[:200] + "..." if len(business_context) > 200 else business_context
     }
 
