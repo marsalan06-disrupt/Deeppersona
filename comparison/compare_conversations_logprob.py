@@ -442,21 +442,56 @@ def main():
         persona_2_yes_prob = result_2.get("yes_probability")
         persona_2_no_prob = result_2.get("no_probability")
         
-        # Determine winner based on yes probabilities (higher yes_prob = better)
-        # Only compare if both have valid yes probabilities for fair comparison
+        # Determine winner based on yes probabilities
+        # If either persona has yes_prob > 30%, use yes_probability comparison (higher = better)
+        # If both have yes_prob <= 30%, it's a "no" case - use no_probability comparison (lower = better)
+        YES_THRESHOLD = 30.0  # 30% threshold for yes
+        
         if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
-            if persona_1_yes_prob > persona_2_yes_prob:
-                winner_id = persona_1_id
-                loser_id = persona_2_id
-                winner_label = "1"
-            elif persona_2_yes_prob > persona_1_yes_prob:
-                winner_id = persona_2_id
-                loser_id = persona_1_id
-                winner_label = "2"
+            # Check if either persona has yes_prob > 30%
+            if persona_1_yes_prob > YES_THRESHOLD or persona_2_yes_prob > YES_THRESHOLD:
+                # Use yes_probability comparison (higher = better)
+                if persona_1_yes_prob > persona_2_yes_prob:
+                    winner_id = persona_1_id
+                    loser_id = persona_2_id
+                    winner_label = "1"
+                elif persona_2_yes_prob > persona_1_yes_prob:
+                    winner_id = persona_2_id
+                    loser_id = persona_1_id
+                    winner_label = "2"
+                else:
+                    winner_id = None
+                    loser_id = None
+                    winner_label = "tie"
             else:
-                winner_id = None
-                loser_id = None
-                winner_label = "tie"
+                # Both have yes_prob <= 30% - it's a "no" case, use no_probability (lower = better)
+                if persona_1_no_prob is not None and persona_2_no_prob is not None:
+                    if persona_1_no_prob < persona_2_no_prob:
+                        winner_id = persona_1_id
+                        loser_id = persona_2_id
+                        winner_label = "1"
+                    elif persona_2_no_prob < persona_1_no_prob:
+                        winner_id = persona_2_id
+                        loser_id = persona_1_id
+                        winner_label = "2"
+                    else:
+                        winner_id = None
+                        loser_id = None
+                        winner_label = "tie"
+                else:
+                    # Fallback to yes_probability if no_prob not available
+                    if persona_1_yes_prob > persona_2_yes_prob:
+                        winner_id = persona_1_id
+                        loser_id = persona_2_id
+                        winner_label = "1"
+                    elif persona_2_yes_prob > persona_1_yes_prob:
+                        winner_id = persona_2_id
+                        loser_id = persona_1_id
+                        winner_label = "2"
+                    else:
+                        winner_id = None
+                        loser_id = None
+                        winner_label = "tie"
         else:
             # Cannot determine winner if both don't have valid probabilities
             # Mark as incomplete comparison
@@ -477,6 +512,12 @@ def main():
                 loser_id = persona_1_id
                 winner_label = "2"
         
+        # Determine if no_probability was used (both yes_prob <= 30%)
+        used_no_probability = False
+        if (persona_1_yes_prob is not None and persona_2_yes_prob is not None and 
+            persona_1_yes_prob <= YES_THRESHOLD and persona_2_yes_prob <= YES_THRESHOLD):
+            used_no_probability = True
+        
         criterion_result = {
             "criterion_key": criterion_key,
             "criterion_name": criterion["name"],
@@ -488,7 +529,12 @@ def main():
             "comparison": {
                 "persona_1_yes_prob": persona_1_yes_prob,
                 "persona_2_yes_prob": persona_2_yes_prob,
-                "difference": persona_1_yes_prob - persona_2_yes_prob if (persona_1_yes_prob is not None and persona_2_yes_prob is not None) else None
+                "persona_1_no_prob": persona_1_no_prob,
+                "persona_2_no_prob": persona_2_no_prob,
+                "yes_difference": persona_1_yes_prob - persona_2_yes_prob if (persona_1_yes_prob is not None and persona_2_yes_prob is not None) else None,
+                "no_difference": persona_1_no_prob - persona_2_no_prob if (persona_1_no_prob is not None and persona_2_no_prob is not None) else None,
+                "yes_threshold": YES_THRESHOLD,
+                "used_no_probability_comparison": used_no_probability
             }
         }
         
@@ -496,7 +542,10 @@ def main():
         
         # Print comparison summary
         if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
-            print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_yes_prob}% vs P2: {persona_2_yes_prob}%)")
+            comparison_note = ""
+            if used_no_probability:
+                comparison_note = f" [using no_prob: P1: {persona_1_no_prob}% vs P2: {persona_2_no_prob}% (both yes <= {YES_THRESHOLD}%)]"
+            print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_yes_prob}% vs P2: {persona_2_yes_prob}%){comparison_note}")
         elif persona_1_yes_prob is not None:
             print(f"  {criterion['name']}: Persona 1 has result ({persona_1_yes_prob}%), Persona 2 failed")
         elif persona_2_yes_prob is not None:
