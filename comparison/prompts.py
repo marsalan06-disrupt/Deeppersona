@@ -20,34 +20,103 @@ You must respond with ONLY a single word: either "yes" or "no" - nothing else, n
 
 # Define individual criteria
 CRITERIA_DEFINITIONS = {
-    "persona_fidelity": {
-        "name": "Persona fidelity",
-        "description": "Reflects the given spec accurately"
+    # Persona Fidelity
+    "stays_in_character": {
+        "name": "Stays in character",
+        "category": "persona_fidelity",
+        "description": "Stays consistent with their stated background (demographics, occupation, experience level).\n\nRed flags:\n- Contradicts their stated background\n- Claims expertise inconsistent with their profile"
     },
-    "human_authenticity": {
-        "name": "Human authenticity",
-        "description": "Sounds like a real person, not an AI:\n   - Natural speech patterns and conversation flow\n   - Appropriate emotional responses\n   - Admits uncertainty/struggles when realistic"
+    "authentic_vocabulary": {
+        "name": "Authentic vocabulary",
+        "category": "persona_fidelity",
+        "description": "Uses vocabulary and references that match their stated background.\n\nRed flags:\n- Uses jargon inconsistent with their expertise level\n- References tools/concepts they wouldn't realistically know"
     },
-    "psychological_depth": {
-        "name": "Psychological depth",
-        "description": "Shows genuine understanding of:\n   - User empathy and emotional connection\n   - Personal growth and learning from experience\n   - Nuanced thinking about complex trade-offs"
+    
+    # Human Authenticity - Speech Patterns
+    "natural_speech": {
+        "name": "Natural speech",
+        "category": "human_authenticity",
+        "description": "Sounds like natural spoken conversation (uses contractions, filler words, self-corrections).\n\nRed flags:\n- Overly formal or polished language\n- Perfect grammar throughout\n- No conversational hedges"
     },
-    "relevance_focus": {
-        "name": "Relevance & focus",
-        "description": "Addresses the question directly without over-explaining"
+    "tells_stories": {
+        "name": "Tells stories",
+        "category": "human_authenticity",
+        "description": "Tells specific personal anecdotes rather than speaking in generalities.\n\nRed flags:\n- Speaks only in abstract terms\n- Lists features/problems without personal context\n- No 'I remember when...' moments"
+    },
+    "admits_uncertainty": {
+        "name": "Admits uncertainty",
+        "category": "human_authenticity",
+        "description": "Naturally admits when they don't know something or aren't sure.\n\nRed flags:\n- Claims certainty about everything\n- Never says 'I'm not sure' or 'I think'\n- Presents opinions as facts"
+    },
+    "shows_emotion": {
+        "name": "Shows emotion",
+        "category": "human_authenticity",
+        "description": "Expresses genuine emotional reactions (frustration, excitement, confusion).\n\nRed flags:\n- Emotionally flat responses\n- Describes feelings clinically\n- No passion or frustration evident"
+    },
+    
+    # Human Authenticity - Anti-AI Signals
+    "avoids_lists": {
+        "name": "Avoids lists",
+        "category": "human_authenticity",
+        "description": "Avoids bullet-point thinking and speaks in natural flowing sentences.\n\nRed flags:\n- Structures response like a report\n- Enumerates points (first, second, third)\n- Uses bullet-point cadence"
+    },
+    "no_buzzwords": {
+        "name": "No buzzwords",
+        "category": "human_authenticity",
+        "description": "Avoids corporate buzzwords and AI-typical phrasing.\n\nRed flags:\n- Uses 'leverage', 'utilize', 'optimize'\n- Says 'I would say that...'\n- Overly balanced/hedged statements"
+    },
+    
+    # Psychological Depth
+    "explains_why": {
+        "name": "Explains why",
+        "category": "psychological_depth",
+        "description": "Better explains WHY they feel or behave a certain way, not just WHAT they do.\n\nRed flags:\n- States preferences without reasoning\n- No self-reflection on motivations\n- Surface-level answers"
+    },
+    "shows_growth": {
+        "name": "Shows growth",
+        "category": "psychological_depth",
+        "description": "Shows evidence of learning or changing their mind from past experiences.\n\nRed flags:\n- Static viewpoints\n- No 'I used to think X but now...'\n- Doesn't reference past mistakes or lessons"
+    },
+    "acknowledges_tradeoffs": {
+        "name": "Acknowledges tradeoffs",
+        "category": "psychological_depth",
+        "description": "Acknowledges complexity, downsides, or trade-offs in their views.\n\nRed flags:\n- Everything is black and white\n- No 'on the other hand...'\n- Unrealistically positive or negative"
+    },
+    
+    # Relevance & Focus
+    "answers_question": {
+        "name": "Answers question",
+        "category": "relevance_focus",
+        "description": "More directly answers the actual question that was asked.\n\nRed flags:\n- Goes off on tangents\n- Provides information not requested\n- Buries the answer"
+    },
+    "appropriate_length": {
+        "name": "Appropriate length",
+        "category": "relevance_focus",
+        "description": "Response length feels more natural for the question asked.\n\nRed flags:\n- Over-explains simple questions\n- Under-explains complex ones\n- Exhaustive when brief would suffice"
     }
+}
+
+# Group criteria by category for batch evaluation
+CATEGORIES = {
+    "persona_fidelity": ["stays_in_character", "authentic_vocabulary"],
+    "human_authenticity": ["natural_speech", "tells_stories", "admits_uncertainty", "shows_emotion", "avoids_lists", "no_buzzwords"],
+    "psychological_depth": ["explains_why", "shows_growth", "acknowledges_tradeoffs"],
+    "relevance_focus": ["answers_question", "appropriate_length"]
 }
 
 DEDUCTION_POINTS = """DEDUCT points for:
 - Tool name-dropping without context
 - Overly polished/corporate language
 - Listing everything instead of telling stories
-- Missing emotional connection to users"""
+- Missing emotional connection to users
+- Contradicting stated background or expertise
+- Using vocabulary inconsistent with background
+- Emotionally flat or clinically detached responses"""
 
 
-def _get_example_section(criterion_key: str = "human_authenticity") -> str:
+def _get_example_section(criterion_key: str = "natural_speech") -> str:
     """Get the one-shot example section for prompts."""
-    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["human_authenticity"])
+    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["natural_speech"])
     
     return f"""EXAMPLE:
 
@@ -95,7 +164,7 @@ def get_evaluation_user_prompt_for_criterion(
 ) -> str:
     """Build the user prompt for evaluating a single persona conversation on a specific criterion."""
     
-    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["persona_fidelity"])
+    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["stays_in_character"])
     
     # Build structured evaluation prompt for deterministic results
     prompt_parts = [
