@@ -84,25 +84,24 @@ def fetch_conversations(db, research_id: str, persona_id: str) -> List[Dict[str,
 
 
 def format_conversation_for_prompt(conversation: Dict[str, Any]) -> str:
-    """Format conversation data for inclusion in prompt."""
+    """Format conversation history - extract only questions and answers from conversationHistory."""
     formatted_parts = []
     
-    # Extract conversation messages if available
-    messages = conversation.get("messages", [])
-    if not messages:
-        # Try alternative field names
-        messages = conversation.get("conversation", []) or conversation.get("history", [])
+    # Get conversationHistory from interview object (array of objects with question/answer fields)
+    conversation_history = conversation.get("conversationHistory", [])
     
-    if messages:
-        for msg in messages:
-            role = msg.get("role", "unknown")
-            content = msg.get("content", "")
-            formatted_parts.append(f"{role.upper()}: {content}")
-    else:
-        # Fallback: include all relevant fields
-        for key, value in conversation.items():
-            if key not in ["researchId", "personaId", "id", "createdAt", "updatedAt"]:
-                formatted_parts.append(f"{key}: {str(value)}")
+    if not conversation_history:
+        return "No conversation history available"
+    
+    # Extract question and answer from each conversation item
+    for item in conversation_history:
+        question = item.get("question", "").strip()
+        answer = item.get("answer", "").strip()
+        
+        if question:
+            formatted_parts.append(f"QUESTION: {question}")
+        if answer:
+            formatted_parts.append(f"ANSWER: {answer}")
     
     return "\n".join(formatted_parts) if formatted_parts else "No conversation data available"
 
