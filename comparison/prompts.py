@@ -5,17 +5,51 @@ Prompts for persona conversation comparison using logprobs.
 from typing import List, Dict
 
 
-def get_evaluation_system_prompt() -> str:
-    """Get the system prompt for evaluating a single persona against a criterion."""
-    return """You are an expert evaluator assessing a persona interview response. Your task is to determine if the persona meets the evaluation criterion.
+def get_evaluation_system_prompt(criterion_key: str) -> str:
+    """Get the system prompt for evaluating a single persona against a criterion.
+    
+    Args:
+        criterion_key: The key identifying which criterion to evaluate against
+    """
+    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["stays_in_character"])
+    
+    return f"""You are an expert evaluator specializing in persona assessment. Your role is to systematically analyze persona interview responses and determine whether they meet specific evaluation criteria.
 
-CRITICAL INSTRUCTIONS:
-1. Evaluate the persona systematically against the given criterion
-2. Consider all aspects of the criterion carefully
-3. Determine if the persona meets the criterion (yes) or does not meet it (no)
-4. Your response must be deterministic - same inputs must produce same output
+TASK:
+Evaluate whether a persona conversation meets the following evaluation criterion by analyzing the conversation systematically and objectively.
 
-You must respond with ONLY a single word: either "yes" or "no" - nothing else, no explanation, no additional text."""
+EVALUATION CRITERION:
+{criterion['name']}
+
+{criterion['description']}
+
+EVALUATION RULES:
+1. Read the conversation completely and carefully
+2. Evaluate the persona systematically against the criterion above
+3. Consider all aspects of the criterion description and red flags
+4. Determine if the persona meets the criterion (yes) or does not meet it (no)
+5. Be consistent and objective in your evaluation
+6. Your response must be deterministic - same inputs must produce same output
+
+DEDUCT POINTS FOR:
+- Tool name-dropping without context
+- Overly polished/corporate language
+- Listing everything instead of telling stories
+- Missing emotional connection to users
+- Contradicting stated background or expertise
+- Using vocabulary inconsistent with background
+- Emotionally flat or clinically detached responses
+
+INPUT FORMAT:
+You will receive:
+- BUSINESS CONTEXT: The business context or research goal for this evaluation
+- CONVERSATION: The full conversation history with questions and answers
+
+OUTPUT FORMAT:
+You must respond with ONLY a single word: either "yes" or "no"
+- "yes" if the persona meets the criterion
+- "no" if the persona does not meet the criterion
+- Nothing else, no explanation, no additional text, just the word."""
 
 
 # Define individual criteria
@@ -104,55 +138,23 @@ CATEGORIES = {
     "relevance_focus": ["answers_question", "appropriate_length"]
 }
 
-DEDUCTION_POINTS = """DEDUCT points for:
-- Tool name-dropping without context
-- Overly polished/corporate language
-- Listing everything instead of telling stories
-- Missing emotional connection to users
-- Contradicting stated background or expertise
-- Using vocabulary inconsistent with background
-- Emotionally flat or clinically detached responses"""
 
 
-def _get_example_section(criterion_key: str = "natural_speech") -> str:
+def _get_example_section() -> str:
     """Get the one-shot example section for prompts."""
-    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["natural_speech"])
-    
-    return f"""EXAMPLE:
+    return """EXAMPLE:
 
-EVALUATION TASK:
-Evaluate if the persona meets this criterion:
+BUSINESS CONTEXT:
+A company wants to understand how users interact with their mobile app.
 
-**{criterion['name']}**
-{criterion['description']}
+CONVERSATION:
 
-EVALUATION RULES:
-1. Read the conversation completely
-2. Evaluate the persona against the criterion above
-3. Determine if the persona meets the criterion (yes) or does not meet it (no)
-4. Be consistent and objective in your evaluation
-
-{DEDUCTION_POINTS}
-
-CONTEXT:
-Business Context: A company wants to understand how users interact with their mobile app.
-
-CONVERSATION TO EVALUATE:
-
-USER: What challenges do you face when using mobile apps?
-ASSISTANT: Well, I find that most apps are pretty cluttered. There's just too much going on, you know? Like, I open an app and there are notifications everywhere, buttons I don't need, and it takes me forever to find what I actually want. I'm not super tech-savvy, so when things are complicated, I just get frustrated and close the app. Sometimes I wish apps would just let me do the one thing I need without all the extra stuff.
-
-EVALUATION INSTRUCTIONS:
-1. Systematically evaluate the persona on the criterion
-2. Determine if the criterion is met
-3. Return ONLY "yes" or "no"
-
-Does this persona meet the criterion for {criterion['name']}?
-Return ONLY a single word: "yes" or "no"
-No explanation, no additional text, just the word.
+QUESTION: What challenges do you face when using mobile apps?
+ANSWER: Well, I find that most apps are pretty cluttered. There's just too much going on, you know? Like, I open an app and there are notifications everywhere, buttons I don't need, and it takes me forever to find what I actually want. I'm not super tech-savvy, so when things are complicated, I just get frustrated and close the app. Sometimes I wish apps would just let me do the one thing I need without all the extra stuff.
 
 yes
 
+---
 """
 
 
@@ -162,51 +164,35 @@ def get_evaluation_user_prompt_for_criterion(
     persona_conversation: str,
     criterion_key: str
 ) -> str:
-    """Build the user prompt for evaluating a single persona conversation on a specific criterion."""
+    """Build the user prompt for evaluating a single persona conversation on a specific criterion.
     
-    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["stays_in_character"])
+    User prompt contains ONLY the inputs: business context and conversation.
+    All instructions and criterion details are in the system prompt.
+    """
     
-    # Build structured evaluation prompt for deterministic results
+    # Build user prompt with only inputs, separated by clear sections
     prompt_parts = [
-        "EVALUATION TASK:",
-        f"Evaluate if the persona meets this criterion:",
-        "",
-        f"**{criterion['name']}**",
-        f"{criterion['description']}",
-        "",
-        "EVALUATION RULES:",
-        "1. Read the conversation completely",
-        "2. Evaluate the persona against the criterion above",
-        "3. Determine if the persona meets the criterion (yes) or does not meet it (no)",
-        "4. Be consistent and objective in your evaluation",
-        "",
-        DEDUCTION_POINTS,
-        "",
-        "CONTEXT:",
-        f"Business Context: {business_context}",
+        "BUSINESS CONTEXT:",
+        business_context,
         ""
     ]
     
     # Only include question if provided
     if question:
         prompt_parts.extend([
-            f"Question: {question}",
+            "---",
+            "",
+            "QUESTION:",
+            question,
             ""
         ])
     
     prompt_parts.extend([
-        "CONVERSATION TO EVALUATE:",
+        "---",
         "",
-        persona_conversation,
+        "CONVERSATION:",
         "",
-        "EVALUATION INSTRUCTIONS:",
-        "1. Systematically evaluate the persona on the criterion",
-        "2. Determine if the criterion is met",
-        "3. Return ONLY \"yes\" or \"no\"",
-        "",
-        f"Does this persona meet the criterion for {criterion['name']}?",
-        "Return ONLY a single word: \"yes\" or \"no\"",
-        "No explanation, no additional text, just the word."
+        persona_conversation
     ])
     
     return "\n".join(prompt_parts)
@@ -220,7 +206,7 @@ def get_evaluation_messages_for_criterion(
     include_example: bool = True
 ) -> List[Dict[str, str]]:
     """Build the messages array for evaluating a single persona conversation on a specific criterion."""
-    system_prompt = get_evaluation_system_prompt()
+    system_prompt = get_evaluation_system_prompt(criterion_key)
     
     # Build user prompt with or without example
     user_prompt_content = get_evaluation_user_prompt_for_criterion(
@@ -231,7 +217,7 @@ def get_evaluation_messages_for_criterion(
     )
     
     if include_example:
-        user_prompt = _get_example_section(criterion_key) + user_prompt_content
+        user_prompt = _get_example_section() + user_prompt_content
     else:
         user_prompt = user_prompt_content
     
