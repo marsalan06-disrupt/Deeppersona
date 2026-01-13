@@ -202,55 +202,73 @@ def transform_to_regular_persona(
     # Extract primary attributes from base_profile (these are preserved from base persona)
     primary_attributes = base.get("_primary_attributes", {})
 
-    # Build the persona - preserve primary attributes from base persona
+    # Extract base_info from complete persona (fallback source for enrichment fields)
+    base_info = complete.get("Base Info", {})
+
+    # Helper to get enrichment fields - try base first, then base_info from complete
+    def get_enrichment_field(field_name: str) -> Any:
+        """Get enrichment field from base or complete's Base Info."""
+        value = base.get(field_name)
+        if value:
+            parsed = parse_if_string(value)
+            if field_name in ["interests", "personal_story"]:
+                return flatten_nested_field(parsed, field_name)
+            return parsed
+        # Fallback to Base Info in complete persona
+        if base_info and field_name in base_info:
+            parsed = parse_if_string(base_info[field_name])
+            if field_name in ["interests", "personal_story"]:
+                return flatten_nested_field(parsed, field_name)
+            return parsed
+        return {}
+
+    # Build the persona with core fields
     persona = {
         # Required fields matching regular schema
         "id": persona_id,
         "profileId": profile_id,
         "name": generate_name_from_gender(gender),
-        "age": age,  # Primary attribute from base persona
-        "role": profile_role,  # Use profile role for consistency
+        "age": age,
+        "role": profile_role,
         "company": extract_company_from_complete(complete),
-        "location": f"{city}, {country}",  # Primary attribute from base persona
+        "location": f"{city}, {country}",
         "industry": profile_industry or extract_industry_from_complete(complete),
         "seniority_level": map_age_to_seniority(age),
         "company_size_range": primary_attributes.get("company_size_range") or primary_attributes.get("size_of_business") or "51-200",
         "experience": extract_experience_from_complete(complete),
         "pain_points": extract_pain_points_from_complete(complete),
-        
-        # Preserve primary attributes from base persona at top level
-        # These are the key attributes that link the deep persona to the base persona
-        "_primary_attributes": primary_attributes,
 
-        # DeepPersona enrichment (extra fields for richer interviews)
-        # Parse stringified JSON and flatten nested structures
-        # These are stored at top level for quick access and compatibility with regular personas
-        "backstory": complete.get("Summary", ""),
-        "personal_values": parse_if_string(base.get("personal_values", {})),
-        "life_attitude": parse_if_string(base.get("life_attitude", {})),
-        "interests": flatten_nested_field(parse_if_string(base.get("interests", {})), "interests"),
-        "personal_story": flatten_nested_field(parse_if_string(base.get("personal_story", {})), "personal_story"),
+        # DeepPersona enrichment fields
+        #"backstory": complete.get("Summary", ""),
+        #"personal_values": get_enrichment_field("personal_values"),
+        #"life_attitude": get_enrichment_field("life_attitude"),
+        #"interests": get_enrichment_field("interests"),
+        #"personal_story": get_enrichment_field("personal_story"),
 
-        # Store full deep persona data for complete preservation
-        # Note: personal_values, life_attitude, interests, personal_story are already at top level above
-        # deep_persona_base contains the full base_profile structure (including primary attributes)
-        # deep_persona_complete contains all sections with all attributes from vector similarity search
-        "deep_persona_base": base,  # Full base_profile with primary attributes + generated values
-        "deep_persona_complete": complete,  # Full complete_persona with all sections (secondary attributes via similarity)
-
-        # Link to base persona (one-way link: deep persona -> base persona)
-        # The deep persona ID includes "deep" prefix and links back via basePersonaId
-        # Base persona is NOT modified (no bidirectional link)
-        
-        # Metadata
-        "source": "deeppersona",  # Tag to identify in comparison
+        # Timestamps
         "createdAt": datetime.now(),
         "updatedAt": datetime.now()
     }
-    
+
+    # Flatten _primary_attributes to root level
+    if primary_attributes:
+        for key, value in primary_attributes.items():
+            if key not in persona:  # Don't overwrite existing fields
+                persona[key] = value
+
+    # Flatten deep_persona_complete sections to root level
+    for section_name, section_data in complete.items():
+        if section_name in ["Summary", "Base Info"]:
+            continue  # Skip these as they're handled separately
+        if isinstance(section_data, dict):
+            # Add section data at root level with section name as prefix or directly
+            for key, value in section_data.items():
+                if key not in persona:  # Don't overwrite existing fields
+                    persona[key] = value
+
     # Add basePersonaId if provided (links deep persona to base persona)
-    if base_persona_id:
-        persona["basePersonaId"] = base_persona_id
+    #if base_persona_id:
+    #    persona["basePersonaId"] = base_persona_id
 
     return persona
 
@@ -261,6 +279,5 @@ def get_persona_summary(persona: Dict[str, Any]) -> str:
         f"{persona.get('name', 'Unknown')} | "
         f"Age: {persona.get('age', '?')} | "
         f"Role: {persona.get('role', '?')} | "
-        f"Location: {persona.get('location', '?')} | "
-        f"Source: {persona.get('source', 'regular')}"
+        f"Location: {persona.get('location', '?')}"
     )

@@ -398,26 +398,21 @@ def add_deeppersona_to_research(
         base_persona_id=base_persona_id
     )
     
-    # Add deep persona flags (basePersonaId already added in transform function)
     deep_persona_id = transformed_persona.get("id")
-    transformed_persona["isDeepPersona"] = True
-    transformed_persona["source"] = "deeppersona"
-    transformed_persona["createdAt"] = datetime.now()
-    transformed_persona["updatedAt"] = datetime.now()
-    
+
     print(f"  Result: {get_persona_summary(transformed_persona)}")
     print(f"  Base Persona ID: {base_persona_id}")
     print(f"  Deep Persona ID: {deep_persona_id}")
-    
+
     # Get current personas list
     research = fetch_research(db, research_id)
     personas = get_personas_from_research(research)
-    
+
     # Check if a deep persona already exists for this base persona
     existing_deep_persona = None
     existing_deep_persona_index = None
     for i, persona in enumerate(personas):
-        if persona.get("basePersonaId") == base_persona_id and persona.get("isDeepPersona"):
+        if persona.get("basePersonaId") == base_persona_id:
             existing_deep_persona = persona
             existing_deep_persona_index = i
             break
@@ -536,7 +531,6 @@ def main():
         print(f"  Name: {transformed_persona.get('name', 'Unknown')}")
         print(f"  ID: {transformed_persona.get('id', '?')}")
         print(f"  Base Persona ID: {persona_id}")
-        print(f"  Is Deep Persona: {transformed_persona.get('isDeepPersona', False)}")
         
         return transformed_persona
 
@@ -612,12 +606,7 @@ def main():
             base_persona_id=base_persona_id
         )
 
-        # Add deep persona flags (basePersonaId already added in transform function)
         deep_persona_id = transformed_persona.get("id")
-        transformed_persona["isDeepPersona"] = True
-        transformed_persona["source"] = "deeppersona"
-        transformed_persona["createdAt"] = datetime.now()
-        transformed_persona["updatedAt"] = datetime.now()
 
         print(f"  Result: {get_persona_summary(transformed_persona)}")
         print(f"  Deep Persona ID: {deep_persona_id}")
