@@ -671,16 +671,37 @@ def main():
     print("\n" + "="*60)
     print("COMPARISON RESULTS")
     print("="*60)
+    
+    # Final Winner Tally
     total_comparable = total_persona_1_wins + total_persona_2_wins
-    print(f"\nOverall Winner: Persona {overall_winner_label} ({overall_winner_id})")
-    if total_comparable > 0:
-        print(f"Persona 1 Total Wins: {total_persona_1_wins}/{total_comparable}")
-        print(f"Persona 2 Total Wins: {total_persona_2_wins}/{total_comparable}")
+    print("\n" + "-"*60)
+    print("FINAL WINNER TALLY")
+    print("-"*60)
+    
+    if overall_winner_label == "tie":
+        print(f"\n🏆 RESULT: TIE")
+        print(f"   Both personas performed equally")
+    elif overall_winner_label == "incomplete":
+        print(f"\n⚠️  RESULT: INCOMPLETE")
+        print(f"   Unable to determine winner due to missing data")
     else:
-        print(f"Persona 1 Total Wins: {total_persona_1_wins}")
-        print(f"Persona 2 Total Wins: {total_persona_2_wins}")
+        print(f"\n🏆 OVERALL WINNER: Persona {overall_winner_label}")
+        print(f"   Winner ID: {overall_winner_id}")
+    
+    print(f"\n📊 FINAL SCORE:")
+    if total_comparable > 0:
+        p1_percentage = (total_persona_1_wins / total_comparable) * 100
+        p2_percentage = (total_persona_2_wins / total_comparable) * 100
+        print(f"   Persona 1: {total_persona_1_wins}/{total_comparable} wins ({p1_percentage:.1f}%)")
+        print(f"   Persona 2: {total_persona_2_wins}/{total_comparable} wins ({p2_percentage:.1f}%)")
+    else:
+        print(f"   Persona 1: {total_persona_1_wins} wins")
+        print(f"   Persona 2: {total_persona_2_wins} wins")
+    
     if total_incomplete > 0:
-        print(f"Incomplete Comparisons: {total_incomplete}/{len(criteria_keys)}")
+        print(f"\n   Incomplete Comparisons: {total_incomplete}/{len(criteria_keys)}")
+    
+    print("-"*60)
     
     print(f"\nCriterion-wise Summary:")
     for criterion_key, summary in criterion_summary.items():
