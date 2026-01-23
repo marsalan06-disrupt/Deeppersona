@@ -11,14 +11,19 @@ import os
 import sys
 from datetime import datetime
 
-# Add project paths
+# Add project root to path so we can import generate_user_profile as a package
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, os.path.join(PROJECT_ROOT, 'generate_user_profile'))
-sys.path.insert(0, os.path.dirname(__file__))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+# Also add ui directory to path for local imports
+UI_DIR = os.path.dirname(os.path.abspath(__file__))
+if UI_DIR not in sys.path:
+    sys.path.insert(0, UI_DIR)
 
 # Import generation functions
-from select_attributes import generate_user_profile, get_selected_attributes, save_results
-from generate_profile import generate_single_profile
+from generate_user_profile.select_attributes import generate_user_profile, get_selected_attributes, save_results
+from generate_user_profile.generate_profile import generate_single_profile
 from prompts import get_all_prompts
 
 # Page config
