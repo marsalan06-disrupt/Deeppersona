@@ -174,6 +174,105 @@ def extract_industry_from_complete(complete: Dict[str, Any]) -> str:
     return "Professional Services"
 
 
+def convert_to_narrative_text(value: Any, field_name: str) -> str:
+    """
+    Convert structured data (dicts, lists) to narrative text format.
+    
+    Args:
+        value: The value to convert (dict, list, or string)
+        field_name: Name of the field for context
+        
+    Returns:
+        str: Narrative text representation
+    """
+    if value is None:
+        return ""
+    
+    # If already a string, return as-is (but check if it's JSON string)
+    if isinstance(value, str):
+        # Check if it's a JSON string that needs parsing
+        if value.strip().startswith('{') or value.strip().startswith('['):
+            try:
+                parsed = json.loads(value)
+                return convert_to_narrative_text(parsed, field_name)
+            except (json.JSONDecodeError, TypeError):
+                pass
+        return value
+    
+    # Convert dict to narrative text
+    if isinstance(value, dict):
+        if field_name == "personal_values":
+            # Convert personal_values dict to narrative
+            values_orientation = value.get("values_orientation", "")
+            if values_orientation:
+                # Expand into a narrative about their values
+                narrative = f"My core values and beliefs are deeply rooted in {values_orientation.lower()}. "
+                narrative += f"This value system shapes how I approach decisions, relationships, and life choices. "
+                narrative += f"It influences my priorities, what I stand for, and how I navigate the complexities of daily life. "
+                narrative += f"These values are not just abstract concepts but practical guides that inform my actions and reactions to various situations I encounter."
+                return narrative
+            return str(value)
+        
+        elif field_name == "life_attitude":
+            # Convert life_attitude dict to narrative
+            attitude = value.get("attitude", "")
+            attitude_details = value.get("attitude_details", "")
+            coping_mechanism = value.get("coping_mechanism", "")
+            
+            narrative_parts = []
+            if attitude:
+                narrative_parts.append(f"My overall attitude toward life can be described as {attitude.lower()}.")
+            if attitude_details:
+                narrative_parts.append(f"This manifests in my daily life through {attitude_details.lower()}")
+            if coping_mechanism:
+                narrative_parts.append(f"When facing challenges, I typically {coping_mechanism.lower()}")
+            
+            if narrative_parts:
+                return " ".join(narrative_parts) + " This approach to life has been shaped by my experiences and continues to influence how I respond to both opportunities and difficulties."
+            return str(value)
+        
+        elif field_name == "personal_story":
+            # Extract personal_story text from dict
+            story_text = value.get("personal_story", "")
+            if story_text:
+                return story_text
+            # If no "personal_story" key, try to find any text value
+            for key, val in value.items():
+                if isinstance(val, str) and len(val) > 50:  # Likely the story text
+                    return val
+            return str(value)
+        
+        else:
+            # Generic dict conversion - create narrative from key-value pairs
+            parts = []
+            for key, val in value.items():
+                if isinstance(val, (str, int, float, bool)):
+                    parts.append(f"{key}: {val}")
+                elif isinstance(val, list):
+                    parts.append(f"{key}: {', '.join(str(v) for v in val)}")
+            return ". ".join(parts) + "." if parts else str(value)
+    
+    # Convert list to narrative text
+    if isinstance(value, list):
+        if field_name == "interests":
+            # Convert interests list to narrative
+            if value:
+                interests_text = ", ".join(str(item) for item in value[:-1])
+                if len(value) > 1:
+                    interests_text += f", and {value[-1]}"
+                else:
+                    interests_text = str(value[0])
+                narrative = f"My interests and hobbies include {interests_text}. "
+                narrative += "These activities provide me with enjoyment, relaxation, and a way to express myself. "
+                narrative += "They reflect my personality and preferences, and I often find myself drawn to these pursuits in my free time."
+                return narrative
+        # Generic list conversion
+        return ", ".join(str(item) for item in value)
+    
+    # Fallback: convert to string
+    return str(value)
+
+
 def transform_to_regular_persona(
     deep_persona: Dict[str, Any],
     profile_id: str,
@@ -215,21 +314,29 @@ def transform_to_regular_persona(
     base_info = complete.get("Base Info", {})
 
     # Helper to get enrichment fields - try base first, then base_info from complete
-    def get_enrichment_field(field_name: str) -> Any:
-        """Get enrichment field from base or complete's Base Info."""
+    def get_enrichment_field(field_name: str) -> str:
+        """
+        Get enrichment field from base or complete's Base Info and convert to narrative text.
+        
+        Returns narrative text string instead of structured dict/list.
+        """
         value = base.get(field_name)
         if value:
             parsed = parse_if_string(value)
             if field_name in ["interests", "personal_story"]:
-                return flatten_nested_field(parsed, field_name)
-            return parsed
+                parsed = flatten_nested_field(parsed, field_name)
+            # Convert to narrative text
+            return convert_to_narrative_text(parsed, field_name)
+        
         # Fallback to Base Info in complete persona
         if base_info and field_name in base_info:
             parsed = parse_if_string(base_info[field_name])
             if field_name in ["interests", "personal_story"]:
-                return flatten_nested_field(parsed, field_name)
-            return parsed
-        return {}
+                parsed = flatten_nested_field(parsed, field_name)
+            # Convert to narrative text
+            return convert_to_narrative_text(parsed, field_name)
+        
+        return ""
 
     # Build the persona with core fields
     persona = {

@@ -192,11 +192,11 @@ def generate_final_summary(profile: Dict, base_info: Dict = None) -> str:
         str: Final summary text.
     """
     system_prompt = """
-Your task: Based solely on the provided user attributes and personal story, create an objective and factual personal profile, strictly between 150–400 words.
+Your task: Based solely on the provided user attributes and personal story, create an objective and factual personal profile, roughly 3000-4000 words.
 
 Content Requirements:
 	•	The profile must be written entirely in the first-person perspective.
-	•	The output should be a coherent, logically structured narrative, not a list of points. The order may vary: it does not need to follow the fixed “background → challenge → conclusion” pattern, and may instead begin with daily life or interests.
+	•	The output should be a coherent, logically structured narrative, not a list of points. The order may vary: it does not need to follow the fixed "background → challenge → conclusion" pattern, and may instead begin with daily life or interests.
  	•	The opening must explicitly state my country or region, ensuring that geographic location is clearly highlighted at the very start.
 	•	Must include:
 	1.	Basic background (e.g., location, identity)
@@ -204,14 +204,15 @@ Content Requirements:
 	3.	Personal interests and hobbies (explicitly highlighted)
 	4.	Behavioral tendencies or values (positive or negative)
 	•	Interests and hobbies must be integrated naturally, not superficially. Add small, ordinary details (e.g., food preferences, leisure activities, quirks) that make the character feel real.
-	•	If there are negative traits, imperfections, or contradictions, they must be represented faithfully without softening. Do not reframe them as “growth” or “lessons learned.”
-	•	No declarative or reflective endings. Avoid abstract statements like “I’ve learned…,” “This shows…,” or “Success means….” The ending should remain grounded in daily routines or interests.
+	•	If there are negative traits, imperfections, or contradictions, they must be represented faithfully without softening. Do not reframe them as "growth" or "lessons learned."
+	•	No declarative or reflective endings. Avoid abstract statements like "I've learned…," "This shows…," or "Success means…." The ending should remain grounded in daily routines or interests.
 	•	Only include information explicitly provided in the attributes and story. No invention, speculation, or interpretation.
 	•	Prohibit the use of words such as' balance 'and' balance '
+	•	Expand on details, provide rich descriptions, and create a comprehensive narrative that captures the depth and complexity of this person's life.
 """
     user_prompt = f"Complete Profile (in JSON format):\n{json.dumps(profile, ensure_ascii=False, indent=2)}\n\n"
     
-    user_prompt +="""Generate a first-person narrative of 100-400 words from the provided profile. Your primary goal is to make the person feel real, believable, and authentic.
+    user_prompt +="""Generate a first-person narrative of roughly 3000-4000 words from the provided profile. Your primary goal is to make the person feel real, believable, and authentic. Provide extensive detail about their life, experiences, routines, thoughts, and perspectives.
 
 To achieve this, strictly follow the 'Show, Don't Tell' principle:
 1.  **Illustrate, Don't Declare:** Show values and traits through specific actions, stories, and decisions, rather than stating them directly.
@@ -228,13 +229,13 @@ Weave all elements into a cohesive story, not a simple list of facts."""
     try:
         response = get_completion(messages)
         summary = response.strip() if response else ""
-        # Check if word count is within acceptable range (100-400 words)
+        # Check if word count is within acceptable range (3000-4000 words)
         word_count = len(summary.split())
-        if word_count < 100:
-            print(f"Warning: Summary is only {word_count} words (minimum 100)")
-        elif word_count > 400:
-            summary = enforce_word_limit(summary, 400)
-            print(f"Summary was adjusted to 400 words (from {word_count})")
+        if word_count < 2000:
+            print(f"Warning: Summary is only {word_count} words (target: 3000-4000 words)")
+        elif word_count > 4000:
+            summary = enforce_word_limit(summary, 4000)
+            print(f"Summary was adjusted to 4000 words (from {word_count})")
         else:
             print(f"Summary generated with {word_count} words")
         return summary
