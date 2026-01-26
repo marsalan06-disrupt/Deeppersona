@@ -238,37 +238,43 @@ def transform_to_regular_persona(
         "experience": extract_experience_from_complete(complete),
         "pain_points": extract_pain_points_from_complete(complete),
 
-        # DeepPersona enrichment fields
-        #"backstory": complete.get("Summary", ""),
-        #"personal_values": get_enrichment_field("personal_values"),
-        #"life_attitude": get_enrichment_field("life_attitude"),
-        #"interests": get_enrichment_field("interests"),
-        #"personal_story": get_enrichment_field("personal_story"),
+        # DeepPersona enrichment fields (REQUIRED by paper - "roughly 1 MB of narrative text")
+        "backstory": complete.get("Summary", ""),
+        "personal_values": get_enrichment_field("personal_values"),
+        "life_attitude": get_enrichment_field("life_attitude"),
+        "interests": get_enrichment_field("interests"),
+        "personal_story": get_enrichment_field("personal_story"),
 
         # Timestamps
         "createdAt": datetime.now(),
         "updatedAt": datetime.now()
     }
 
-    # Flatten _primary_attributes to root level
+    # Flatten _primary_attributes to root level (for compatibility with existing schema)
     if primary_attributes:
         for key, value in primary_attributes.items():
             if key not in persona:  # Don't overwrite existing fields
                 persona[key] = value
 
-    # Flatten deep_persona_complete sections to root level
+    # PRESERVE hierarchical structure from complete persona (matching paper methodology)
+    # The paper uses sections like "Demographic Information", "Career and Work Identity", etc.
+    # We preserve these as nested structures instead of flattening
+    # This maintains the taxonomy structure: Section.Category.Attribute
     for section_name, section_data in complete.items():
         if section_name in ["Summary", "Base Info"]:
             continue  # Skip these as they're handled separately
-        if isinstance(section_data, dict):
-            # Add section data at root level with section name as prefix or directly
-            for key, value in section_data.items():
-                if key not in persona:  # Don't overwrite existing fields
-                    persona[key] = value
+        if isinstance(section_data, dict) and section_data:
+            # Preserve the section hierarchy (CORRECT approach per paper)
+            # This creates structure like:
+            # {
+            #   "Demographic Information": { "Age": { "LifeStage": "..." }, ... },
+            #   "Career and Work Identity": { "Profession": { "status": "..." }, ... }
+            # }
+            persona[section_name] = section_data
 
     # Add basePersonaId if provided (links deep persona to base persona)
-    #if base_persona_id:
-    #    persona["basePersonaId"] = base_persona_id
+    if base_persona_id:
+        persona["basePersonaId"] = base_persona_id
 
     return persona
 

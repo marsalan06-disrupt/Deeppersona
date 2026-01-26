@@ -32,7 +32,94 @@ from firebase_admin import credentials, firestore
 # Import directly from files (avoiding __init__.py which has outdated imports)
 from generate_user_profile.select_attributes import generate_user_profile, get_selected_attributes
 from generate_user_profile.generate_profile import generate_single_profile
+from generate_user_profile.based_data import (
+    generate_age_info,
+    generate_gender,
+    generate_location,
+    generate_career_info,
+    generate_personal_values,
+    generate_life_attitude,
+    generate_personal_story,
+    generate_interests_and_hobbies
+)
 from transform_persona import transform_to_regular_persona, get_persona_summary
+
+# ============================================================================
+# ANCHOR ATTRIBUTES DEFINITION (matching paper methodology)
+# ============================================================================
+# Paper defines 6 "non-negotiable anchor attributes" that form the foundation:
+# 1. Age (and age group)
+# 2. Location (city, country)
+# 3. Career (job/role)
+# 4. Personal Values (what they believe in)
+# 5. Life Attitude (how they approach life)
+# 6. Hobbies/Interests (what they like to do)
+
+ANCHOR_ATTRIBUTES = {
+    "age_info": {
+        "required_fields": ["age", "age_group"],
+        "description": "Age and age group classification"
+    },
+    "location": {
+        "required_fields": ["city", "country"],
+        "description": "Geographic location"
+    },
+    "career_info": {
+        "required_fields": ["status"],
+        "description": "Career and occupation"
+    },
+    "personal_values": {
+        "required_fields": ["values_orientation"],
+        "description": "Core values and beliefs"
+    },
+    "life_attitude": {
+        "required_fields": ["attitude", "coping_mechanism"],
+        "description": "Life outlook and coping strategies"
+    },
+    "interests": {
+        "required_fields": ["interests"],
+        "description": "Hobbies and interests"
+    }
+}
+
+# Age group thresholds (configurable, matching based_data.py logic)
+AGE_GROUP_THRESHOLDS = {
+    "young_adult": 29,
+    "adult": 45,
+    "middle_aged": 65
+}
+
+def get_age_group(age: int) -> str:
+    """Get age group based on configurable thresholds."""
+    if age <= AGE_GROUP_THRESHOLDS["young_adult"]:
+        return "young_adult"
+    elif age <= AGE_GROUP_THRESHOLDS["adult"]:
+        return "adult"
+    elif age <= AGE_GROUP_THRESHOLDS["middle_aged"]:
+        return "middle_aged"
+    else:
+        return "senior"
+
+def validate_anchor_attributes(base_profile: dict) -> tuple[bool, List[str]]:
+    """Check that all required anchor attributes are present.
+    
+    Returns:
+        (is_valid, missing_anchors): Tuple of validation result and list of missing anchor names
+    """
+    missing = []
+    for anchor_name, anchor_config in ANCHOR_ATTRIBUTES.items():
+        if anchor_name not in base_profile:
+            missing.append(anchor_name)
+            continue
+        anchor_data = base_profile[anchor_name]
+        if not isinstance(anchor_data, dict):
+            missing.append(anchor_name)
+            continue
+        for required_field in anchor_config["required_fields"]:
+            if required_field not in anchor_data:
+                missing.append(anchor_name)
+                break
+    return (len(missing) == 0, missing)
 
 
 # Initialize Firebase
@@ -130,40 +217,48 @@ def backup_personas(personas: List[Dict[str, Any]], research_id: str) -> str:
 
 def extract_base_profile_from_persona(persona: Dict[str, Any], profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Extract primary attributes from existing persona to create a base profile.
-    Only extracts attributes that are actually present in the persona.
+    Extract anchor attributes from existing persona, then generate missing ones.
+    
+    Strategy:
+    1. FIRST: Extract all possible anchor attributes from persona (flexible field mapping)
+    2. SECOND: Check which of the 6 anchor attributes are missing
+    3. THIRD: Generate only missing anchor attributes using extracted data as context
     
     Args:
         persona: Existing persona dictionary
         profile: Optional profile dictionary containing primary/secondary attributes definition
         
     Returns:
-        Base profile dictionary with only the primary attributes that are present
+        Base profile dictionary with all 6 anchor attributes present
     """
     base_profile = {}
     
-    # Extract age if present
+    # ========================================================================
+    # STEP 1: EXTRACT ALL POSSIBLE DATA FROM PERSONA
+    # ========================================================================
+    
+    # Extract age_info
     if "age" in persona:
         age = persona["age"]
         base_profile["age_info"] = {
             "age": age,
-            "age_group": "young_adult" if age <= 29 else "adult" if age <= 45 else "middle_aged"
+            "age_group": get_age_group(age)
         }
     
-    # Extract gender if present (no inference)
+    # Extract gender (needed for generating other attributes)
     if "gender" in persona:
         base_profile["gender"] = persona["gender"]
     
-    # Extract location if present
+    # Extract location (flexible parsing)
     if "location" in persona:
-        location_str = persona["location"]
+        location_str = str(persona["location"])
         location_parts = location_str.split(",")
         base_profile["location"] = {
             "city": location_parts[0].strip() if len(location_parts) > 0 else "Unknown",
             "country": location_parts[1].strip() if len(location_parts) > 1 else "Unknown"
         }
     
-    # Extract career info if present
+    # Extract career_info (flexible field mapping)
     if "role" in persona or "experience" in persona:
         career_info = {}
         if "role" in persona:
@@ -173,6 +268,43 @@ def extract_base_profile_from_persona(persona: Dict[str, Any], profile: Optional
         if "experience" in persona and "role" in persona:
             career_info["experience"] = persona["experience"]
         base_profile["career_info"] = career_info
+    
+    # Extract personal_values (if stored directly in persona)
+    if "personal_values" in persona:
+        pv = persona["personal_values"]
+        if isinstance(pv, dict):
+            base_profile["personal_values"] = pv
+        elif isinstance(pv, str):
+            base_profile["personal_values"] = {"values_orientation": pv}
+    
+    # Extract life_attitude (if stored directly in persona)
+    if "life_attitude" in persona:
+        la = persona["life_attitude"]
+        if isinstance(la, dict):
+            base_profile["life_attitude"] = la
+        elif isinstance(la, str):
+            # Try to parse as JSON or use as attitude
+            try:
+                import json
+                base_profile["life_attitude"] = json.loads(la)
+            except:
+                base_profile["life_attitude"] = {"attitude": la, "coping_mechanism": ""}
+    
+    # Extract interests (if stored directly in persona)
+    if "interests" in persona:
+        interests = persona["interests"]
+        if isinstance(interests, dict):
+            base_profile["interests"] = interests
+        elif isinstance(interests, list):
+            base_profile["interests"] = {"interests": interests}
+        elif isinstance(interests, str):
+            # Try to parse as JSON or split by comma
+            try:
+                import json
+                parsed = json.loads(interests)
+                base_profile["interests"] = {"interests": parsed if isinstance(parsed, list) else [parsed]}
+            except:
+                base_profile["interests"] = {"interests": [i.strip() for i in interests.split(",")]}
     
     # Extract primary attributes from persona if profile provides the list
     primary_attributes = {}
@@ -200,6 +332,75 @@ def extract_base_profile_from_persona(persona: Dict[str, Any], profile: Optional
     # Store primary attributes if any were found
     if primary_attributes:
         base_profile["_primary_attributes"] = primary_attributes
+    
+    # ========================================================================
+    # STEP 2: CHECK WHAT'S MISSING AND GENERATE ONLY MISSING ANCHORS
+    # ========================================================================
+    
+    is_valid, missing_anchors = validate_anchor_attributes(base_profile)
+    
+    if not is_valid:
+        print(f"  Missing anchor attributes: {', '.join(missing_anchors)}")
+        print(f"  Generating missing anchor attributes...")
+        
+        # Ensure we have age and gender first (needed for other generations)
+        if "age_info" not in base_profile:
+            base_profile["age_info"] = generate_age_info()
+            print(f"    ✓ Generated age_info")
+        
+        if "gender" not in base_profile:
+            base_profile["gender"] = generate_gender()
+            print(f"    ✓ Generated gender")
+        
+        age = base_profile["age_info"]["age"]
+        gender = base_profile["gender"]
+        
+        # Generate location if missing
+        if "location" not in base_profile:
+            base_profile["location"] = generate_location()
+            print(f"    ✓ Generated location")
+        
+        location = base_profile["location"]
+        
+        # Generate career_info if missing (depends on age)
+        if "career_info" not in base_profile:
+            base_profile["career_info"] = generate_career_info(age)
+            print(f"    ✓ Generated career_info")
+        
+        occupation = base_profile["career_info"]["status"]
+        
+        # Generate personal_values if missing (depends on age, gender, occupation, location)
+        if "personal_values" not in base_profile:
+            base_profile["personal_values"] = generate_personal_values(
+                age, gender, occupation, location
+            )
+            print(f"    ✓ Generated personal_values")
+        
+        values_orientation = base_profile["personal_values"]["values_orientation"]
+        
+        # Generate life_attitude if missing (depends on age, gender, occupation, location, values)
+        if "life_attitude" not in base_profile:
+            base_profile["life_attitude"] = generate_life_attitude(
+                age, gender, occupation, location, values_orientation
+            )
+            print(f"    ✓ Generated life_attitude")
+        
+        # Generate interests if missing (depends on personal_story, but we can generate minimal story)
+        if "interests" not in base_profile:
+            # Generate a minimal personal story to derive interests from
+            life_attitude = base_profile["life_attitude"]
+            personal_story = generate_personal_story(
+                age, gender, occupation, location, values_orientation, life_attitude
+            )
+            base_profile["interests"] = generate_interests_and_hobbies(personal_story)
+            print(f"    ✓ Generated interests")
+    
+    # Final validation
+    is_valid, missing_anchors = validate_anchor_attributes(base_profile)
+    if not is_valid:
+        raise ValueError(f"Failed to generate all anchor attributes. Still missing: {', '.join(missing_anchors)}")
+    
+    print(f"  ✓ All 6 anchor attributes present and validated")
     
     return base_profile
 
