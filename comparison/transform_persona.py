@@ -3,8 +3,17 @@
 import json
 import random
 import time
+import logging
 from datetime import datetime
 from typing import Dict, Any, Optional
+
+try:
+    from .validate_persona import validate_persona_structure
+except ImportError:
+    # Fallback for direct execution
+    from validate_persona import validate_persona_structure
+
+logger = logging.getLogger(__name__)
 
 
 def parse_if_string(value: Any) -> Any:
@@ -275,6 +284,18 @@ def transform_to_regular_persona(
     # Add basePersonaId if provided (links deep persona to base persona)
     if base_persona_id:
         persona["basePersonaId"] = base_persona_id
+
+    # Validate persona structure (logs issues but doesn't block)
+    logger.info(f"Validating persona structure for {persona.get('name', 'Unknown')} (ID: {persona_id})")
+    validation_result = validate_persona_structure(persona)
+    
+    if not validation_result["is_valid"]:
+        logger.warning(
+            f"Persona validation found issues but continuing (persona ID: {persona_id}). "
+            f"See validation details above."
+        )
+    else:
+        logger.info(f"Persona validation passed (persona ID: {persona_id})")
 
     return persona
 
