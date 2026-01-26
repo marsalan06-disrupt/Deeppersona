@@ -26,7 +26,7 @@ REQUIRED_SECTIONS = [
 
 # Required narrative fields per paper
 REQUIRED_NARRATIVE_FIELDS = [
-    "backstory",
+    "summary",
     "personal_values",
     "life_attitude",
     "interests",

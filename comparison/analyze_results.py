@@ -318,7 +318,7 @@ def generate_comparison_report(
             f"- Questions: {metrics['total_questions']}",
             f"- Avg Score: {metrics['avg_score']:.2f}",
             f"- Avg Response: {metrics['avg_response_length']:.0f} words",
-            f"- Backstory: {len(persona.get('backstory', ''))} chars",
+            f"- Summary: {len(persona.get('summary', ''))} chars",
             f"",
         ])
 
