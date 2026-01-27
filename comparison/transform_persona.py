@@ -355,7 +355,7 @@ def transform_to_regular_persona(
         "pain_points": extract_pain_points_from_complete(complete),
 
         # DeepPersona enrichment fields (REQUIRED by paper - "roughly 1 MB of narrative text")
-        "summary": complete.get("Summary", ""),
+        "backstory": complete.get("Summary", ""),
         "personal_values": get_enrichment_field("personal_values"),
         "life_attitude": get_enrichment_field("life_attitude"),
         "interests": get_enrichment_field("interests"),

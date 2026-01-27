@@ -420,7 +420,7 @@ def generate_deeppersona_from_existing_persona(
         attribute_count: Number of attributes to select (default: 200)
         
     Returns:
-        Dictionary with base_profile, complete_persona, and summary
+        Dictionary with base_profile, complete_persona, and backstory
     """
     print(f"\n{'='*60}")
     print(f"Generating DeepPersona from existing persona: {persona.get('name', 'Unknown')}")
@@ -454,13 +454,13 @@ def generate_deeppersona_from_existing_persona(
         selected_attributes=selected_attributes
     )
     
-    summary = complete_persona.get("Summary", "")
-    print(f"  Summary length: {len(summary)} characters")
+    backstory = complete_persona.get("Summary", "")
+    print(f"  Backstory length: {len(backstory)} characters")
     
     return {
         "base_profile": base_profile,
         "complete_persona": complete_persona,
-        "summary": summary
+        "backstory": backstory
     }
 
 
@@ -473,7 +473,7 @@ def generate_deeppersona_for_profile(profile: Dict[str, Any], problem_statement:
         problem_statement: The research problem statement for context
 
     Returns:
-        Dictionary with base_profile, complete_persona, and summary
+        Dictionary with base_profile, complete_persona, and backstory
     """
     print(f"\n{'='*60}")
     print(f"Generating DeepPersona for profile: {profile.get('name', 'Unknown')}")
