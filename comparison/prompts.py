@@ -5,15 +5,63 @@ Prompts for persona conversation comparison using logprobs.
 from typing import List, Dict
 
 
-def get_evaluation_system_prompt(criterion_key: str) -> str:
+def get_evaluation_system_prompt(criterion_key: str, use_personalization_criteria: bool = False) -> str:
     """Get the system prompt for evaluating a single persona against a criterion.
     
     Args:
         criterion_key: The key identifying which criterion to evaluate against
+        use_personalization_criteria: If True, use personalization criteria (numeric 1-5 scoring).
+                                     If False, use persona authenticity criteria (binary yes/no).
     """
-    criterion = CRITERIA_DEFINITIONS.get(criterion_key, CRITERIA_DEFINITIONS["stays_in_character"])
+    if use_personalization_criteria:
+        criteria_dict = PERSONALIZATION_CRITERIA_DEFINITIONS
+        default_key = "personalization_fit"
+    else:
+        criteria_dict = CRITERIA_DEFINITIONS
+        default_key = "stays_in_character"
     
-    return f"""You are an expert evaluator specializing in persona assessment. Your role is to systematically analyze persona interview responses and determine whether they meet specific evaluation criteria.
+    criterion = criteria_dict.get(criterion_key, criteria_dict[default_key])
+    
+    if use_personalization_criteria:
+        # Personalization criteria: numeric scoring (1-5)
+        return f"""You are an expert evaluator specializing in personalized advice assessment. Your role is to systematically analyze how well advice or responses are tailored to a specific user persona profile.
+
+TASK:
+Evaluate how well the advice/responses in the conversation demonstrate personalization according to the following criterion. Score based on how effectively the advice is tailored to the persona's profile, attributes, and context.
+
+EVALUATION CRITERION:
+{criterion['name']}
+
+{criterion['description']}
+
+EVALUATION RULES:
+1. Read the conversation completely and carefully
+2. Analyze how well the advice/responses align with the persona's profile and attributes
+3. Evaluate systematically against the criterion description above
+4. Consider the depth, specificity, and relevance of personalization
+5. Be consistent and objective in your evaluation
+6. Your response must be deterministic - same inputs must produce same output
+
+SCORING SCALE (1-5):
+- 1: Poor - Advice is generic, not personalized, lacks relevance to persona
+- 2: Below Average - Minimal personalization, few persona-specific elements
+- 3: Average - Some personalization present but could be improved
+- 4: Good - Well-personalized advice with clear persona-specific elements
+- 5: Excellent - Highly personalized, deeply tailored to persona's unique attributes and context
+
+INPUT FORMAT:
+You will receive:
+- BUSINESS CONTEXT: The business context or research goal for this evaluation
+- CONVERSATION: The full conversation history with questions and answers
+
+OUTPUT FORMAT:
+You must respond with ONLY a single number from 1 to 5 (e.g., "3", "4.5", "5")
+- The number represents your score for how well the advice meets this personalization criterion
+- Use decimal values (e.g., 3.5, 4.2) for more nuanced scoring
+- Nothing else, no explanation, no additional text, just the number."""
+    else:
+        # Persona authenticity criteria: binary yes/no
+        return f"""You are an expert evaluator specializing in persona assessment. Your role is to systematically analyze persona interview responses and determine whether they meet specific evaluation criteria.
 
 TASK:
 Evaluate whether a persona conversation meets the following evaluation criterion by analyzing the conversation systematically and objectively.
@@ -139,10 +187,93 @@ CATEGORIES = {
 }
 
 
+# Personalization criteria from DeepPersona paper (NIPS 2025)
+# These evaluate how well advice/responses are personalized to a user persona
+# Scoring: Numeric scale 1-5 (with decimals allowed)
+PERSONALIZATION_CRITERIA_DEFINITIONS = {
+    "personalization_fit": {
+        "name": "Personalization-Fit (PF)",
+        "category": "personalization",
+        "description": "Advice is clearly tailored rather than generic; wording, tone and content feel 'made-for-me'."
+    },
+    "attribute_coverage": {
+        "name": "Attribute Coverage (AC)",
+        "category": "personalization",
+        "description": "Count of distinct, relevant profile attributes the answer uses correctly (≥ n, where n ≈ 3)."
+    },
+    "depth_specificity": {
+        "name": "Depth & Specificity (DS)",
+        "category": "personalization",
+        "description": "Nuanced, concrete recommendations (numbers, examples, step-by-step) rather than vague platitudes."
+    },
+    "justification": {
+        "name": "Justification / Grounding (JU)",
+        "category": "personalization",
+        "description": "The answer explains why each suggestion fits (e.g., '...because you travel with two kids under 10...')."
+    },
+    "actionability": {
+        "name": "Actionability & Outcome Focus (ACT)",
+        "category": "personalization",
+        "description": "Clear next steps, decision criteria, or metrics of success; user could act immediately."
+    },
+    "effort_reduction": {
+        "name": "Effort / Cognitive-Load Reduction (ER)",
+        "category": "personalization",
+        "description": "The answer pre-filters, ranks, or summarizes options so the user does less work."
+    },
+    "novelty_relevance": {
+        "name": "Novelty-with-Relevance (NR)",
+        "category": "personalization",
+        "description": "Introduces at least one new, unexpected idea that still aligns with the profile."
+    },
+    "diversity_suggestions": {
+        "name": "Diversity of Suggestions (DV)",
+        "category": "personalization",
+        "description": "Presents multiple viable paths or option types, not just a single point solution."
+    },
+    "goal_progress": {
+        "name": "Goal-Progress Alignment (GP)",
+        "category": "personalization",
+        "description": "Advice is explicitly tied to the user's stated longer-term goals and shows how each step advances them."
+    },
+    "engagement_motivation": {
+        "name": "Engagement / Motivation Potential (EM)",
+        "category": "personalization",
+        "description": "Tone, framing, and content likely energize this user to follow through or explore further."
+    }
+}
 
-def _get_example_section() -> str:
-    """Get the one-shot example section for prompts."""
-    return """EXAMPLE:
+# Group personalization criteria by category
+PERSONALIZATION_CATEGORIES = {
+    "personalization": list(PERSONALIZATION_CRITERIA_DEFINITIONS.keys())
+}
+
+
+
+def _get_example_section(use_personalization_criteria: bool = False) -> str:
+    """Get the one-shot example section for prompts.
+    
+    Args:
+        use_personalization_criteria: If True, return example with numeric scoring.
+                                     If False, return example with binary yes/no.
+    """
+    if use_personalization_criteria:
+        return """EXAMPLE:
+
+BUSINESS CONTEXT:
+A company wants to provide personalized travel recommendations to users.
+
+CONVERSATION:
+
+QUESTION: What travel destinations would you recommend for me?
+ANSWER: Based on your profile as a busy parent with two kids under 10 who values educational experiences, I'd recommend these three options: (1) Washington D.C. - free museums perfect for kids, walkable, and educational. You mentioned wanting to avoid long flights, so the 2-hour flight from your city works well. (2) San Diego - kid-friendly beaches, the zoo, and Legoland nearby. The weather is predictable which helps with packing for the kids. (3) A cruise - all-inclusive so you don't have to plan meals, and the kids' programs give you some adult time. Since you mentioned budget-conscious travel, I'd start with D.C. as it's the most cost-effective with free attractions.
+
+4.5
+
+---
+"""
+    else:
+        return """EXAMPLE:
 
 BUSINESS CONTEXT:
 A company wants to understand how users interact with their mobile app.
@@ -203,10 +334,21 @@ def get_evaluation_messages_for_criterion(
     question: str,
     persona_conversation: str,
     criterion_key: str,
-    include_example: bool = True
+    include_example: bool = True,
+    use_personalization_criteria: bool = False
 ) -> List[Dict[str, str]]:
-    """Build the messages array for evaluating a single persona conversation on a specific criterion."""
-    system_prompt = get_evaluation_system_prompt(criterion_key)
+    """Build the messages array for evaluating a single persona conversation on a specific criterion.
+    
+    Args:
+        business_context: The business context or research goal
+        question: The question being evaluated (optional)
+        persona_conversation: The full conversation history
+        criterion_key: The key identifying which criterion to evaluate against
+        include_example: Whether to include a one-shot example in the prompt
+        use_personalization_criteria: If True, use personalization criteria (numeric 1-5 scoring).
+                                      If False, use persona authenticity criteria (binary yes/no).
+    """
+    system_prompt = get_evaluation_system_prompt(criterion_key, use_personalization_criteria=use_personalization_criteria)
     
     # Build user prompt with or without example
     user_prompt_content = get_evaluation_user_prompt_for_criterion(
@@ -217,7 +359,7 @@ def get_evaluation_messages_for_criterion(
     )
     
     if include_example:
-        user_prompt = _get_example_section() + user_prompt_content
+        user_prompt = _get_example_section(use_personalization_criteria=use_personalization_criteria) + user_prompt_content
     else:
         user_prompt = user_prompt_content
     

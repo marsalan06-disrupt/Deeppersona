@@ -29,7 +29,11 @@ sys.path.insert(0, FUNCTIONS_DIR)
 
 import firebase_admin
 from firebase_admin import credentials, firestore
-from prompts import get_evaluation_messages_for_criterion, CRITERIA_DEFINITIONS
+from prompts import (
+    get_evaluation_messages_for_criterion, 
+    CRITERIA_DEFINITIONS,
+    PERSONALIZATION_CRITERIA_DEFINITIONS
+)
 from generate_user_profile.config import client as openai_client
 
 # Initialize Firebase
@@ -113,26 +117,33 @@ def evaluate_persona_with_logprob(
     messages: List[Dict[str, str]],
     model: str = "gpt-4o",
     temperature: float = 0.0,
-    seed: Optional[int] = None
+    seed: Optional[int] = None,
+    use_personalization_criteria: bool = False
 ) -> Dict[str, Any]:
-    """Call OpenAI API with logprobs enabled and extract yes/no probabilities.
+    """Call OpenAI API with logprobs enabled and extract yes/no probabilities or numeric scores.
     
     For deterministic results:
     - temperature must be 0.0
     - seed can be set to a fixed value for reproducibility
+    
+    Args:
+        use_personalization_criteria: If True, expects numeric score (1-5) instead of yes/no
     """
     try:
         # Ensure temperature is 0.0 for deterministic results
         if temperature != 0.0:
             print(f"  WARNING: Temperature is {temperature}, not 0.0. Determinism may be affected.")
         
+        # For numeric scores, we need more tokens (e.g., "4.5" is 2 tokens)
+        max_tokens = 3 if use_personalization_criteria else 1
+        
         api_params = {
             "model": model,
             "messages": messages,
             "temperature": 0.0,  # Force to 0.0 for determinism
             "logprobs": True,
-            "top_logprobs": 20,  # Get top 20 logprobs to find yes/no probabilities
-            "max_tokens": 1  # We only want the first token ("yes" or "no")
+            "top_logprobs": 20,  # Get top 20 logprobs
+            "max_tokens": max_tokens
         }
         
         # Add seed if provided (for additional determinism)
@@ -154,78 +165,129 @@ def evaluate_persona_with_logprob(
             # Calculate linear probability for the chosen token
             linear_prob = np.round(np.exp(logprob_value) * 100, 2)
             
-            # Extract yes/no probabilities from top_logprobs
-            yes_prob = None
-            no_prob = None
-            
-            # Helper function to check if token is yes/no
-            def is_yes_token(token: str) -> bool:
-                token_clean = token.strip().lower().rstrip('.,;:!?"\'')
-                return token_clean == "yes"
-            
-            def is_no_token(token: str) -> bool:
-                token_clean = token.strip().lower().rstrip('.,;:!?"\'')
-                return token_clean == "no"
-            
-            # Get top alternatives if available
-            top_logprobs = []
-            if hasattr(first_token, 'top_logprobs') and first_token.top_logprobs:
-                for alt in first_token.top_logprobs:
-                    alt_token = alt.token
-                    alt_logprob = alt.logprob
-                    alt_linear_prob = np.round(np.exp(alt_logprob) * 100, 2)
-                    
-                    top_logprobs.append({
-                        "token": alt_token,
-                        "logprob": alt_logprob,
-                        "linear_prob": float(alt_linear_prob)
-                    })
-                    
-                    # Check for yes/no tokens in top_logprobs
-                    # Use the highest probability if multiple matches found
-                    if is_yes_token(alt_token):
-                        if yes_prob is None or alt_linear_prob > yes_prob:
-                            yes_prob = float(alt_linear_prob)
-                    elif is_no_token(alt_token):
-                        if no_prob is None or alt_linear_prob > no_prob:
-                            no_prob = float(alt_linear_prob)
-            
-            # Also check the chosen token (if not found in top_logprobs)
-            if yes_prob is None and is_yes_token(token_text):
-                yes_prob = float(linear_prob)
-            if no_prob is None and is_no_token(token_text):
-                no_prob = float(linear_prob)
-            
-            return {
-                "response": message_content,
-                "first_token": token_text,
-                "logprob": logprob_value,
-                "linear_probability": float(linear_prob),
-                "yes_probability": yes_prob,
-                "no_probability": no_prob,
-                "top_alternatives": top_logprobs,
-                "full_response": response
-            }
+            if use_personalization_criteria:
+                # Extract numeric score (1-5) from response
+                numeric_score = None
+                try:
+                    # Try to parse the numeric value from the response
+                    # Could be "3", "4.5", "5", etc.
+                    numeric_score = float(message_content.strip())
+                    # Validate it's in range 1-5
+                    if numeric_score < 1 or numeric_score > 5:
+                        numeric_score = None
+                except (ValueError, AttributeError):
+                    # Try to extract from first token if it's a digit
+                    try:
+                        numeric_score = float(token_text.strip())
+                        if numeric_score < 1 or numeric_score > 5:
+                            numeric_score = None
+                    except (ValueError, AttributeError):
+                        pass
+                
+                # Get top alternatives if available
+                top_logprobs = []
+                if hasattr(first_token, 'top_logprobs') and first_token.top_logprobs:
+                    for alt in first_token.top_logprobs:
+                        alt_token = alt.token
+                        alt_logprob = alt.logprob
+                        alt_linear_prob = np.round(np.exp(alt_logprob) * 100, 2)
+                        
+                        top_logprobs.append({
+                            "token": alt_token,
+                            "logprob": alt_logprob,
+                            "linear_prob": float(alt_linear_prob)
+                        })
+                
+                return {
+                    "response": message_content,
+                    "first_token": token_text,
+                    "logprob": logprob_value,
+                    "linear_probability": float(linear_prob),
+                    "numeric_score": numeric_score,
+                    "top_alternatives": top_logprobs,
+                    "full_response": response
+                }
+            else:
+                # Extract yes/no probabilities from top_logprobs
+                yes_prob = None
+                no_prob = None
+                
+                # Helper function to check if token is yes/no
+                def is_yes_token(token: str) -> bool:
+                    token_clean = token.strip().lower().rstrip('.,;:!?"\'')
+                    return token_clean == "yes"
+                
+                def is_no_token(token: str) -> bool:
+                    token_clean = token.strip().lower().rstrip('.,;:!?"\'')
+                    return token_clean == "no"
+                
+                # Get top alternatives if available
+                top_logprobs = []
+                if hasattr(first_token, 'top_logprobs') and first_token.top_logprobs:
+                    for alt in first_token.top_logprobs:
+                        alt_token = alt.token
+                        alt_logprob = alt.logprob
+                        alt_linear_prob = np.round(np.exp(alt_logprob) * 100, 2)
+                        
+                        top_logprobs.append({
+                            "token": alt_token,
+                            "logprob": alt_logprob,
+                            "linear_prob": float(alt_linear_prob)
+                        })
+                        
+                        # Check for yes/no tokens in top_logprobs
+                        # Use the highest probability if multiple matches found
+                        if is_yes_token(alt_token):
+                            if yes_prob is None or alt_linear_prob > yes_prob:
+                                yes_prob = float(alt_linear_prob)
+                        elif is_no_token(alt_token):
+                            if no_prob is None or alt_linear_prob > no_prob:
+                                no_prob = float(alt_linear_prob)
+                
+                # Also check the chosen token (if not found in top_logprobs)
+                if yes_prob is None and is_yes_token(token_text):
+                    yes_prob = float(linear_prob)
+                if no_prob is None and is_no_token(token_text):
+                    no_prob = float(linear_prob)
+                
+                return {
+                    "response": message_content,
+                    "first_token": token_text,
+                    "logprob": logprob_value,
+                    "linear_probability": float(linear_prob),
+                    "yes_probability": yes_prob,
+                    "no_probability": no_prob,
+                    "top_alternatives": top_logprobs,
+                    "full_response": response
+                }
         else:
-            return {
+            result = {
                 "response": message_content,
                 "first_token": message_content[0] if message_content else None,
                 "logprob": None,
                 "linear_probability": None,
-                "yes_probability": None,
-                "no_probability": None,
                 "error": "No logprobs returned"
             }
+            if use_personalization_criteria:
+                result["numeric_score"] = None
+            else:
+                result["yes_probability"] = None
+                result["no_probability"] = None
+            return result
             
     except Exception as e:
-        return {
+        result = {
             "error": str(e),
             "response": None,
             "logprob": None,
-            "linear_probability": None,
-            "yes_probability": None,
-            "no_probability": None
+            "linear_probability": None
         }
+        if use_personalization_criteria:
+            result["numeric_score"] = None
+        else:
+            result["yes_probability"] = None
+            result["no_probability"] = None
+        return result
 
 
 def main():
@@ -236,6 +298,7 @@ def main():
     parser.add_argument("--model", default="gpt-4o", help="OpenAI model to use (default: gpt-4o)")
     parser.add_argument("--temperature", type=float, default=0.0, help="Temperature for generation (default: 0.0, forced to 0.0 for determinism)")
     parser.add_argument("--seed", type=int, default=None, help="Random seed for deterministic results (optional)")
+    parser.add_argument("--use-personalization-criteria", action="store_true", help="Use personalization criteria (numeric 1-5 scoring) instead of persona authenticity criteria (yes/no)")
     args = parser.parse_args()
 
     research_id = args.research_id
@@ -244,6 +307,7 @@ def main():
     model = args.model
     temperature = args.temperature
     seed = args.seed
+    use_personalization_criteria = args.use_personalization_criteria
 
     print(f"\n{'#'*60}")
     print(f"# Persona Conversation Comparison (Logprob Analysis)")
@@ -291,9 +355,19 @@ def main():
     if not persona_1_conversation_text or not persona_2_conversation_text:
         raise ValueError("Could not format conversations")
     
-    # Get all criteria keys
-    criteria_keys = list(CRITERIA_DEFINITIONS.keys())
+    # Get all criteria keys based on flag
+    if use_personalization_criteria:
+        criteria_dict = PERSONALIZATION_CRITERIA_DEFINITIONS
+        criteria_type = "personalization (numeric 1-5)"
+    else:
+        criteria_dict = CRITERIA_DEFINITIONS
+        criteria_type = "persona authenticity (yes/no)"
+    
+    criteria_keys = list(criteria_dict.keys())
     total_evaluations = len(criteria_keys) * 2  # 2 calls per criterion (one per persona)
+    
+    print(f"\n[CONFIG] Using {criteria_type} criteria")
+    print(f"  Total criteria: {len(criteria_keys)}")
     
     # Store individual evaluation results - each call stored independently
     # Structure: {criterion_key: {persona_1_id: result, persona_2_id: result}}
@@ -306,7 +380,7 @@ def main():
     
     # Make independent calls - store each result immediately to prevent data loss
     for criterion_key in criteria_keys:
-        criterion = CRITERIA_DEFINITIONS[criterion_key]
+        criterion = criteria_dict[criterion_key]
         
         # Initialize storage for this criterion
         individual_results[criterion_key] = {}
@@ -323,7 +397,8 @@ def main():
             question="",  # No specific question, evaluating full conversation
             persona_conversation=persona_1_conversation_text,
             criterion_key=criterion_key,
-            include_example=(evaluation_count == 1)
+            include_example=(evaluation_count == 1),
+            use_personalization_criteria=use_personalization_criteria
         )
         
         result_1 = evaluate_persona_with_logprob(
@@ -331,17 +406,16 @@ def main():
             messages=messages_1,
             model=model,
             temperature=temperature,
-            seed=seed
+            seed=seed,
+            use_personalization_criteria=use_personalization_criteria
         )
         
         # Store Persona 1 result immediately (independent of Persona 2)
-        individual_results[criterion_key][persona_1_id] = {
+        result_data = {
             "persona_id": persona_1_id,
             "criterion_key": criterion_key,
             "criterion_name": criterion["name"],
             "response": result_1.get("response"),
-            "yes_probability": result_1.get("yes_probability"),
-            "no_probability": result_1.get("no_probability"),
             "logprob": result_1.get("logprob"),
             "linear_probability": result_1.get("linear_probability"),
             "first_token": result_1.get("first_token"),
@@ -351,17 +425,32 @@ def main():
             "timestamp": datetime.now().isoformat()
         }
         
+        if use_personalization_criteria:
+            result_data["numeric_score"] = result_1.get("numeric_score")
+        else:
+            result_data["yes_probability"] = result_1.get("yes_probability")
+            result_data["no_probability"] = result_1.get("no_probability")
+        
+        individual_results[criterion_key][persona_1_id] = result_data
+        
         if result_1.get("error"):
             print(f"      ERROR: {result_1['error']}")
         else:
-            yes_prob = result_1.get("yes_probability")
-            no_prob = result_1.get("no_probability")
             top_alternatives = result_1.get("top_alternatives", [])
             
-            if yes_prob is not None:
-                print(f"      Persona 1: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+            if use_personalization_criteria:
+                numeric_score = result_1.get("numeric_score")
+                if numeric_score is not None:
+                    print(f"      Persona 1: Score = {numeric_score}")
+                else:
+                    print(f"      Persona 1: {result_1.get('response', 'N/A')} (could not parse numeric score)")
             else:
-                print(f"      Persona 1: {result_1.get('response', 'N/A')}")
+                yes_prob = result_1.get("yes_probability")
+                no_prob = result_1.get("no_probability")
+                if yes_prob is not None:
+                    print(f"      Persona 1: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+                else:
+                    print(f"      Persona 1: {result_1.get('response', 'N/A')}")
             
             # Log top token probabilities
             if top_alternatives:
@@ -378,7 +467,8 @@ def main():
             question="",  # No specific question, evaluating full conversation
             persona_conversation=persona_2_conversation_text,
             criterion_key=criterion_key,
-            include_example=False  # Only include example once
+            include_example=False,  # Only include example once
+            use_personalization_criteria=use_personalization_criteria
         )
         
         result_2 = evaluate_persona_with_logprob(
@@ -386,17 +476,16 @@ def main():
             messages=messages_2,
             model=model,
             temperature=temperature,
-            seed=seed
+            seed=seed,
+            use_personalization_criteria=use_personalization_criteria
         )
         
         # Store Persona 2 result immediately (independent of Persona 1)
-        individual_results[criterion_key][persona_2_id] = {
+        result_data = {
             "persona_id": persona_2_id,
             "criterion_key": criterion_key,
             "criterion_name": criterion["name"],
             "response": result_2.get("response"),
-            "yes_probability": result_2.get("yes_probability"),
-            "no_probability": result_2.get("no_probability"),
             "logprob": result_2.get("logprob"),
             "linear_probability": result_2.get("linear_probability"),
             "first_token": result_2.get("first_token"),
@@ -406,17 +495,32 @@ def main():
             "timestamp": datetime.now().isoformat()
         }
         
+        if use_personalization_criteria:
+            result_data["numeric_score"] = result_2.get("numeric_score")
+        else:
+            result_data["yes_probability"] = result_2.get("yes_probability")
+            result_data["no_probability"] = result_2.get("no_probability")
+        
+        individual_results[criterion_key][persona_2_id] = result_data
+        
         if result_2.get("error"):
             print(f"      ERROR: {result_2['error']}")
         else:
-            yes_prob = result_2.get("yes_probability")
-            no_prob = result_2.get("no_probability")
             top_alternatives = result_2.get("top_alternatives", [])
             
-            if yes_prob is not None:
-                print(f"      Persona 2: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+            if use_personalization_criteria:
+                numeric_score = result_2.get("numeric_score")
+                if numeric_score is not None:
+                    print(f"      Persona 2: Score = {numeric_score}")
+                else:
+                    print(f"      Persona 2: {result_2.get('response', 'N/A')} (could not parse numeric score)")
             else:
-                print(f"      Persona 2: {result_2.get('response', 'N/A')}")
+                yes_prob = result_2.get("yes_probability")
+                no_prob = result_2.get("no_probability")
+                if yes_prob is not None:
+                    print(f"      Persona 2: {yes_prob}% yes" + (f" | {no_prob}% no" if no_prob is not None else ""))
+                else:
+                    print(f"      Persona 2: {result_2.get('response', 'N/A')}")
             
             # Log top token probabilities
             if top_alternatives:
@@ -430,31 +534,23 @@ def main():
     criterion_results = []
     
     for criterion_key in criteria_keys:
-        criterion = CRITERIA_DEFINITIONS[criterion_key]
+        criterion = criteria_dict[criterion_key]
         
         # Get stored results for this criterion
         result_1 = individual_results[criterion_key].get(persona_1_id, {})
         result_2 = individual_results[criterion_key].get(persona_2_id, {})
         
-        persona_1_yes_prob = result_1.get("yes_probability")
-        persona_1_no_prob = result_1.get("no_probability")
-        persona_2_yes_prob = result_2.get("yes_probability")
-        persona_2_no_prob = result_2.get("no_probability")
-        
-        # Determine winner based on yes probabilities
-        # If either persona has yes_prob > 30%, use yes_probability comparison (higher = better)
-        # If both have yes_prob <= 30%, it's a "no" case - use no_probability comparison (lower = better)
-        YES_THRESHOLD = 30.0  # 30% threshold for yes
-        
-        if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
-            # Check if either persona has yes_prob > 30%
-            if persona_1_yes_prob > YES_THRESHOLD or persona_2_yes_prob > YES_THRESHOLD:
-                # Use yes_probability comparison (higher = better)
-                if persona_1_yes_prob > persona_2_yes_prob:
+        if use_personalization_criteria:
+            # Compare numeric scores (higher = better)
+            persona_1_score = result_1.get("numeric_score")
+            persona_2_score = result_2.get("numeric_score")
+            
+            if persona_1_score is not None and persona_2_score is not None:
+                if persona_1_score > persona_2_score:
                     winner_id = persona_1_id
                     loser_id = persona_2_id
                     winner_label = "1"
-                elif persona_2_yes_prob > persona_1_yes_prob:
+                elif persona_2_score > persona_1_score:
                     winner_id = persona_2_id
                     loser_id = persona_1_id
                     winner_label = "2"
@@ -463,22 +559,40 @@ def main():
                     loser_id = None
                     winner_label = "tie"
             else:
-                # Both have yes_prob <= 30% - it's a "no" case, use no_probability (lower = better)
-                if persona_1_no_prob is not None and persona_2_no_prob is not None:
-                    if persona_1_no_prob < persona_2_no_prob:
-                        winner_id = persona_1_id
-                        loser_id = persona_2_id
-                        winner_label = "1"
-                    elif persona_2_no_prob < persona_1_no_prob:
-                        winner_id = persona_2_id
-                        loser_id = persona_1_id
-                        winner_label = "2"
-                    else:
-                        winner_id = None
-                        loser_id = None
-                        winner_label = "tie"
-                else:
-                    # Fallback to yes_probability if no_prob not available
+                winner_id = None
+                loser_id = None
+                winner_label = "incomplete"
+            
+            criterion_result = {
+                "criterion_key": criterion_key,
+                "criterion_name": criterion["name"],
+                "persona_1": result_1,
+                "persona_2": result_2,
+                "winner_label": winner_label,
+                "winner_persona_id": winner_id,
+                "loser_persona_id": loser_id,
+                "comparison": {
+                    "persona_1_score": persona_1_score,
+                    "persona_2_score": persona_2_score,
+                    "score_difference": persona_1_score - persona_2_score if (persona_1_score is not None and persona_2_score is not None) else None
+                }
+            }
+        else:
+            # Original yes/no comparison logic
+            persona_1_yes_prob = result_1.get("yes_probability")
+            persona_1_no_prob = result_1.get("no_probability")
+            persona_2_yes_prob = result_2.get("yes_probability")
+            persona_2_no_prob = result_2.get("no_probability")
+            
+            # Determine winner based on yes probabilities
+            # If either persona has yes_prob > 30%, use yes_probability comparison (higher = better)
+            # If both have yes_prob <= 30%, it's a "no" case - use no_probability comparison (lower = better)
+            YES_THRESHOLD = 30.0  # 30% threshold for yes
+            
+            if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
+                # Check if either persona has yes_prob > 30%
+                if persona_1_yes_prob > YES_THRESHOLD or persona_2_yes_prob > YES_THRESHOLD:
+                    # Use yes_probability comparison (higher = better)
                     if persona_1_yes_prob > persona_2_yes_prob:
                         winner_id = persona_1_id
                         loser_id = persona_2_id
@@ -491,66 +605,105 @@ def main():
                         winner_id = None
                         loser_id = None
                         winner_label = "tie"
-        else:
-            # Cannot determine winner if both don't have valid probabilities
-            # Mark as incomplete comparison
-            winner_id = None
-            loser_id = None
-            winner_label = "incomplete"
+                else:
+                    # Both have yes_prob <= 30% - it's a "no" case, use no_probability (lower = better)
+                    if persona_1_no_prob is not None and persona_2_no_prob is not None:
+                        if persona_1_no_prob < persona_2_no_prob:
+                            winner_id = persona_1_id
+                            loser_id = persona_2_id
+                            winner_label = "1"
+                        elif persona_2_no_prob < persona_1_no_prob:
+                            winner_id = persona_2_id
+                            loser_id = persona_1_id
+                            winner_label = "2"
+                        else:
+                            winner_id = None
+                            loser_id = None
+                            winner_label = "tie"
+                    else:
+                        # Fallback to yes_probability if no_prob not available
+                        if persona_1_yes_prob > persona_2_yes_prob:
+                            winner_id = persona_1_id
+                            loser_id = persona_2_id
+                            winner_label = "1"
+                        elif persona_2_yes_prob > persona_1_yes_prob:
+                            winner_id = persona_2_id
+                            loser_id = persona_1_id
+                            winner_label = "2"
+                        else:
+                            winner_id = None
+                            loser_id = None
+                            winner_label = "tie"
+            else:
+                # Cannot determine winner if both don't have valid probabilities
+                # Mark as incomplete comparison
+                winner_id = None
+                loser_id = None
+                winner_label = "incomplete"
+                
+                # Fallback: use response text if probabilities not available
+                response_1 = result_1.get("response", "").strip().lower()
+                response_2 = result_2.get("response", "").strip().lower()
+                
+                if "yes" in response_1 and "no" in response_2:
+                    winner_id = persona_1_id
+                    loser_id = persona_2_id
+                    winner_label = "1"
+                elif "yes" in response_2 and "no" in response_1:
+                    winner_id = persona_2_id
+                    loser_id = persona_1_id
+                    winner_label = "2"
             
-            # Fallback: use response text if probabilities not available
-            response_1 = result_1.get("response", "").strip().lower()
-            response_2 = result_2.get("response", "").strip().lower()
+            # Determine if no_probability was used (both yes_prob <= 30%)
+            used_no_probability = False
+            if (persona_1_yes_prob is not None and persona_2_yes_prob is not None and 
+                persona_1_yes_prob <= YES_THRESHOLD and persona_2_yes_prob <= YES_THRESHOLD):
+                used_no_probability = True
             
-            if "yes" in response_1 and "no" in response_2:
-                winner_id = persona_1_id
-                loser_id = persona_2_id
-                winner_label = "1"
-            elif "yes" in response_2 and "no" in response_1:
-                winner_id = persona_2_id
-                loser_id = persona_1_id
-                winner_label = "2"
-        
-        # Determine if no_probability was used (both yes_prob <= 30%)
-        used_no_probability = False
-        if (persona_1_yes_prob is not None and persona_2_yes_prob is not None and 
-            persona_1_yes_prob <= YES_THRESHOLD and persona_2_yes_prob <= YES_THRESHOLD):
-            used_no_probability = True
-        
-        criterion_result = {
-            "criterion_key": criterion_key,
-            "criterion_name": criterion["name"],
-            "persona_1": result_1,
-            "persona_2": result_2,
-            "winner_label": winner_label,
-            "winner_persona_id": winner_id,
-            "loser_persona_id": loser_id,
-            "comparison": {
-                "persona_1_yes_prob": persona_1_yes_prob,
-                "persona_2_yes_prob": persona_2_yes_prob,
-                "persona_1_no_prob": persona_1_no_prob,
-                "persona_2_no_prob": persona_2_no_prob,
-                "yes_difference": persona_1_yes_prob - persona_2_yes_prob if (persona_1_yes_prob is not None and persona_2_yes_prob is not None) else None,
-                "no_difference": persona_1_no_prob - persona_2_no_prob if (persona_1_no_prob is not None and persona_2_no_prob is not None) else None,
-                "yes_threshold": YES_THRESHOLD,
-                "used_no_probability_comparison": used_no_probability
+            criterion_result = {
+                "criterion_key": criterion_key,
+                "criterion_name": criterion["name"],
+                "persona_1": result_1,
+                "persona_2": result_2,
+                "winner_label": winner_label,
+                "winner_persona_id": winner_id,
+                "loser_persona_id": loser_id,
+                "comparison": {
+                    "persona_1_yes_prob": persona_1_yes_prob,
+                    "persona_2_yes_prob": persona_2_yes_prob,
+                    "persona_1_no_prob": persona_1_no_prob,
+                    "persona_2_no_prob": persona_2_no_prob,
+                    "yes_difference": persona_1_yes_prob - persona_2_yes_prob if (persona_1_yes_prob is not None and persona_2_yes_prob is not None) else None,
+                    "no_difference": persona_1_no_prob - persona_2_no_prob if (persona_1_no_prob is not None and persona_2_no_prob is not None) else None,
+                    "yes_threshold": YES_THRESHOLD,
+                    "used_no_probability_comparison": used_no_probability
+                }
             }
-        }
         
         criterion_results.append(criterion_result)
         
         # Print comparison summary
-        if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
-            comparison_note = ""
-            if used_no_probability:
-                comparison_note = f" [using no_prob: P1: {persona_1_no_prob}% vs P2: {persona_2_no_prob}% (both yes <= {YES_THRESHOLD}%)]"
-            print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_yes_prob}% vs P2: {persona_2_yes_prob}%){comparison_note}")
-        elif persona_1_yes_prob is not None:
-            print(f"  {criterion['name']}: Persona 1 has result ({persona_1_yes_prob}%), Persona 2 failed")
-        elif persona_2_yes_prob is not None:
-            print(f"  {criterion['name']}: Persona 2 has result ({persona_2_yes_prob}%), Persona 1 failed")
+        if use_personalization_criteria:
+            if persona_1_score is not None and persona_2_score is not None:
+                print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_score} vs P2: {persona_2_score})")
+            elif persona_1_score is not None:
+                print(f"  {criterion['name']}: Persona 1 has result ({persona_1_score}), Persona 2 failed")
+            elif persona_2_score is not None:
+                print(f"  {criterion['name']}: Persona 2 has result ({persona_2_score}), Persona 1 failed")
+            else:
+                print(f"  {criterion['name']}: Both personas failed or no valid scores")
         else:
-            print(f"  {criterion['name']}: Both personas failed or no valid probabilities")
+            if persona_1_yes_prob is not None and persona_2_yes_prob is not None:
+                comparison_note = ""
+                if used_no_probability:
+                    comparison_note = f" [using no_prob: P1: {persona_1_no_prob}% vs P2: {persona_2_no_prob}% (both yes <= {YES_THRESHOLD}%)]"
+                print(f"  {criterion['name']}: Persona {winner_label} wins (P1: {persona_1_yes_prob}% vs P2: {persona_2_yes_prob}%){comparison_note}")
+            elif persona_1_yes_prob is not None:
+                print(f"  {criterion['name']}: Persona 1 has result ({persona_1_yes_prob}%), Persona 2 failed")
+            elif persona_2_yes_prob is not None:
+                print(f"  {criterion['name']}: Persona 2 has result ({persona_2_yes_prob}%), Persona 1 failed")
+            else:
+                print(f"  {criterion['name']}: Both personas failed or no valid probabilities")
     
     # Calculate overall winner per criterion
     # Only count wins when both personas have valid results for fair comparison
@@ -565,9 +718,16 @@ def main():
         winner_label = cr.get("winner_label")
         criterion_key = cr.get("criterion_key")
         
-        # Only count wins when both have valid yes probabilities (fair comparison)
-        if (result_1.get("error") is None and result_2.get("error") is None and
-            result_1.get("yes_probability") is not None and result_2.get("yes_probability") is not None):
+        # Only count wins when both have valid results (fair comparison)
+        has_valid_results = False
+        if use_personalization_criteria:
+            has_valid_results = (result_1.get("error") is None and result_2.get("error") is None and
+                                result_1.get("numeric_score") is not None and result_2.get("numeric_score") is not None)
+        else:
+            has_valid_results = (result_1.get("error") is None and result_2.get("error") is None and
+                                result_1.get("yes_probability") is not None and result_2.get("yes_probability") is not None)
+        
+        if has_valid_results:
             if winner_label == "1":
                 criterion_wins[criterion_key]["persona_1"] = 1
                 total_persona_1_wins += 1
@@ -602,7 +762,7 @@ def main():
     
     # Prepare criterion-wise summary
     criterion_summary = {}
-    for criterion_key, criterion in CRITERIA_DEFINITIONS.items():
+    for criterion_key, criterion in criteria_dict.items():
         wins = criterion_wins[criterion_key]
         if wins["persona_1"] > wins["persona_2"]:
             winner = "1"
@@ -644,6 +804,8 @@ def main():
         "model_used": model,
         "temperature": temperature,
         "seed": seed,
+        "use_personalization_criteria": use_personalization_criteria,
+        "criteria_type": criteria_type,
         "business_context": business_context[:200] + "..." if len(business_context) > 200 else business_context
     }
 
@@ -718,10 +880,16 @@ def main():
         p1 = cr.get("persona_1", {})
         p2 = cr.get("persona_2", {})
         if p1.get("error") is None and p2.get("error") is None:
-            p1_yes = p1.get("yes_probability", "N/A")
-            p2_yes = p2.get("yes_probability", "N/A")
-            print(f"  {cr['criterion_name']}: Persona {cr['winner_label']} wins")
-            print(f"    Persona 1: {p1_yes}% yes | Persona 2: {p2_yes}% yes")
+            if use_personalization_criteria:
+                p1_score = p1.get("numeric_score", "N/A")
+                p2_score = p2.get("numeric_score", "N/A")
+                print(f"  {cr['criterion_name']}: Persona {cr['winner_label']} wins")
+                print(f"    Persona 1: {p1_score} | Persona 2: {p2_score}")
+            else:
+                p1_yes = p1.get("yes_probability", "N/A")
+                p2_yes = p2.get("yes_probability", "N/A")
+                print(f"  {cr['criterion_name']}: Persona {cr['winner_label']} wins")
+                print(f"    Persona 1: {p1_yes}% yes | Persona 2: {p2_yes}% yes")
         else:
             errors = []
             if p1.get("error"):
