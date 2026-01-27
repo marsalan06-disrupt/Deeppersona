@@ -110,6 +110,31 @@ def format_conversation_for_prompt(conversation: Dict[str, Any]) -> str:
     return "\n".join(formatted_parts) if formatted_parts else "No conversation data available"
 
 
+def extract_backstory_from_interview(interview: Dict[str, Any]) -> Optional[str]:
+    """Extract backstory from interview document.
+    
+    Checks multiple possible field names for backstory:
+    - backstory
+    - personaBackstory
+    - persona.backstory
+    - Summary
+    """
+    # Try direct backstory field
+    backstory = interview.get("backstory") or interview.get("personaBackstory")
+    
+    # Try nested persona object
+    if not backstory:
+        persona = interview.get("persona", {})
+        if isinstance(persona, dict):
+            backstory = persona.get("backstory") or persona.get("Summary")
+    
+    # Try Summary field
+    if not backstory:
+        backstory = interview.get("Summary")
+    
+    return backstory.strip() if backstory else None
+
+
 
 
 def evaluate_persona_with_logprob(
@@ -344,13 +369,19 @@ def main():
     if not conversations_2:
         raise ValueError(f"No conversations found for persona {persona_2_id}")
 
-    # Format full conversations
+    # Format full conversations and extract backstories
     print(f"\n[FORMAT] Formatting conversations...")
     persona_1_conversation_text = format_conversation_for_prompt(conversations_1[0])
     persona_2_conversation_text = format_conversation_for_prompt(conversations_2[0])
     
+    # Extract backstories from interview documents
+    persona_1_backstory = extract_backstory_from_interview(conversations_1[0])
+    persona_2_backstory = extract_backstory_from_interview(conversations_2[0])
+    
     print(f"  Persona 1 conversation length: {len(persona_1_conversation_text)} chars")
     print(f"  Persona 2 conversation length: {len(persona_2_conversation_text)} chars")
+    print(f"  Persona 1 backstory: {len(persona_1_backstory)} chars" if persona_1_backstory else "  Persona 1: No backstory found")
+    print(f"  Persona 2 backstory: {len(persona_2_backstory)} chars" if persona_2_backstory else "  Persona 2: No backstory found")
     
     if not persona_1_conversation_text or not persona_2_conversation_text:
         raise ValueError("Could not format conversations")
@@ -398,7 +429,8 @@ def main():
             persona_conversation=persona_1_conversation_text,
             criterion_key=criterion_key,
             include_example=(evaluation_count == 1),
-            use_personalization_criteria=use_personalization_criteria
+            use_personalization_criteria=use_personalization_criteria,
+            persona_backstory=persona_1_backstory
         )
         
         result_1 = evaluate_persona_with_logprob(
@@ -468,7 +500,8 @@ def main():
             persona_conversation=persona_2_conversation_text,
             criterion_key=criterion_key,
             include_example=False,  # Only include example once
-            use_personalization_criteria=use_personalization_criteria
+            use_personalization_criteria=use_personalization_criteria,
+            persona_backstory=persona_2_backstory
         )
         
         result_2 = evaluate_persona_with_logprob(

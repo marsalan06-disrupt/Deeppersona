@@ -2,7 +2,7 @@
 Prompts for persona conversation comparison using logprobs.
 """
 
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 
 def get_evaluation_system_prompt(criterion_key: str, use_personalization_criteria: bool = False) -> str:
@@ -52,6 +52,7 @@ SCORING SCALE (1-5):
 INPUT FORMAT:
 You will receive:
 - BUSINESS CONTEXT: The business context or research goal for this evaluation
+- PERSONA BACKSTORY: (Optional) The persona's backstory and background information
 - CONVERSATION: The full conversation history with questions and answers
 
 OUTPUT FORMAT:
@@ -91,6 +92,7 @@ DEDUCT POINTS FOR:
 INPUT FORMAT:
 You will receive:
 - BUSINESS CONTEXT: The business context or research goal for this evaluation
+- PERSONA BACKSTORY: (Optional) The persona's backstory and background information
 - CONVERSATION: The full conversation history with questions and answers
 
 OUTPUT FORMAT:
@@ -293,12 +295,16 @@ def get_evaluation_user_prompt_for_criterion(
     business_context: str,
     question: str,
     persona_conversation: str,
-    criterion_key: str
+    criterion_key: str,
+    persona_backstory: Optional[str] = None
 ) -> str:
     """Build the user prompt for evaluating a single persona conversation on a specific criterion.
     
-    User prompt contains ONLY the inputs: business context and conversation.
+    User prompt contains ONLY the inputs: business context, persona backstory (optional), and conversation.
     All instructions and criterion details are in the system prompt.
+    
+    Args:
+        persona_backstory: Optional persona backstory to include in the evaluation context
     """
     
     # Build user prompt with only inputs, separated by clear sections
@@ -307,6 +313,16 @@ def get_evaluation_user_prompt_for_criterion(
         business_context,
         ""
     ]
+    
+    # Include persona backstory if provided
+    if persona_backstory:
+        prompt_parts.extend([
+            "---",
+            "",
+            "PERSONA BACKSTORY:",
+            persona_backstory,
+            ""
+        ])
     
     # Only include question if provided
     if question:
@@ -335,7 +351,8 @@ def get_evaluation_messages_for_criterion(
     persona_conversation: str,
     criterion_key: str,
     include_example: bool = True,
-    use_personalization_criteria: bool = False
+    use_personalization_criteria: bool = False,
+    persona_backstory: Optional[str] = None
 ) -> List[Dict[str, str]]:
     """Build the messages array for evaluating a single persona conversation on a specific criterion.
     
@@ -347,6 +364,7 @@ def get_evaluation_messages_for_criterion(
         include_example: Whether to include a one-shot example in the prompt
         use_personalization_criteria: If True, use personalization criteria (numeric 1-5 scoring).
                                       If False, use persona authenticity criteria (binary yes/no).
+        persona_backstory: Optional persona backstory to include in the evaluation context
     """
     system_prompt = get_evaluation_system_prompt(criterion_key, use_personalization_criteria=use_personalization_criteria)
     
@@ -355,7 +373,8 @@ def get_evaluation_messages_for_criterion(
         business_context=business_context,
         question=question,
         persona_conversation=persona_conversation,
-        criterion_key=criterion_key
+        criterion_key=criterion_key,
+        persona_backstory=persona_backstory
     )
     
     if include_example:
