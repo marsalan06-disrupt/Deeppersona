@@ -143,7 +143,10 @@ def evaluate_persona_with_logprob(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     seed: Optional[int] = None,
-    use_personalization_criteria: bool = False
+    use_personalization_criteria: bool = False,
+    persona_id: Optional[str] = None,
+    criterion_key: Optional[str] = None,
+    research_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """Call OpenAI API with logprobs enabled and extract yes/no probabilities or numeric scores.
     
@@ -153,6 +156,9 @@ def evaluate_persona_with_logprob(
     
     Args:
         use_personalization_criteria: If True, expects numeric score (1-5) instead of yes/no
+        persona_id: Persona ID for tracing in API metadata
+        criterion_key: Criterion key for tracing in API metadata
+        research_id: Research ID for tracing in API metadata
     """
     try:
         # Ensure temperature is 0.0 for deterministic results
@@ -174,6 +180,17 @@ def evaluate_persona_with_logprob(
         # Add seed if provided (for additional determinism)
         if seed is not None:
             api_params["seed"] = seed
+        
+        # Add metadata for tracing (following OpenAI official docs)
+        metadata = {}
+        if persona_id:
+            metadata["persona_id"] = persona_id
+        if criterion_key:
+            metadata["criterion_key"] = criterion_key
+        if research_id:
+            metadata["research_id"] = research_id
+        if metadata:
+            api_params["metadata"] = metadata
         
         response = client.chat.completions.create(**api_params)
         
@@ -510,7 +527,10 @@ def main():
             model=model,
             temperature=temperature,
             seed=seed,
-            use_personalization_criteria=use_personalization_criteria
+            use_personalization_criteria=use_personalization_criteria,
+            persona_id=persona_2_id,
+            criterion_key=criterion_key,
+            research_id=research_id
         )
         
         # Store Persona 2 result immediately (independent of Persona 1)
