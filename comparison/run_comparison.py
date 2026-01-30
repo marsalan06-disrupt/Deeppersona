@@ -661,6 +661,55 @@ def update_firestore(db, research_id: str, updated_personas: List[Dict[str, Any]
     print(f"\nFirestore updated with {len(updated_personas)} personas")
 
 
+def save_deep_persona_to_json(deep_persona_data: Dict[str, Any], research_id: str, base_persona_id: str) -> str:
+    """Save deep persona data to JSON file."""
+    output_dir = os.path.join(os.path.dirname(__file__), "output")
+    os.makedirs(output_dir, exist_ok=True)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = os.path.join(output_dir, f"deep_persona_{base_persona_id}_{research_id}_{timestamp}.json")
+    
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(deep_persona_data, f, indent=2, default=str)
+    
+    print(f"  Deep persona saved to JSON: {output_file}")
+    return output_file
+
+
+def save_deep_persona_to_firebase(db, research_id: str, deep_persona_data: Dict[str, Any], base_persona_id: str, dry_run: bool = False):
+    """Save deep persona data to Firebase."""
+    if dry_run:
+        print(f"  [DRY RUN] Would save deep persona to Firebase")
+        return
+    
+    doc_ref = db.collection("research").document(research_id)
+    research = doc_ref.get()
+    
+    if not research.exists:
+        raise ValueError(f"Research document {research_id} not found")
+    
+    # Get existing deep personas or create new list
+    existing_data = research.to_dict()
+    deep_personas = existing_data.get("step2", {}).get("deepPersonas", {})
+    
+    # Add or update deep persona data
+    deep_personas[base_persona_id] = {
+        "data": deep_persona_data,
+        "basePersonaId": base_persona_id,
+        "createdAt": datetime.now(),
+        "updatedAt": datetime.now()
+    }
+    
+    # Update Firestore
+    doc_ref.update({
+        "step2.deepPersonas": deep_personas,
+        "step2.lastUpdated": datetime.now(),
+        "dateUpdated": datetime.now()
+    })
+    
+    print(f"  Deep persona saved to Firebase: step2.deepPersonas.{base_persona_id}")
+
+
 def add_deeppersona_to_research(
     db,
     research_id: str,
@@ -827,6 +876,11 @@ def main():
             conversation_data=conversation_data
         )
         
+        # Save deep persona to JSON and Firebase
+        print(f"\n[SAVE] Saving deep persona data...")
+        save_deep_persona_to_json(deep_persona_data, research_id, persona_id)
+        save_deep_persona_to_firebase(db, research_id, deep_persona_data, persona_id, dry_run)
+        
         # Add to research
         transformed_persona = add_deeppersona_to_research(
             db=db,
@@ -903,40 +957,43 @@ def main():
     print("\n[BACKUP] Backing up existing personas...")
     backup_file = backup_personas(personas, research_id)
 
-    # Find profiles that have existing personas (only generate DeepPersonas for these)
-    profile_ids_with_personas = set(p.get("profileId") for p in personas)
-    profiles_to_process = [p for p in profiles if p.get("id") in profile_ids_with_personas]
+    # Count personas per profile for info
+    profile_ids_with_personas = {}
+    for persona in personas:
+        profile_id = persona.get("profileId")
+        profile_ids_with_personas[profile_id] = profile_ids_with_personas.get(profile_id, 0) + 1
 
-    print(f"\n[INFO] Only {len(profiles_to_process)} profiles have personas, processing only those:")
-    for p in profiles_to_process:
-        print(f"  - {p.get('name', 'Unknown')} ({p.get('id', '?')[:12]}...)")
+    print(f"\n[INFO] Found {len(personas)} personas across {len(profile_ids_with_personas)} profiles:")
+    for profile_id, count in profile_ids_with_personas.items():
+        profile = next((p for p in profiles if p.get("id") == profile_id), None)
+        profile_name = profile.get("name", "Unknown") if profile else "Unknown"
+        print(f"  - {profile_name}: {count} persona(s)")
 
-    # Generate DeepPersonas only for profiles with existing personas
-    print("\n[GENERATE] Creating DeepPersonas for profiles with existing personas...")
-    deep_personas = {}
+    # Generate DeepPersonas for ALL personas (not just one per profile)
+    print(f"\n[GENERATE] Creating DeepPersonas for all {len(personas)} existing personas...")
+    deep_personas = []  # List to store all generated deep personas
 
-    for profile in profiles_to_process:
-        profile_id = profile.get("id")
+    # Create a lookup for profiles by ID
+    profiles_by_id = {p.get("id"): p for p in profiles}
+
+    # Process ALL personas, not just one per profile
+    for base_persona in personas:
+        profile_id = base_persona.get("profileId")
+        base_persona_id = base_persona.get("id")
+        
+        # Get profile information
+        profile = profiles_by_id.get(profile_id)
+        if not profile:
+            print(f"  Warning: Profile {profile_id} not found for persona {base_persona_id}, skipping...")
+            continue
+        
         profile_name = profile.get("name", "Unknown")
         profile_role = profile.get("role", profile_name)  # Use profile name as role if not specified
         profile_industry = profile.get("industry")
 
-        # Find existing persona for this profile (to extract primary attributes)
-        base_persona = None
-        base_persona_id = None
-        for persona in personas:
-            if persona.get("profileId") == profile_id:
-                base_persona = persona
-                base_persona_id = persona.get("id")
-                break
-        
-        if not base_persona:
-            print(f"  Warning: No existing persona found for profile {profile_id}, skipping...")
-            continue
-
         # Generate DeepPersona using primary attributes from existing persona
         # This preserves primary attributes and generates similar secondary attributes via enhanced vector search
-        print(f"\n[GENERATE] Generating DeepPersona from existing persona: {base_persona.get('name', 'Unknown')}")
+        print(f"\n[GENERATE] Generating DeepPersona from existing persona: {base_persona.get('name', 'Unknown')} (ID: {base_persona_id})")
         deep_persona_data = generate_deeppersona_from_existing_persona(
             base_persona,
             profile=profile,
@@ -944,6 +1001,11 @@ def main():
             business_context=business_context,
             conversation_data=conversation_data
         )
+
+        # Save deep persona to JSON and Firebase
+        print(f"\n[SAVE] Saving deep persona data...")
+        save_deep_persona_to_json(deep_persona_data, research_id, base_persona_id)
+        save_deep_persona_to_firebase(db, research_id, deep_persona_data, base_persona_id, dry_run)
 
         # Transform to regular schema (preserves primary attributes from base, generates secondary via similarity)
         print(f"\n[TRANSFORM] Converting to regular persona schema...")
@@ -961,20 +1023,17 @@ def main():
         print(f"  Deep Persona ID: {deep_persona_id}")
         if base_persona_id:
             print(f"  Base Persona ID: {base_persona_id} (linked via basePersonaId)")
-        deep_personas[profile_id] = transformed_persona
+        deep_personas.append(transformed_persona)
 
     # Add deep personas without replacing originals (keep all personas)
     print("\n[ADD] Adding deep personas to existing personas (keeping all)...")
     updated_personas = personas.copy()
     added_personas = []
 
-    for profile_id, new_persona in deep_personas.items():
-        # Find the base persona for this profile (for linking)
-        base_persona_id = None
-        for persona in updated_personas:
-            if persona.get("profileId") == profile_id:
-                base_persona_id = persona.get("id")
-                break
+    for new_persona in deep_personas:
+        # Get base persona ID from the deep persona's basePersonaId field
+        base_persona_id = new_persona.get("basePersonaId")
+        profile_id = new_persona.get("profileId")
         
         # Add the new deep persona to the list (keeping all original personas)
         updated_personas.append(new_persona)
