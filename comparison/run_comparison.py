@@ -45,6 +45,88 @@ from generate_user_profile.based_data import (
 from transform_persona import transform_to_regular_persona, get_persona_summary
 
 # ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
+
+def format_conversation_for_prompt(conversation_data: Any) -> str:
+    """Format conversation data for prompt.
+    
+    Handles step1 conversationHistory format:
+    - Array of objects with assistantMessage/userMessage fields
+    - Also supports question/answer format for backward compatibility
+    - String format
+    """
+    # Handle None, empty string, or empty collections
+    if not conversation_data:
+        return ""
+    
+    # Handle empty string explicitly
+    if isinstance(conversation_data, str):
+        if conversation_data.strip() == "":
+            return ""
+        return conversation_data
+    
+    # If it's a dict, try to extract conversationHistory
+    if isinstance(conversation_data, dict):
+        # Try multiple possible keys
+        conversation_history = (
+            conversation_data.get("conversationHistory") or
+            conversation_data.get("conversation") or
+            conversation_data.get("history") or
+            conversation_data
+        )
+        
+        if isinstance(conversation_history, str):
+            return conversation_history if conversation_history.strip() else ""
+        
+        if isinstance(conversation_history, list):
+            formatted_parts = []
+            for item in conversation_history:
+                if isinstance(item, dict):
+                    # Handle step1 format: assistantMessage/userMessage
+                    assistant_msg = item.get("assistantMessage", "").strip()
+                    user_msg = item.get("userMessage", "").strip()
+                    
+                    # Fallback to question/answer format for backward compatibility
+                    if not assistant_msg and not user_msg:
+                        assistant_msg = item.get("answer", "").strip()
+                        user_msg = item.get("question", "").strip()
+                    
+                    if user_msg:
+                        formatted_parts.append(f"USER: {user_msg}")
+                    if assistant_msg:
+                        formatted_parts.append(f"ASSISTANT: {assistant_msg}")
+                elif isinstance(item, str) and item.strip():
+                    formatted_parts.append(item)
+            return "\n".join(formatted_parts) if formatted_parts else ""
+    
+    # If it's a list (direct conversationHistory array), format it
+    if isinstance(conversation_data, list):
+        formatted_parts = []
+        for item in conversation_data:
+            if isinstance(item, dict):
+                # Handle step1 format: assistantMessage/userMessage
+                assistant_msg = item.get("assistantMessage", "").strip()
+                user_msg = item.get("userMessage", "").strip()
+                
+                # Fallback to question/answer format for backward compatibility
+                if not assistant_msg and not user_msg:
+                    assistant_msg = item.get("answer", "").strip()
+                    user_msg = item.get("question", "").strip()
+                
+                if user_msg:
+                    formatted_parts.append(f"USER: {user_msg}")
+                if assistant_msg:
+                    formatted_parts.append(f"ASSISTANT: {assistant_msg}")
+            elif isinstance(item, str) and item.strip():
+                formatted_parts.append(item)
+        return "\n".join(formatted_parts) if formatted_parts else ""
+    
+    # Fallback: convert to string
+    result = str(conversation_data)
+    return result if result.strip() else ""
+
+# ============================================================================
 # ANCHOR ATTRIBUTES DEFINITION (matching paper methodology)
 # ============================================================================
 # Paper defines 6 "non-negotiable anchor attributes" that form the foundation:
@@ -408,16 +490,20 @@ def extract_base_profile_from_persona(persona: Dict[str, Any], profile: Optional
 def generate_deeppersona_from_existing_persona(
     persona: Dict[str, Any],
     profile: Optional[Dict[str, Any]] = None,
-    attribute_count: int = 200
+    attribute_count: int = 10,
+    business_context: str = "",
+    conversation_data: str = ""
 ) -> Dict[str, Any]:
     """
-    Generate a DeepPersona using the same primary attributes as existing persona,
-    with similar secondary attributes via vector similarity search.
+    Generate a DeepPersona using enhanced embedding with business context and conversation.
+    Selects top N attributes (default: 10) via cosine similarity using enhanced context.
     
     Args:
         persona: Existing persona dictionary
         profile: Optional profile dictionary containing primary/secondary attributes definition
-        attribute_count: Number of attributes to select (default: 200)
+        attribute_count: Number of attributes to select (default: 10 for deep generation)
+        business_context: Business context/problem statement from research
+        conversation_data: Conversation history from step1
         
     Returns:
         Dictionary with base_profile, complete_persona, and backstory
@@ -438,14 +524,26 @@ def generate_deeppersona_from_existing_persona(
     if primary_attrs:
         print(f"  Primary attributes extracted: {len(primary_attrs)} ({', '.join(list(primary_attrs.keys())[:3])}...)")
     
-    # Select attributes using vector similarity search (will find similar secondary attributes)
-    # The base_profile already contains primary attributes, so vector search will find similar ones
-    print(f"\n[2/4] Selecting similar secondary attributes via vector search...")
-    selected_attributes = get_selected_attributes(base_profile, attribute_count=attribute_count)
+    # Show context information
+    if business_context:
+        print(f"\n  Business Context: {business_context[:100]}...")
+    if conversation_data:
+        print(f"  Conversation Data: {len(conversation_data)} characters")
+    
+    # Select attributes using enhanced vector similarity search with business context and conversation
+    print(f"\n[2/4] Selecting top {attribute_count} attributes via enhanced vector search...")
+    selected_attributes = get_selected_attributes(
+        base_profile, 
+        attribute_count=attribute_count,
+        business_context=business_context,
+        conversation_data=conversation_data
+    )
     print(f"  Selected {len(selected_attributes) if isinstance(selected_attributes, list) else 'N/A'} attributes")
+    if selected_attributes:
+        print(f"  Top attributes: {', '.join(selected_attributes[:5])}...")
     
     # Generate complete persona using the base profile and selected attributes
-    print("\n[3/4] Generating complete persona with similar attributes...")
+    print("\n[3/4] Generating deep persona with enhanced detail...")
     complete_persona = generate_single_profile(
         template=None,
         profile_index=0,
@@ -655,7 +753,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run DeepPersona comparison")
     parser.add_argument("--research-id", required=True, help="Research ID to process")
     parser.add_argument("--persona-id", help="Persona ID to generate DeepPersona from (if provided, generates from existing persona)")
-    parser.add_argument("--attribute-count", type=int, default=200, help="Number of attributes to select (default: 200)")
+    parser.add_argument("--attribute-count", type=int, default=10, help="Number of attributes to select (default: 10 for deep generation)")
     parser.add_argument("--dry-run", action="store_true", help="Generate personas without updating Firestore")
     args = parser.parse_args()
 
@@ -706,11 +804,27 @@ def main():
         profile_role = profile.get("role", base_persona.get("role", "Professional"))
         profile_industry = profile.get("industry", base_persona.get("industry"))
         
+        # Extract business context and conversation from step1
+        step1 = research.get("step1", {})
+        business_context = step1.get("problemStatement") or step1.get("researchGoal") or ""
+        
+        # Extract conversationHistory from step1 (array format with assistantMessage/userMessage)
+        conversation_data_raw = step1.get("conversationHistory") or step1.get("conversation") or ""
+        
+        conversation_data = format_conversation_for_prompt(conversation_data_raw)
+        
+        # Debug output
+        if conversation_data_raw:
+            print(f"  Conversation History items: {len(conversation_data_raw) if isinstance(conversation_data_raw, list) else 'N/A'}")
+            print(f"  Conversation Data length: {len(conversation_data)} characters")
+        
         # Generate DeepPersona from existing persona (pass profile to extract primary attributes)
         deep_persona_data = generate_deeppersona_from_existing_persona(
             base_persona,
             profile=profile,
-            attribute_count=attribute_count
+            attribute_count=attribute_count,
+            business_context=business_context,
+            conversation_data=conversation_data
         )
         
         # Add to research
@@ -736,10 +850,42 @@ def main():
         return transformed_persona
 
     # Original workflow: Generate DeepPersonas for all profiles with existing personas
-    # Get problem statement
+    # Get problem statement, business context, and conversation
     step1 = research.get("step1", {})
     problem_statement = step1.get("problemStatement") or step1.get("researchGoal") or ""
+    business_context = step1.get("problemStatement") or step1.get("researchGoal") or ""
+    
+    # Try multiple possible field names for conversation data
+    conversation_data_raw = (
+        step1.get("conversation") or 
+        step1.get("conversationHistory") or 
+        step1.get("interviewHistory") or
+        step1.get("conversationData") or
+        ""
+    )
+    
+    # Debug: Print step1 keys to help diagnose
+    if not conversation_data_raw:
+        print(f"\n[DEBUG] Step1 keys: {list(step1.keys())}")
+        print(f"[DEBUG] Checking for nested conversation data...")
+        # Check if conversation is nested in an interview object
+        if "interview" in step1:
+            interview_obj = step1.get("interview", {})
+            conversation_data_raw = (
+                interview_obj.get("conversationHistory") or
+                interview_obj.get("conversation") or
+                ""
+            )
+            print(f"[DEBUG] Found interview object, conversation_data_raw length: {len(str(conversation_data_raw))}")
+    
+    conversation_data = format_conversation_for_prompt(conversation_data_raw)
+    
     print(f"  Problem Statement: {problem_statement[:100]}...")
+    print(f"  Business Context: {business_context[:100]}...")
+    print(f"  Conversation Data (raw): {len(str(conversation_data_raw))} characters")
+    print(f"  Conversation Data (formatted): {len(conversation_data)} characters")
+    if len(conversation_data) < 100:
+        print(f"  WARNING: Conversation data seems too short. Raw value preview: {str(conversation_data_raw)[:200]}")
 
     # Get profiles and personas
     profiles = get_profiles_from_research(research)
@@ -789,12 +935,14 @@ def main():
             continue
 
         # Generate DeepPersona using primary attributes from existing persona
-        # This preserves primary attributes and generates similar secondary attributes via vector search
+        # This preserves primary attributes and generates similar secondary attributes via enhanced vector search
         print(f"\n[GENERATE] Generating DeepPersona from existing persona: {base_persona.get('name', 'Unknown')}")
         deep_persona_data = generate_deeppersona_from_existing_persona(
             base_persona,
             profile=profile,
-            attribute_count=attribute_count
+            attribute_count=attribute_count,
+            business_context=business_context,
+            conversation_data=conversation_data
         )
 
         # Transform to regular schema (preserves primary attributes from base, generates secondary via similarity)

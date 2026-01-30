@@ -108,13 +108,14 @@ def extract_paths(obj: Dict, prefix: str = "") -> List[str]:
 
 
 
-def generate_category_attributes(category_paths: Dict, custom_prompt: str, category_name: str) -> Dict:
+def generate_category_attributes(category_paths: Dict, custom_prompt: str, category_name: str, is_deep_generation: bool = False) -> Dict:
     """Generate all attribute values for a top-level category at once.
 
     Args:
         category_paths: All attribute paths and structure under the category.
         custom_prompt: Custom prompt with specific generation instructions.
         category_name: Top-level category name.
+        is_deep_generation: If True, generate deeper, more detailed values (for small attribute sets).
 
     Returns:
         Dict: All generated attribute values.
@@ -137,14 +138,45 @@ def generate_category_attributes(category_paths: Dict, custom_prompt: str, categ
     if not leaf_paths:
         return {}
     
-    # Simplified system prompt for JSON format
-    system_prompt = """Format your response as a JSON object where each key is the attribute path and each value is the generated attribute value (not exceeding 100 characters)."""
+    # Enhanced system prompt for deep generation (when few attributes)
+    if is_deep_generation:
+        system_prompt = """You are generating detailed, in-depth attribute values for a deep persona profile. 
+Format your response as a JSON object where each key is the attribute path and each value is a rich, detailed description.
 
-    # Custom prompt + attribute paths list
-    user_prompt = f"{custom_prompt}\n\nAttribute Paths to generate values for:\n"
-    for path in leaf_paths:
-        user_prompt += f"- {path}\n"
-    user_prompt += "\nGenerate suitable values for all these attributes in JSON format."
+For deep generation:
+- Provide comprehensive, nuanced values (200-500 characters per attribute)
+- Include specific details, examples, and context
+- Show depth of personality, behavior, and characteristics
+- Make values feel authentic and multi-dimensional
+- Avoid generic or superficial descriptions"""
+    else:
+        # Standard system prompt for normal generation
+        system_prompt = """Format your response as a JSON object where each key is the attribute path and each value is the generated attribute value (not exceeding 100 characters)."""
+
+    # Enhanced user prompt for deep generation
+    if is_deep_generation:
+        user_prompt = f"""{custom_prompt}
+
+IMPORTANT: You are generating DEEP, DETAILED values for a high-quality persona profile. Each attribute should be rich, nuanced, and comprehensive.
+
+Attribute Paths to generate detailed values for:
+"""
+        for path in leaf_paths:
+            user_prompt += f"- {path}\n"
+        user_prompt += """
+Generate comprehensive, detailed values for all these attributes in JSON format. Each value should be:
+- Rich and multi-dimensional (200-500 characters)
+- Specific and concrete, not generic
+- Authentic and believable
+- Contextually appropriate for the persona
+- Show depth of personality and behavior
+"""
+    else:
+        # Standard user prompt
+        user_prompt = f"{custom_prompt}\n\nAttribute Paths to generate values for:\n"
+        for path in leaf_paths:
+            user_prompt += f"- {path}\n"
+        user_prompt += "\nGenerate suitable values for all these attributes in JSON format."
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -260,7 +292,7 @@ def print_section(section: Dict, indent: int = 0) -> None:
             print(f"{indent_str}{key}: {value}")
 
 
-def generate_section(template_section: Dict, base_info: str, section_name: str, indent: int = 0) -> Dict:
+def generate_section(template_section: Dict, base_info: str, section_name: str, indent: int = 0, is_deep_generation: bool = False) -> Dict:
     """Generate a section of the profile.
 
     Args:
@@ -268,6 +300,7 @@ def generate_section(template_section: Dict, base_info: str, section_name: str, 
         base_info: Base info text.
         section_name: Section name.
         indent: Indentation level.
+        is_deep_generation: If True, generate deeper, more detailed values.
 
     Returns:
         Dict: Generated config section.
@@ -280,7 +313,7 @@ def generate_section(template_section: Dict, base_info: str, section_name: str, 
     # If top-level category, generate all attributes at once
     if indent == 0:  # Top-level category
         # Use new function to generate all attribute values at once
-        all_attributes = generate_category_attributes(template_section, base_info, section_name)
+        all_attributes = generate_category_attributes(template_section, base_info, section_name, is_deep_generation=is_deep_generation)
 
         # If attributes were generated successfully, add them to result
         if all_attributes:
@@ -428,6 +461,11 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     # Example assertion: ensure the profile includes an 'Occupations' field
     assert 'Occupations' in base_info, "The 'Occupations' key is missing in the user profile."
     
+    # Determine if we should use deep generation (for 10 or fewer attributes)
+    is_deep_generation = attribute_count <= 10
+    if is_deep_generation:
+        print(f"[DEEP GENERATION MODE] Generating detailed, comprehensive values for {len(selected_paths_list)} attributes")
+    
     # Initialize profile dictionary
     profile = {
         "Base Info": base_info,
@@ -445,7 +483,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     demographic_template = selected_paths.get("Demographic Information")
     if demographic_template and demographic_template != "":
         print('Generating Demographic Information...')
-        demographic_section = generate_category_attributes(demographic_template, demographic_input, "Demographic Information")
+        demographic_section = generate_category_attributes(demographic_template, demographic_input, "Demographic Information", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in demographic_section.items():
@@ -481,7 +519,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
             "**Do not introduce new career details or aspirations that are not grounded in or clearly supported by the source material.** "
             "The section should be an insightful and coherent expansion of what can be understood from the source material."
         )
-        career_info_section = generate_category_attributes(career_template, career_input, "Career and Work Identity")
+        career_info_section = generate_category_attributes(career_template, career_input, "Career and Work Identity", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in career_info_section.items():
@@ -515,7 +553,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     core_template = selected_paths.get("Core Values, Beliefs, and Philosophy")
     if core_template and core_template != "":
         print('Generating Core Values, Beliefs, and Philosophy...')
-        core_values_section = generate_category_attributes(core_template, core_input, "Core Values, Beliefs, and Philosophy")
+        core_values_section = generate_category_attributes(core_template, core_input, "Core Values, Beliefs, and Philosophy", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in core_values_section.items():
@@ -548,7 +586,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     lifestyle_template = selected_paths.get("Lifestyle and Daily Routine")
     if lifestyle_template and lifestyle_template != "":
         print('Generating Lifestyle and Daily Routine...')
-        lifestyle_section = generate_category_attributes(lifestyle_template, lifestyle_input, "Lifestyle and Daily Routine")
+        lifestyle_section = generate_category_attributes(lifestyle_template, lifestyle_input, "Lifestyle and Daily Routine", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in lifestyle_section.items():
@@ -581,7 +619,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     cultural_template = selected_paths.get("Cultural and Social Context")
     if cultural_template and cultural_template != "":
         print('Generating Cultural and Social Context...')
-        cultural_section = generate_category_attributes(cultural_template, cultural_input, "Cultural and Social Context")
+        cultural_section = generate_category_attributes(cultural_template, cultural_input, "Cultural and Social Context", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in cultural_section.items():
@@ -616,7 +654,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     hobbies_template = selected_paths.get("Hobbies, Interests, and Lifestyle")
     if hobbies_template and hobbies_template != "":
         print('Generating Hobbies, Interests, and Lifestyle...')
-        hobbies_section = generate_category_attributes(hobbies_template, hobbies_input, "Hobbies, Interests, and Lifestyle")
+        hobbies_section = generate_category_attributes(hobbies_template, hobbies_input, "Hobbies, Interests, and Lifestyle", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in hobbies_section.items():
@@ -645,7 +683,7 @@ def generate_single_profile(template: Dict = None, profile_index: int = 0, attri
     other_template = selected_paths.get("Other Attributes")
     if other_template and other_template != "":
         print('Generating Other Attributes...')
-        other_attributes_section = generate_category_attributes(other_template, other_attributes_input, "Other Attributes")
+        other_attributes_section = generate_category_attributes(other_template, other_attributes_input, "Other Attributes", is_deep_generation=is_deep_generation)
         # Build nested dictionary structure
         nested_result = {}
         for path, value in other_attributes_section.items():

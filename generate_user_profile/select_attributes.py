@@ -203,6 +203,65 @@ class AttributeSelector:
         except Exception as e:
             logger.error(f"Error creating profile embedding: {e}")
             return None
+    
+    def _create_enhanced_profile_embedding(
+        self, 
+        profile: Dict, 
+        business_context: str = "", 
+        conversation_data: str = ""
+    ) -> np.ndarray:
+        """
+        Create enhanced embedding vector combining profile, business context, and conversation data.
+        This provides richer context for more accurate attribute matching.
+
+        Args:
+            profile: User profile dictionary
+            business_context: Business context/problem statement from research
+            conversation_data: Conversation history from step1
+
+        Returns:
+            Enhanced profile embedding vector
+        """
+        try:
+            # Extract profile summary
+            profile_summary = self._extract_profile_summary(profile)
+            
+            # Build enhanced context combining all three sources
+            enhanced_parts = []
+            
+            # Add profile information
+            enhanced_parts.append("USER PROFILE:")
+            enhanced_parts.append(profile_summary)
+            
+            # Add business context if provided
+            if business_context and business_context.strip():
+                enhanced_parts.append("\nBUSINESS CONTEXT:")
+                enhanced_parts.append(business_context.strip())
+            
+            # Add conversation data if provided
+            if conversation_data and conversation_data.strip():
+                enhanced_parts.append("\nCONVERSATION HISTORY:")
+                enhanced_parts.append(conversation_data.strip())
+            
+            # Combine all parts
+            enhanced_text = "\n".join(enhanced_parts)
+
+            # Generate embedding using OpenAI API
+            response = client.embeddings.create(
+                model="text-embedding-ada-002",
+                input=enhanced_text
+            )
+
+            # Extract embedding vector
+            embedding = np.array(response.data[0].embedding)
+            logger.info(f"Successfully created enhanced embedding (profile + business context + conversation)")
+            return embedding
+
+        except Exception as e:
+            logger.error(f"Error creating enhanced profile embedding: {e}")
+            # Fallback to regular profile embedding
+            logger.warning("Falling back to regular profile embedding")
+            return self._create_profile_embedding(profile)
             
     def _compute_cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """
@@ -693,13 +752,23 @@ class AttributeSelector:
         logger.info(f"Selected {len(selected_paths)} attributes using vector search (near: {near_count}, mid: {mid_count}, far: {far_count})")
         return selected_paths
     
-    def get_top_attributes(self, result: Dict, target_count: int = 200) -> List[str]:
+    def get_top_attributes(
+        self, 
+        result: Dict, 
+        target_count: int = 200,
+        business_context: str = "",
+        conversation_data: str = ""
+    ) -> List[str]:
         """
-        Get attribute list
+        Get attribute list using enhanced embedding with business context and conversation data.
+        For target_count <= 20, returns strict top N by similarity.
+        For target_count > 20, uses category-based proportional selection.
 
         Args:
             result: Result from analyze_profile_for_attributes
-            target_count: Target attribute count
+            target_count: Target attribute count (default: 200)
+            business_context: Business context/problem statement (optional)
+            conversation_data: Conversation history (optional)
 
         Returns:
             List of attribute paths
@@ -733,33 +802,58 @@ class AttributeSelector:
                     all_paths.extend(paths)
                     category_paths[category] = paths
 
-            # Use passed target_count parameter, no longer random selection
-
             # If vector database available, use vector search
             if self.embeddings_data and self.user_profile:
-                # Create user profile embedding
-                profile_embedding = self._create_profile_embedding(self.user_profile)
+                # Create enhanced profile embedding (includes business context and conversation)
+                if business_context or conversation_data:
+                    profile_embedding = self._create_enhanced_profile_embedding(
+                        self.user_profile, 
+                        business_context=business_context,
+                        conversation_data=conversation_data
+                    )
+                else:
+                    # Fallback to regular embedding if no context provided
+                    profile_embedding = self._create_profile_embedding(self.user_profile)
 
                 if profile_embedding is not None:
-                    # Select attributes for each category
-                    final_paths = []
-                    for category, paths in category_paths.items():
-                        # Allocate target count proportionally based on category size
-                        category_ratio = len(paths) / len(all_paths)
-                        category_target = max(3, int(target_count * category_ratio))
+                    # For small target counts (<= 20), use strict top N selection
+                    if target_count <= 20:
+                        # Calculate similarity for ALL attributes across all categories
+                        all_similarities = []
+                        for path in all_paths:
+                            if path in self.path_to_embedding:
+                                embedding = self.path_to_embedding[path]
+                                similarity = self._compute_cosine_similarity(profile_embedding, embedding)
+                                all_similarities.append((path, similarity))
+                        
+                        # Sort by similarity (highest first) and take strict top N
+                        all_similarities.sort(key=lambda x: x[1], reverse=True)
+                        top_paths = [path for path, _ in all_similarities[:target_count]]
+                        
+                        logger.info(f"Selected strict top {len(top_paths)} attributes from {len(all_paths)} using enhanced embedding")
+                        return top_paths
+                    
+                    # For larger target counts, use category-based proportional selection
+                    else:
+                        # Select attributes for each category
+                        final_paths = []
+                        for category, paths in category_paths.items():
+                            # Allocate target count proportionally based on category size
+                            category_ratio = len(paths) / len(all_paths)
+                            category_target = max(3, int(target_count * category_ratio))
 
-                        # Use vector search to select attributes for this category
-                        category_selected = self._find_interesting_neighbors(
-                            profile_embedding, paths, category_target
-                        )
-                        final_paths.extend(category_selected)
+                            # Use vector search to select attributes for this category
+                            category_selected = self._find_interesting_neighbors(
+                                profile_embedding, paths, category_target
+                            )
+                            final_paths.extend(category_selected)
 
-                    # If selected attributes exceed target count, randomly reduce
-                    if len(final_paths) > target_count:
-                        final_paths = random.sample(final_paths, target_count)
+                        # If selected attributes exceed target count, randomly reduce
+                        if len(final_paths) > target_count:
+                            final_paths = random.sample(final_paths, target_count)
 
-                    logger.info(f"Selected {len(final_paths)} attributes from {len(all_paths)} using vector search")
-                    return final_paths
+                        logger.info(f"Selected {len(final_paths)} attributes from {len(all_paths)} using vector search")
+                        return final_paths
 
             # If no vector database or vector search failed, return empty list
             logger.warning(f"No vector database available or vector search failed, returning empty list")
@@ -827,7 +921,24 @@ def generate_user_profile() -> Dict:
 
     return user_profile
 
-def get_selected_attributes(user_profile=None, attribute_count=200):
+def get_selected_attributes(
+    user_profile=None, 
+    attribute_count=200,
+    business_context: str = "",
+    conversation_data: str = ""
+):
+    """
+    Get selected attributes using enhanced embedding with business context and conversation.
+    
+    Args:
+        user_profile: User profile dictionary (optional, will generate if not provided)
+        attribute_count: Number of attributes to select (default: 200)
+        business_context: Business context/problem statement (optional)
+        conversation_data: Conversation history (optional)
+    
+    Returns:
+        List of selected attribute paths
+    """
     global ATTRIBUTE_SELECTION_CACHE
     # Cache mechanism commented out to ensure fresh attribute selection each time
     # if ATTRIBUTE_SELECTION_CACHE is not None:
@@ -847,8 +958,13 @@ def get_selected_attributes(user_profile=None, attribute_count=200):
         # Get attribute recommendations
         attribute_recommendations = result.get("attribute_recommendations", {})
 
-        # Get attribute list using passed attribute_count parameter
-        top_paths = selector.get_top_attributes(attribute_recommendations, target_count=attribute_count)
+        # Get attribute list using passed parameters
+        top_paths = selector.get_top_attributes(
+            attribute_recommendations, 
+            target_count=attribute_count,
+            business_context=business_context,
+            conversation_data=conversation_data
+        )
 
         # Return attribute list
         ATTRIBUTE_SELECTION_CACHE = top_paths
